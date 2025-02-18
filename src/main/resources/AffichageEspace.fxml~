@@ -55,7 +55,6 @@
                         <TableColumn text="Adresse" fx:id="colAdresse" prefWidth="200"/>
                         <TableColumn text="Catégorie" fx:id="colCategorie" prefWidth="150"/>
                         <TableColumn text="Capacité" fx:id="colCapacite" prefWidth="100"/>
-                        <TableColumn fx:id="colActions" text="Actions" />
                     </columns>
                 </TableView>
 

@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/20.0.2"
             xmlns:fx="http://javafx.com/fxml"
@@ -18,7 +17,7 @@
             <Button text="🏠 Utilisateur" styleClass="menu-button" />
             <Button text="⚽ Joueur" styleClass="menu-button" />
             <Button text="🏆 Matchs" styleClass="menu-button" />
-            <Button text="📍 Espace Sportif" styleClass="menu-button" />
+            <Button text="📍 EspaceSportif" styleClass="menu-button" />
             <Button text="💰 Sponsoring" styleClass="menu-button" />
         </VBox>
 
@@ -30,19 +29,19 @@
                     <Label text="Ajouter/Modifier un espace" layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
                     <Label text="Nom :" layoutX="20" layoutY="60" />
-                    <TextField fx:id="textFieldNom" layoutX="100" layoutY="60" prefWidth="250" />
+                    <TextField fx:id="textFieldNom" layoutX="100" layoutY="60" prefWidth="200" />
 
                     <Label text="Adresse :" layoutX="20" layoutY="100" />
-                    <TextField fx:id="textFieldAdresse" layoutX="100" layoutY="100" prefWidth="250" />
+                    <TextField fx:id="textFieldAdresse" layoutX="100" layoutY="100" prefWidth="200" />
 
                     <Label text="Catégorie :" layoutX="20" layoutY="140" />
-                    <ComboBox fx:id="comboBoxCategorie" layoutX="100" layoutY="140" prefWidth="250" />
+                    <ComboBox fx:id="comboBoxCategorie" layoutX="100" layoutY="140" prefWidth="200" />
 
                     <Label text="Capacité :" layoutX="20" layoutY="180" />
-                    <TextField fx:id="textFieldCapacite" layoutX="100" layoutY="180" prefWidth="250" />
+                    <TextField fx:id="textFieldCapacite" layoutX="100" layoutY="180" prefWidth="200" />
 
-                    <Button text="✔ Finaliser" fx:id="btnAjout" layoutX="100" layoutY="230" styleClass="action-button" />
-                    <Button text="✖ Annuler" fx:id="btnAnnuler" layoutX="220" layoutY="230" styleClass="cancel-button" />
+                    <Button text="Finaliser" fx:id="btnAjout" layoutX="100" layoutY="230" styleClass="action-button" />
+                    <Button text="Annuler" fx:id="btnAnnuler" layoutX="200" layoutY="230" styleClass="cancel-button" />
                 </AnchorPane>
             </Tab>
 
@@ -57,14 +56,13 @@
                             <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
                             <TableColumn text="Adresse" fx:id="colAdresse" prefWidth="200"/>
                             <TableColumn text="Catégorie" fx:id="colCategorie" prefWidth="150"/>
-                            <TableColumn text="Capacité" fx:id="colCapacite" prefWidth="100"/>
-
-                            <!-- Colonne des actions (Modifier et Supprimer) -->
-                            <TableColumn text="Actions" fx:id="colActions" prefWidth="150"/>
+                            <TableColumn text="Capacité Espace" fx:id="colCapacite" prefWidth="100"/>
                         </columns>
                     </TableView>
 
-                    <Button text="🔄 Actualiser" fx:id="btnActualiser" layoutX="20" layoutY="470" styleClass="refresh-button" />
+                    <Button text="Supprimer" fx:id="btnSupprimer" layoutX="20" layoutY="470" styleClass="delete-button" />
+                    <Button text="Modifier" fx:id="btnModifier" layoutX="120" layoutY="470" styleClass="edit-button" />
+                    <Button text="Actualiser" fx:id="btnActualiser" layoutX="220" layoutY="470" styleClass="refresh-button" />
                 </AnchorPane>
             </Tab>
         </TabPane>

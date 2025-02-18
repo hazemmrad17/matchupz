@@ -1,68 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/20.0.2"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.EspaceSportif.AjouterEspace"
-            stylesheets="@styles.css"
-            prefHeight="600.0" prefWidth="900.0">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AjouterEspace">
 
     <HBox spacing="10">
         <!-- Menu latéral -->
         <VBox prefWidth="200" style="-fx-background-color: #d7e6eb; -fx-padding: 15px;">
-            <Label text="MATCHUPZ" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 10px;" />
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 10px;" text="MATCHUPZ" />
 
-            <Button text="🏠 Utilisateur" styleClass="menu-button" />
-            <Button text="⚽ Joueur" styleClass="menu-button" />
-            <Button text="🏆 Matchs" styleClass="menu-button" />
-            <Button text="📍 EspaceSportif" styleClass="menu-button" />
-            <Button text="💰 Sponsoring" styleClass="menu-button" />
+            <Button styleClass="menu-button" text="🏠 Utilisateur" />
+            <Button styleClass="menu-button" text="⚽ Joueur" />
+            <Button styleClass="menu-button" text="🏆 Matchs" />
+            <Button styleClass="menu-button" text="📍 EspaceSportif" />
+            <Button styleClass="menu-button" text="💰 Sponsoring" />
         </VBox>
 
         <!-- Contenu principal -->
-        <TabPane prefWidth="700" prefHeight="600">
+        <TabPane prefHeight="600" prefWidth="700">
             <!-- Onglet Ajouter Espace -->
             <Tab text="Ajouter Espace">
                 <AnchorPane>
-                    <Label text="Ajouter/Modifier un espace" layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                    <Label layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Ajouter/Modifier un espace" />
 
-                    <Label text="Nom :" layoutX="20" layoutY="60" />
-                    <TextField fx:id="textFieldNom" layoutX="100" layoutY="60" prefWidth="200" />
+                    <Label layoutX="44.0" layoutY="64.0" text="Nom :" />
+                    <TextField fx:id="textFieldNom" layoutX="100" layoutY="60" prefHeight="26.0" prefWidth="484.0" />
 
-                    <Label text="Adresse :" layoutX="20" layoutY="100" />
-                    <TextField fx:id="textFieldAdresse" layoutX="100" layoutY="100" prefWidth="200" />
+                    <Label layoutX="36.0" layoutY="104.0" text="Adresse :" />
+                    <TextField fx:id="textFieldAdresse" layoutX="100.0" layoutY="100.0" prefHeight="26.0" prefWidth="485.0" />
 
-                    <Label text="Catégorie :" layoutX="20" layoutY="140" />
-                    <ComboBox fx:id="comboBoxCategorie" layoutX="100" layoutY="140" prefWidth="200" />
+                    <Label layoutX="31.0" layoutY="144.0" text="Catégorie :" />
+                    <ComboBox fx:id="comboBoxCategorie" layoutX="100" layoutY="140" onAction="#initialize" prefHeight="26.0" prefWidth="486.0" />
 
-                    <Label text="Capacité :" layoutX="20" layoutY="180" />
-                    <TextField fx:id="textFieldCapacite" layoutX="100" layoutY="180" prefWidth="200" />
+                    <Label layoutX="34.0" layoutY="184.0" text="Capacité :" />
+                    <TextField fx:id="textFieldCapacite" layoutX="100" layoutY="180" onAction="#afficher" prefHeight="26.0" prefWidth="484.0" />
 
-                    <Button text="Finaliser" fx:id="btnAjout" layoutX="100" layoutY="230" styleClass="action-button" />
-                    <Button text="Annuler" fx:id="btnAnnuler" layoutX="180" layoutY="230" styleClass="cancel-button" />
+                    <Button fx:id="btnAjout" layoutX="206.0" layoutY="230.0" styleClass="action-button" text="Finaliser" />
+                    <Button fx:id="btnAnnuler" layoutX="384.0" layoutY="230.0" styleClass="cancel-button" text="Annuler" />
                 </AnchorPane>
             </Tab>
 
             <!-- Onglet Affichage des Espaces -->
             <Tab text="Liste des Espaces">
                 <AnchorPane>
-                    <Label text="Liste des Espaces Sportifs" layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                    <Label layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Espaces Sportifs" />
 
-                    <TableView fx:id="tableViewEspaces" layoutX="20" layoutY="50" prefWidth="650" prefHeight="400">
+                    <TableView fx:id="tableViewEspaces" layoutX="20" layoutY="50" prefHeight="400" prefWidth="650">
                         <columns>
-                            <TableColumn text="ID" fx:id="colId" prefWidth="50"/>
-                            <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
-                            <TableColumn text="Adresse" fx:id="colAdresse" prefWidth="200"/>
-                            <TableColumn text="Catégorie" fx:id="colCategorie" prefWidth="150"/>
-                            <TableColumn text="Capacité" fx:id="colCapacite" prefWidth="100"/>
+                            <TableColumn fx:id="colId" prefWidth="50" text="ID" />
+                            <TableColumn fx:id="colNom" prefWidth="150" text="Nom" />
+                            <TableColumn fx:id="colAdresse" prefWidth="200" text="Adresse" />
+                            <TableColumn fx:id="colCategorie" prefWidth="150" text="Catégorie" />
+                            <TableColumn fx:id="colCapacite" prefWidth="100" text="Capacité" />
                         </columns>
                     </TableView>
 
-                    <Button text="Supprimer" fx:id="btnSupprimer" layoutX="20" layoutY="470" styleClass="delete-button" />
-                    <Button text="Modifier" fx:id="btnModifier" layoutX="120" layoutY="470" styleClass="edit-button" />
-                    <Button text="Actualiser" fx:id="btnActualiser" layoutX="220" layoutY="470" styleClass="refresh-button" />
+                    <Button fx:id="btnSupprimer" layoutX="20" layoutY="470" styleClass="delete-button" text="Supprimer" />
+                    <Button fx:id="btnModifier" layoutX="120" layoutY="470" styleClass="edit-button" text="Modifier" />
+                    <Button fx:id="btnActualiser" layoutX="220" layoutY="470" styleClass="refresh-button" text="Actualiser" />
                 </AnchorPane>
             </Tab>
         </TabPane>

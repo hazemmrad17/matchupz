@@ -78,7 +78,9 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
         return espacesSportifs;
     }
 
-
+    /**
+     * 🔥 Récupérer les valeurs ENUM de la colonne `categorie` dans `espacesportif`
+     */
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
         String query = "SHOW COLUMNS FROM `espacesportif` WHERE Field = 'categorie'";

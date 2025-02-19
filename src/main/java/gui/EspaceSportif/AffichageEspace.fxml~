@@ -5,7 +5,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/20.0.2"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.EspaceSportif.AffichageEspace"
+            fx:controller="controllers.EspaceSportif.AjouterEspace"
             stylesheets="@styles.css"
             prefHeight="600.0" prefWidth="900.0">
 

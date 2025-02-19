@@ -98,4 +98,36 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
 
         return categories;
     }
+
+    public List<EspaceSportif> rechercherParMotCle(String motCle) {
+        String req = "SELECT id_lieu, nom_espace, adresse, categorie, capacite FROM espacesportif " +
+                "WHERE nom_espace LIKE ? OR adresse LIKE ? OR categorie LIKE ?";
+        List<EspaceSportif> espacesSportifs = new ArrayList<>();
+
+        try (PreparedStatement ps = connection.prepareStatement(req)) {
+            // Utilisation de LIKE avec % pour rechercher le mot-clé dans les colonnes
+            ps.setString(1, "%" + motCle + "%");
+            ps.setString(2, "%" + motCle + "%");
+            ps.setString(3, "%" + motCle + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    EspaceSportif espaceSportif = new EspaceSportif();
+                    espaceSportif.setIdLieu(rs.getInt("id_lieu"));
+                    espaceSportif.setNomEspace(rs.getString("nom_espace"));
+                    espaceSportif.setAdresse(rs.getString("adresse"));
+                    espaceSportif.setCategorie(rs.getString("categorie"));
+                    espaceSportif.setCapacite(rs.getFloat("capacite"));
+
+                    espacesSportifs.add(espaceSportif);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération des espaces sportifs par mot-clé : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return espacesSportifs;
+    }
+
 }

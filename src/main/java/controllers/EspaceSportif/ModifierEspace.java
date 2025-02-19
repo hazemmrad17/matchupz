@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
-public class AjouterEspace {
+public class ModifierEspace {
 
     @FXML
     private TextField nomField;
@@ -29,11 +29,12 @@ public class AjouterEspace {
     private TextField capaciteField;
 
     @FXML
-    private Button submitButton;
+    private Button updateButton;
 
     @FXML
     private Button cancelButton;
 
+    private EspaceSportif espaceToEdit;
     private final EspaceSportifService espaceService = new EspaceSportifService();
 
     @FXML
@@ -50,8 +51,18 @@ public class AjouterEspace {
         }
     }
 
+    public void setEspaceToEdit(EspaceSportif espace) {
+        this.espaceToEdit = espace;
+
+        // Pré-remplir les champs avec les données existantes
+        nomField.setText(espace.getNomEspace());
+        adresseField.setText(espace.getAdresse());
+        categorieField.setValue(espace.getCategorie());
+        capaciteField.setText(String.valueOf(espace.getCapacite()));
+    }
+
     @FXML
-    private void ajouterEspace(ActionEvent event) {
+    private void modifierEspace(ActionEvent event) {
         String nom = nomField.getText().trim();
         String adresse = adresseField.getText().trim();
         String categorie = categorieField.getValue();
@@ -71,11 +82,15 @@ public class AjouterEspace {
             return;
         }
 
-        EspaceSportif espace = new EspaceSportif(nom, adresse, categorie, capacite);
-        espaceService.ajouter(espace);
+        // Mise à jour de l'espace
+        espaceToEdit.setNomEspace(nom);
+        espaceToEdit.setAdresse(adresse);
+        espaceToEdit.setCategorie(categorie);
+        espaceToEdit.setCapacite(capacite);
 
-        showAlert(Alert.AlertType.INFORMATION, "Succès", "Espace ajouté avec succès !");
-        clearFields();
+        espaceService.modifier(espaceToEdit);
+
+        showAlert(Alert.AlertType.INFORMATION, "Succès", "Espace modifié avec succès !");
         goToAfficherEspace(event);
     }
 

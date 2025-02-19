@@ -59,3 +59,19 @@
     -fx-background-color: #5cb85c;
     -fx-text-fill: white;
 }
+
+/* Search Field Styling */
+.search-field {
+    -fx-padding: 6px;
+    -fx-font-size: 14px;
+    -fx-border-color: #88d1aa;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-pref-width: 300px;
+}
+.search-field:focused {
+    -fx-border-color: #4cae4c;
+    -fx-background-color: #f0fff0;
+}

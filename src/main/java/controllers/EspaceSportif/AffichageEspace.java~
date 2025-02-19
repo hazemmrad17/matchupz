@@ -68,9 +68,6 @@ public class AffichageEspace {
 
         addActionsColumn();
         loadEspaces();
-
-        // Ajout d'un listener pour la recherche dynamique
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> searchEspaceSportif(newValue));
     }
 
     private void loadEspaces() {
@@ -180,7 +177,7 @@ public class AffichageEspace {
     private void refreshList() {
         loadEspaces();
     }
-
+    
     private void searchEspaceSportif(String motCle) {
         List<EspaceSportif> resultatRecherche = espaceService.rechercherParMotCle(motCle.toLowerCase());
 

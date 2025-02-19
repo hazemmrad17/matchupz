@@ -6,7 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/20.0.2"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.EspaceSportif.AjouterEspace"
+            fx:controller="controllers.EspaceSportif.ModifierEspace"
             stylesheets="@styles.css"
             prefHeight="600.0" prefWidth="900.0">
 
@@ -22,9 +22,9 @@
             <Button text="💰 Sponsoring" fx:id="btnSponsoring" styleClass="menu-button" />
         </VBox>
 
-        <!-- Formulaire d'ajout -->
+        <!-- Formulaire de modification -->
         <VBox spacing="15" alignment="CENTER" style="-fx-padding: 20px;">
-            <Label text="Ajouter un Espace Sportif" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label text="Modifier un Espace Sportif" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
 
             <GridPane hgap="15" vgap="15" alignment="CENTER">
                 <Label text="Nom :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -41,7 +41,7 @@
             </GridPane>
 
             <HBox spacing="10">
-                <Button text="Ajouter" fx:id="submitButton" styleClass="form-button" onAction="#ajouterEspace"/>
+                <Button text="Modifier" fx:id="updateButton" styleClass="form-button" onAction="#modifierEspace"/>
                 <Button text="Annuler" fx:id="cancelButton" styleClass="form-button" onAction="#annuler"/>
                 <Button text="Retour" fx:id="retourButton" styleClass="form-button" onAction="#goToAfficherEspace"/>
             </HBox>

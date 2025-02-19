@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
 
-<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
-<AnchorPane xmlns="http://javafx.com/javafx/20.0.2"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.EspaceSportif.AjouterEspace"
-            stylesheets="@styles.css"
-            prefHeight="600.0" prefWidth="900.0">
-
+<?import java.lang.String?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.ModifierEspace">
     <HBox spacing="10" alignment="CENTER">
         <!-- Menu latéral -->
         <VBox prefWidth="200" style="-fx-background-color: #d7e6eb; -fx-padding: 15px;">
@@ -24,9 +18,9 @@
             <Button text="💰 Sponsoring" styleClass="menu-button" />
         </VBox>
 
-        <!-- Formulaire d'ajout -->
+        <!-- Formulaire de modification -->
         <VBox spacing="15" alignment="CENTER" style="-fx-padding: 20px;">
-            <Label text="Ajouter un Espace Sportif" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label text="Modifier un Espace Sportif" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
 
             <GridPane hgap="10" vgap="10">
                 <Label text="Nom :" />
@@ -51,8 +45,9 @@
             </GridPane>
 
             <HBox spacing="10">
-                <Button text="Ajouter" fx:id="btnAjouter" />
+                <Button text="Modifier" fx:id="btnModifier" />
                 <Button text="Annuler" fx:id="btnAnnuler" />
+                <Button text="Retour" fx:id="btnRetour" />
             </HBox>
         </VBox>
     </HBox>

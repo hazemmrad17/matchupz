@@ -36,13 +36,6 @@ public class TransactionService implements IService<Transaction> {
                 return;
             }
 
-            // Validate date format
-            /*String formattedDate = formatDate(transaction.getDate());
-            if (formattedDate == null) {
-                System.out.println("Error: Invalid date format! Use YYYY-MM-DD.");
-                return;
-            }*/
-
             // Insert transaction
             PreparedStatement ps = this.connection.prepareStatement(insertQuery);
             ps.setInt(1, transaction.getId_contrat());
@@ -59,7 +52,7 @@ public class TransactionService implements IService<Transaction> {
 
     @Override
     public void modifier(Transaction transaction) {
-        String updateQuery = "UPDATE `transactions` SET `id_contrat`=?, `type`=?, `sommeArgent`=?, `Date`=?, `description`=? WHERE `id_transaction`=?";
+        String updateQuery = "UPDATE `transactions` SET `id_contrat`=?, `type`=?, `sommeArgent`=?, `Date`=?, `description`=? WHERE `Id_Transaction`=?";
 
         try {
             // Validate type
@@ -75,12 +68,6 @@ public class TransactionService implements IService<Transaction> {
                 return;
             }
 
-            // Validate date format
-            /*String formattedDate = formatDate(transaction.getDate());
-            if (formattedDate == null) {
-                System.out.println("Error: Invalid date format! Use YYYY-MM-DD.");
-                return;
-            }*/
 
             // Update transaction
             PreparedStatement ps = this.connection.prepareStatement(updateQuery);
@@ -99,16 +86,32 @@ public class TransactionService implements IService<Transaction> {
 
     @Override
     public void supprimer(Transaction transaction) {
-        String deleteQuery = "DELETE FROM `transactions` WHERE `id_transaction`=?";
+        // Log the ID to ensure it's being passed correctly
+        int transactionId = transaction.getId_transaction();
+        System.out.println("Attempting to delete transaction with ID: " + transactionId);
 
-        try {
-            PreparedStatement ps = this.connection.prepareStatement(deleteQuery);
-            ps.setInt(1, transaction.getId_transaction());
-            ps.executeUpdate();
-            System.out.println("Transaction deleted!");
+        // SQL delete query
+        String deleteQuery = "DELETE FROM transactions WHERE Id_Transaction = ?";
+
+        try (PreparedStatement ps = this.connection.prepareStatement(deleteQuery)) {
+            // Set the ID parameter for the query
+            ps.setInt(1, transactionId);
+
+            // Execute the delete statement
+            int rowsAffected = ps.executeUpdate();
+
+            // Check how many rows were affected and print debug info
+            if (rowsAffected > 0) {
+                System.out.println("Transaction with ID " + transactionId + " deleted successfully.");
+            } else {
+                System.out.println("No transaction found with ID " + transactionId);
+            }
         } catch (SQLException e) {
+            // Log any SQL exceptions
+            System.out.println("Error deleting transaction: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
 
     @Override

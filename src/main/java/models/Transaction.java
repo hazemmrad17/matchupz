@@ -10,11 +10,11 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(int idContrat, String type, float sommeArgent, String Date, String description) {
-        this.id_contrat = idContrat;
+    public Transaction(int id_contrat, String type, float sommeArgent, String date, String description) {
+        this.id_contrat = id_contrat;  // Ensure this is correctly set
         this.type = type;
         this.sommeArgent = sommeArgent;
-        this.Date = Date;
+        this.Date = date;
         this.description = description;
     }
 

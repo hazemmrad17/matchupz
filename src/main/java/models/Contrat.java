@@ -1,5 +1,8 @@
 package models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class Contrat {
     private int id_contrat;
     private int id_sponsor;
@@ -85,5 +88,22 @@ public class Contrat {
 
     public void setId_sponsor(int id_sponsor) {
         this.id_sponsor = id_sponsor;
+    }
+
+
+    public static String convertToDateFormat(String dateStr) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd"); // Input format (yyyy-MM-dd)
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy/MM/dd"); // Output format (yyyy/MM/dd)
+
+        try {
+            // Parse the input date
+            java.util.Date date = inputFormat.parse(dateStr);
+            // Convert to the new format
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            // If the date is invalid, return null or handle the error
+            System.out.println("Invalid date format: " + dateStr);
+            return null;
+        }
     }
 }

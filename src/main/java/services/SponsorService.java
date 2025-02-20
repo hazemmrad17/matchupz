@@ -144,4 +144,49 @@ public class SponsorService implements IService<Sponsor> {
         return sponsors;
     }
 
+    public boolean isSponsorNameExists(String nom) {
+        String checkNameQuery = "SELECT COUNT(*) FROM sponsors WHERE nom = ?";
+
+        try (PreparedStatement checkPs = this.connection.prepareStatement(checkNameQuery)) {
+            checkPs.setString(1, nom);
+            ResultSet rs = checkPs.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;  // Retourne vrai si un sponsor avec ce nom existe déjà
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification du nom du sponsor : " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public int getIdByName(String sponsorName) {
+        String query = "SELECT id_sponsor FROM sponsors WHERE nom = ?";
+        try {
+            PreparedStatement ps = this.connection.prepareStatement(query);
+            ps.setString(1, sponsorName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id_sponsor");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Retourne -1 si le sponsor n'est pas trouvé
+    }
+
+    public String getNameById(int idSponsor) {
+        String query = "SELECT nom FROM sponsors WHERE id_sponsor = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, idSponsor);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("nom");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

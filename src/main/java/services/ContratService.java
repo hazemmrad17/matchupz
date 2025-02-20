@@ -30,11 +30,6 @@ public class ContratService implements IService<Contrat> {
             checkPs.setString(1, contrat.getTitre());
             ResultSet rs = checkPs.executeQuery();
             rs.next();
-            int count = rs.getInt(1);
-            if (count > 0) {
-                System.out.println("Error: Le titre du contrat doit etre unique!");
-                return;
-            }
 
             // Validate dates
             String formattedDateDebut = formatDate(contrat.getDateDebut());
@@ -76,12 +71,6 @@ public class ContratService implements IService<Contrat> {
             checkPs.setInt(2, contrat.getId_contrat());
             ResultSet rs = checkPs.executeQuery();
             rs.next();
-            int count = rs.getInt(1);
-            if (count > 0) {
-                System.out.println("Error: Le titre du contrat doit être unique!");
-                return;
-            }
-
             // Validate dates
             String formattedDateDebut = formatDate(contrat.getDateDebut());
             String formattedDateFin = formatDate(contrat.getDateFin());

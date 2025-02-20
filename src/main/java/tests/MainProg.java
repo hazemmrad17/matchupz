@@ -17,7 +17,7 @@ public class MainProg {
         //ps.ajouter(new Sponsor("Comar", "70150140", "Silver"));
         //ps.ajouter(new Sponsor("unike", "12345678", "bronze"));
         //ps.supprimer(new Sponsor(1,"Delice", "71222470", "Gold"));
-        ps.modifier(new Sponsor(9 ,"esprit", "77120140", "bronze"));
+        //ps.modifier(new Sponsor(9 ,"esprit", "77120140", "bronze"));
         ps.rechercher();
 
 
@@ -27,10 +27,10 @@ public class MainProg {
 
         TransactionService ts = new TransactionService();
         LocalDate youm= LocalDate.now();
-        //ts.ajouter(new Transaction(1,"credit",4100, "2025/02/02","khlas esprit"));
+        ts.ajouter(new Transaction(1,"credit",9999, "2025/02/22","ti fok aad"));
         //ts.ajouter(new Transaction(1,"debit",8250, "2025/01/29","flousi y aalem"));
         //ts.modifier(new Transaction(1,2,"debit",8250, "2025/01/29","flousi y aalem"));
-        //ts.supprimer(new Transaction(3,1,"debit",8250, "2025/01/29","flousi y aalem"));
+        ts.supprimer(new Transaction(7,1,"debit",45006, "2025-02-20","lalalalala12"));
         ts.rechercher();
     }
 

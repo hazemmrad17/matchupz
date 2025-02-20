@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="609.0" prefWidth="820.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterSponsor">
+
+   <VBox alignment="CENTER" layoutX="100.0" layoutY="50.0" spacing="10" style="-fx-padding: 20px;" />
+   <HBox layoutY="7.0" spacing="10">
+      <children>
+         <VBox prefWidth="200" style="-fx-background-color: #d7e6eb; -fx-padding: 15px;">
+            <children>
+               <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 10px;" text="MATCHUPZ" />
+               <Button styleClass="menu-button" text="🏠 Utilisateur" />
+               <Button styleClass="menu-button" text="⚽ Joueur" />
+               <Button styleClass="menu-button" text="🏆 Matchs" />
+               <Button styleClass="menu-button" text="📍 EspaceSportif" />
+               <Button styleClass="menu-button" text="💰 Sponsoring" />
+            </children>
+         </VBox>
+         <TabPane prefHeight="622.0" prefWidth="709.0">
+            <tabs>
+               <Tab text="Ajouter Sponsor">
+                  <content>
+                     <AnchorPane>
+                        <children>
+                           <Label layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Ajouter/Modifier un sponsor" />
+                           <Label layoutX="36.0" layoutY="140.0" text="Pack" />
+                           <Button fx:id="btnAnnuler" layoutX="200.0" layoutY="197.0" styleClass="cancel-button" text="Annuler" />
+                           <TextField fx:id="tx_sponsor_nom" layoutX="96.0" layoutY="56.0" prefWidth="300" />
+                           <Button fx:id="btn_ajout_sponsor" layoutX="96.0" layoutY="197.0" onAction="#ajouterSponsor" styleClass="action-button" text="Ajouter" />
+                           <TextField fx:id="tx_sponsor_contact" layoutX="96.0" layoutY="96.0" prefWidth="300" />
+                           <ComboBox fx:id="tx_sponsor_pack" layoutX="96.0" layoutY="136.0" onAction="#initializer" prefWidth="300" promptText="Sélectionnez un pack" />
+                           <Label layoutX="25.0" layoutY="100.0" text="Contact :" />
+                           <Label layoutX="37.0" layoutY="57.0" text="Nom :" />
+                        </children>
+                     </AnchorPane>
+                  </content>
+               </Tab>
+               <Tab text="Liste des Sponsors">
+                  <content>
+                     <AnchorPane>
+                        <children>
+                           <Label layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Espaces Sportifs" />
+                           <TableView fx:id="tableViewSponsors" layoutX="20" layoutY="50" prefHeight="400" prefWidth="650">
+                              <columns>
+                                 <TableColumn fx:id="colNom" prefWidth="250.0" text="Nom" />
+                                 <TableColumn fx:id="colContact" prefWidth="250.0" text="Contact" />
+                                 <TableColumn fx:id="colPack" prefWidth="150.0" text="Pack" />
+                              </columns>
+                           </TableView>
+                           <Button fx:id="btnSupprimer" layoutX="20" layoutY="470" styleClass="delete-button" text="Supprimer" />
+                           <Button fx:id="btnModifier" layoutX="120" layoutY="470" styleClass="edit-button" text="Modifier" />
+                           <Button fx:id="btnActualiser" layoutX="220" layoutY="470" styleClass="refresh-button" text="Actualiser" />
+                        </children>
+                     </AnchorPane>
+                  </content>
+               </Tab>
+            </tabs>
+         </TabPane>
+      </children>
+   </HBox>
+
+</AnchorPane>

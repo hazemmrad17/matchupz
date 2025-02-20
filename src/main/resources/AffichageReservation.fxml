@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageReservation">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css"
+            xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.EspaceSportif.AffichageReservation">
 
     <HBox alignment="CENTER" spacing="10">
         <!-- Menu latéral -->
-        <VBox prefHeight="606.0" prefWidth="200" style="-fx-background-color: #d7e6eb; -fx-padding: 15px;">
+        <VBox prefHeight="600" prefWidth="200" style="-fx-background-color: #d7e6eb; -fx-padding: 15px;">
             <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 10px;" text="MATCHUPZ" />
 
             <Button fx:id="btnUtilisateur" styleClass="menu-button" text="🏠 Utilisateur" />
             <Button fx:id="btnJoueur" styleClass="menu-button" text="⚽ Joueur" />
             <Button fx:id="btnMatchs" styleClass="menu-button" text="🏆 Matchs" />
-            <Button fx:id="btnEspaceSportif" styleClass="menu-button" text="📍 Espace Sportif" />
-            <Button fx:id="btnReservation" styleClass="menu-button" text="📅 Réservations" />
+            <Button fx:id="btnEspaceSportifs" styleClass="menu-button" text="📍 Espace Sportif" onAction="#goToEspaceSportif" />
             <Button fx:id="btnSponsoring" styleClass="menu-button" text="💰 Sponsoring" />
         </VBox>
 
@@ -27,12 +23,20 @@
         <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20px;">
             <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Liste des Réservations" />
 
+            <!-- Champ de recherche avec icône 🔍 -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #5cb85c;" />
+                <TextField fx:id="searchField" promptText="Rechercher une réservation..." styleClass="search-field" />
+                <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnEspaceSportif" text="📍 Espaces Sportifs" onAction="#goToEspaceSportif" />
+            </HBox>
+
             <TableView fx:id="tableView" prefHeight="400" prefWidth="650">
                 <columns>
-                    <TableColumn fx:id="colIdReservation" minWidth="50" text="ID" />
-                    <TableColumn fx:id="colIdLieu" minWidth="100" text="ID Lieu" />
-                    <TableColumn fx:id="colDateReservee" minWidth="150" text="Date Réservée" />
-                    <TableColumn fx:id="colMotif" minWidth="200" text="Motif" />
+                    <TableColumn fx:id="colId" minWidth="50" text="ID" />
+                    <TableColumn fx:id="colLieu" minWidth="150" text="Lieu" />
+                    <TableColumn fx:id="colDate" minWidth="150" text="Date" />
+                    <TableColumn fx:id="colMotif" minWidth="150" text="Motif" />
                     <TableColumn fx:id="colStatus" minWidth="100" text="Statut" />
                     <TableColumn fx:id="colActions" minWidth="150" text="Actions" />
                 </columns>

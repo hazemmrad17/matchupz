@@ -192,7 +192,7 @@ public class AffichageEspace {
 
     @FXML
     private void goToEspaceSportif(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/EspaceSportif.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
         AnchorPane espaceSportifLayout = loader.load();
         Scene scene = new Scene(espaceSportifLayout);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -203,7 +203,7 @@ public class AffichageEspace {
     @FXML
     private void goToReservation(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageReservation.fxml"));
             AnchorPane reservationLayout = loader.load();
             Scene reservationScene = new Scene(reservationLayout);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

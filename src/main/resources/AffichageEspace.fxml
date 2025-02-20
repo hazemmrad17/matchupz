@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.Region?>
 <AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.EspaceSportif.AffichageEspace">
@@ -23,6 +24,7 @@
             <Button fx:id="btnMatchs" styleClass="menu-button" text="🏆 Matchs" />
             <Button fx:id="btnEspaceSportif" styleClass="menu-button" text="📍 Espace Sportif" />
             <Button fx:id="btnSponsoring" styleClass="menu-button" text="💰 Sponsoring" />
+
         </VBox>
 
         <!-- Contenu principal -->
@@ -33,6 +35,9 @@
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="🔍" style="-fx-font-size: 16px; -fx-text-fill: #5cb85c;" />
                 <TextField fx:id="searchField" promptText="Rechercher un espace sportif..." styleClass="search-field" />
+                <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnReservations" text="📅 Réservations" onAction="#goToReservation" />
+
             </HBox>
 
             <TableView fx:id="tableView" prefHeight="400" prefWidth="650">

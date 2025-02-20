@@ -1,6 +1,5 @@
 package services.EspaceSportif;
 
-import models.EspaceSportif.EspaceSportif;
 import models.EspaceSportif.Reservation;
 import utils.MyDatabase;
 import java.sql.*;
@@ -58,38 +57,31 @@ public class ReservationService implements EspaceService<Reservation> {
 
 
 
-    public List<Reservation> rechercher() {
-        List<Reservation> reservations = new ArrayList<>();
-        String query = "SELECT r.id_reservation, r.date_reservee, r.motif, r.status, " +
-                "l.id_lieu, l.nom_espace " +  // Récupère id et nom du lieu
-                "FROM reservation r " +
-                "JOIN espacesportif l ON r.id_lieu = l.id_lieu";
+public List<Reservation> rechercher() {
+    List<Reservation> reservations = new ArrayList<>();
+    String query = "SELECT r.id_reservation, r.date_reservee, r.motif, r.status, l.nom_espace AS nom_lieu " +
+                   "FROM reservation r " +
+                   "JOIN espacesportif l ON r.id_lieu = l.id_lieu";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Reservation res = new Reservation();
-                res.setIdReservation(rs.getInt("id_reservation"));
-                res.setDateReservee(rs.getTimestamp("date_reservee"));
-                res.setMotif(rs.getString("motif"));
-                res.setStatus(rs.getString("status"));
+        while (rs.next()) {
+            Reservation res = new Reservation();
+            res.setIdReservation(rs.getInt("id_reservation"));
+            res.setDateReservee(rs.getTimestamp("date_reservee"));
+            res.setMotif(rs.getString("motif"));
+            res.setStatus(rs.getString("status"));
+            res.setNomLieu(rs.getString("nom_lieu")); // Stocke le nom du lieu
 
-                // Créer un objet EspaceSportif et l’associer
-                EspaceSportif espace = new EspaceSportif();
-                espace.setIdLieu(rs.getInt("id_lieu"));
-                espace.setNomEspace(rs.getString("nom_espace"));
-
-                res.setEspaceSportif(espace); // Associe l'espace à la réservation
-
-                reservations.add(res);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            reservations.add(res);
         }
-        return reservations;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return reservations;
+}
 
 
 }

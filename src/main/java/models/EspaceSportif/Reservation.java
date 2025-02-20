@@ -1,13 +1,37 @@
 package models.EspaceSportif;
 
 import java.sql.Timestamp;
+import models.EspaceSportif.EspaceSportif;
 
 public class Reservation {
     private int idReservation;
     private int idLieu;
     private Timestamp dateReservee;
     private String motif;
+
     private String status;
+
+    private EspaceSportif espace;
+
+    public EspaceSportif getEspaceSportif() {
+        return espace;
+    }
+
+    public void setEspaceSportif (EspaceSportif espace) {
+        this.espace = espace;
+    }
+
+
+    private String nomLieu;
+
+    public String getNomLieu() {
+        return nomLieu;
+    }
+
+    public void setNomLieu(String nomLieu) {
+        this.nomLieu = nomLieu;
+    }
+
 
     public Reservation() {}
 

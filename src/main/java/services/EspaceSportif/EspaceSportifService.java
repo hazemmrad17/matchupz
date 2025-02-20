@@ -105,7 +105,6 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
         List<EspaceSportif> espacesSportifs = new ArrayList<>();
 
         try (PreparedStatement ps = connection.prepareStatement(req)) {
-            // Utilisation de LIKE avec % pour rechercher le mot-clé dans les colonnes
             ps.setString(1, "%" + motCle + "%");
             ps.setString(2, "%" + motCle + "%");
             ps.setString(3, "%" + motCle + "%");
@@ -118,16 +117,59 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
                     espaceSportif.setAdresse(rs.getString("adresse"));
                     espaceSportif.setCategorie(rs.getString("categorie"));
                     espaceSportif.setCapacite(rs.getFloat("capacite"));
-
                     espacesSportifs.add(espaceSportif);
                 }
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la récupération des espaces sportifs par mot-clé : " + e.getMessage());
-            e.printStackTrace();
         }
 
         return espacesSportifs;
+    }
+
+    public int getIdLieuByName(String nomLieu) {
+        String req = "SELECT id_lieu FROM espacesportif WHERE nom_espace = ?";
+        try (PreparedStatement ps = connection.prepareStatement(req)) {
+            ps.setString(1, nomLieu);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_lieu");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération de l'ID du lieu : " + e.getMessage());
+        }
+        return -1; // Retourne -1 si aucun ID trouvé
+    }
+    public List<String> getLieux() {
+        List<String> lieux = new ArrayList<>();
+        String req = "SELECT nom_espace FROM espacesportif";
+
+        try (PreparedStatement ps = connection.prepareStatement(req);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lieux.add(rs.getString("nom_espace"));
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération des lieux : " + e.getMessage());
+        }
+
+        return lieux;
+    }
+    public String getNomLieuById(int idLieu) {
+        String query = "SELECT nom_espace FROM espacesportif WHERE id_lieu = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, idLieu);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("nom");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -1,5 +1,8 @@
 package controllers.EspaceSportif;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Parent;
 import models.EspaceSportif.Reservation;
 import services.EspaceSportif.ReservationService;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,13 +28,13 @@ public class AffichageReservation {
     private TableView<Reservation> tableView;
 
     @FXML
-    private TableColumn<Reservation, Integer> colIdReservation;
+    private TableColumn<Reservation, Integer> colId;
 
     @FXML
-    private TableColumn<Reservation, Integer> colIdLieu;
+    private TableColumn<Reservation, String> colLieu;
 
     @FXML
-    private TableColumn<Reservation, Timestamp> colDateReservee;
+    private TableColumn<Reservation, Timestamp> colDate;
 
     @FXML
     private TableColumn<Reservation, String> colMotif;
@@ -43,6 +45,9 @@ public class AffichageReservation {
     @FXML
     private TableColumn<Reservation, String> colActions;
 
+    @FXML
+    private TextField searchField;
+
     private ReservationService reservationService;
 
     public AffichageReservation() {
@@ -51,24 +56,23 @@ public class AffichageReservation {
 
     @FXML
     public void initialize() {
-        if (tableView == null || colIdReservation == null) {
-            System.err.println("⚠ Erreur : Vérifie ton fichier FXML !");
-            return;
-        }
-
-        colIdReservation.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdReservation()).asObject());
-        colIdLieu.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdLieu()).asObject());
-        colDateReservee.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateReservee()));
+        colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdReservation()).asObject());
+        colLieu.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEspaceSportif().getNomEspace()));
+        //colLieu.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdLieu()).asObject());
+        colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateReservee()));
         colMotif.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMotif()));
         colStatus.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus()));
 
+
         addActionsColumn();
         loadReservations();
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> searchReservation(newValue));
     }
 
     private void loadReservations() {
         List<Reservation> reservations = reservationService.rechercher();
-        if (reservations == null || reservations.isEmpty()) {
+        if (reservations == null) {
             System.err.println("⚠ Aucune réservation trouvée !");
             return;
         }
@@ -102,22 +106,26 @@ public class AffichageReservation {
     }
 
     private void handleEdit(Reservation reservation) {
-        if (reservation == null) return;
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierReservation.fxml"));
-            AnchorPane modifReservationLayout = loader.load();
+            Parent modifLayout = loader.load();
 
             ModifierReservation controller = loader.getController();
-           // controller.setReservationToEdit(reservation);
+            controller.setReservationToEdit(reservation);
 
-            Scene currentScene = tableView.getScene();
-            currentScene.setRoot(modifReservationLayout);
+            Stage currentStage = (Stage) tableView.getScene().getWindow();
+            currentStage.close();
+
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(modifLayout));
+            newStage.setTitle("Modifier Réservation");
+            newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erreur lors du chargement de ModifierReservation.fxml");
         }
     }
+
 
     private void handleDelete(Reservation reservation) {
         if (reservation == null) return;
@@ -139,14 +147,14 @@ public class AffichageReservation {
         });
     }
 
-    @FXML
-    private void addReservation() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterReservation.fxml"));
-        Scene scene = new Scene(loader.load());
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("Ajouter une réservation");
-        stage.show();
+    private void searchReservation(String keyword) {
+        List<Reservation> searchResults = reservationService.rechercher().stream()
+                .filter(res -> res.getMotif().toLowerCase().contains(keyword.toLowerCase()) ||
+                        res.getStatus().toLowerCase().contains(keyword.toLowerCase()))
+                .toList();
+
+        ObservableList<Reservation> data = FXCollections.observableArrayList(searchResults);
+        tableView.setItems(data);
     }
 
     @FXML
@@ -155,12 +163,43 @@ public class AffichageReservation {
     }
 
     @FXML
-    private void goToReservation(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Reservation.fxml"));
-        AnchorPane reservationLayout = loader.load();
-        Scene scene = new Scene(reservationLayout);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+    private void goToEspaceSportif(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+            AnchorPane espaceSportifLayout = loader.load();
+            Scene scene = new Scene(espaceSportifLayout);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors du chargement de AffichageEspace.fxml");
+        }
     }
+
+
+    @FXML
+    private void addReservation(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterReservation.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter une Réservation");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page AjouterReservation.");
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+
 }

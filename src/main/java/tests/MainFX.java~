@@ -11,7 +11,7 @@ public class MainFX extends Application {
     public void start(Stage stage) {
         try {
             // Charger le fichier FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterEspace.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
             Parent root = loader.load();
 
             // Définition de la scène

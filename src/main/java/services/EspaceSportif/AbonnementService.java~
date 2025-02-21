@@ -16,7 +16,7 @@ public class AbonnementService {
     public void ajouter(Abonnement abonnement) throws SQLException {
         String sql = "INSERT INTO abonnement (idSport, type_abonnement, date_debut, date_fin, tarif, etat) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, abonnement.getIdSport());
+        stmt.setInt(1, abonnement.getId());
         stmt.setString(2, abonnement.getTypeAbonnement());
         stmt.setDate(3, new java.sql.Date(abonnement.getDateDebut().getTime()));
         stmt.setDate(4, new java.sql.Date(abonnement.getDateFin().getTime()));
@@ -26,15 +26,14 @@ public class AbonnementService {
     }
 
     public void modifier(Abonnement abonnement) throws SQLException {
-        String sql = "UPDATE abonnement SET idSport=?, type_abonnement=?, date_debut=?, date_fin=?, tarif=?, etat=? WHERE id_abonnement=?";
+        String sql = "UPDATE abonnement SET type_abonnement=?, date_debut=?, date_fin=?, tarif=?, etat=? WHERE id_abonnement=?";
         PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, abonnement.getIdSport());
-        stmt.setString(2, abonnement.getTypeAbonnement());
-        stmt.setDate(3, new java.sql.Date(abonnement.getDateDebut().getTime()));
-        stmt.setDate(4, new java.sql.Date(abonnement.getDateFin().getTime()));
-        stmt.setDouble(5, abonnement.getTarif());
-        stmt.setString(6, abonnement.getEtat());
-        stmt.setInt(7, abonnement.getIdAbonnement());
+        stmt.setString(1, abonnement.getTypeAbonnement());
+        stmt.setDate(2, new java.sql.Date(abonnement.getDateDebut().getTime()));
+        stmt.setDate(3, new java.sql.Date(abonnement.getDateFin().getTime()));
+        stmt.setDouble(4, abonnement.getTarif());
+        stmt.setString(5, abonnement.getEtat());
+        stmt.setInt(6, abonnement.getIdAbonnement());
         stmt.executeUpdate();
     }
 
@@ -50,7 +49,6 @@ public class AbonnementService {
         String sql = "SELECT * FROM abonnement";
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
-
         while (rs.next()) {
             Abonnement abonnement = new Abonnement(
                     rs.getInt("idSport"),

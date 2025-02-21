@@ -499,13 +499,13 @@ VBox > HBox {
 
 .form-button {
     -fx-font-family: "Montserrat SemiBold";
-    -fx-font-size: 12px; /* Reduced from 16px for smaller buttons */
+    -fx-font-size: 12px; /* Minimized size consistent with previous forms */
     -fx-text-fill: #ffffff;
-    -fx-background-radius: 8px; /* Reduced from 12px for a tighter look */
+    -fx-background-radius: 8px;
     -fx-border-radius: 8px;
-    -fx-padding: 6px 15px; /* Reduced from 10px 25px for smaller size */
+    -fx-padding: 6px 15px; /* Minimized padding */
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2); /* Lighter shadow */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
     -fx-transition: -fx-background-color 0.3s ease-in-out, -fx-scale-x 0.2s ease-in-out, -fx-scale-y 0.2s ease-in-out;
 }
 

@@ -14,10 +14,14 @@ public class FXMain extends Application {
         launch(args);
     }
 
+
+
+
+
     @Override
     public void start(Stage primaryStage) {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaceA.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/interfaceA.fxml"));
         try {
             Parent root = loader.load();
 
@@ -25,6 +29,7 @@ public class FXMain extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Ajouter");
+            primaryStage.setResizable(true);
             primaryStage.show();}
         catch (RuntimeException | IOException r){
             System.out.println(r.getMessage());

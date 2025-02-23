@@ -5,11 +5,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import models.Role;
-import models.User;
-import utils.MyDataSource;
-import services.UserService;
-
 import java.io.IOException;
 
 public class MainUser extends Application {
@@ -19,7 +14,7 @@ public class MainUser extends Application {
 
 
     public void start(Stage stage)  {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sign-up.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/sign-up.fxml"));
         try {
             Parent root = loader.load();
 

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1114.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScheduleController">
+    <children>
+        <AnchorPane fx:id="main_form" prefHeight="200.0" prefWidth="200.0">
+            <children>
+                <BorderPane layoutX="79.0" layoutY="100.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <left>
+                        <AnchorPane prefHeight="555.0" prefWidth="211.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane prefHeight="555.0" prefWidth="207.0" styleClass="nav-form" stylesheets="@./dashboardDesign.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
+                                        <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@./dashboardDesign.css">
+                                            <styleClass>
+                                                <String fx:value="logout" />
+                                                <String fx:value="shadow" />
+                                            </styleClass>
+                                            <graphic>
+                                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@/images/logout_w.png" />
+                                                    </image>
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
+                                        <Label layoutX="91.0" layoutY="515.0" prefHeight="29.0" prefWidth="100.0" text="LOGOUT" textFill="WHITE">
+                                            <font>
+                                                <Font name="Montserrat ExtraBold" size="15.0" />
+                                            </font>
+                                        </Label>
+                                        <Accordion layoutX="-1.0" layoutY="189.0" prefHeight="250.0" prefWidth="200.0">
+                                            <panes>
+                                                <TitledPane animated="false" prefHeight="242.0" prefWidth="177.0" text="Home" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Montserrat ExtraBold" size="12.0" />
+                                                    </font>
+                                                    <content>
+                                                        <VBox alignment="CENTER" spacing="0">
+                                                            <children>
+                                                                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Overview">
+                                                                    <font>
+                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                    </font>
+                                                                </Button>
+                                                                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="60.0" prefWidth="140.0" styleClass="accordion-button" text="Statistics">
+                                                                    <font>
+                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                    </font>
+                                                                </Button>
+                                                            </children>
+                                                        </VBox>
+                                                    </content>
+                                                </TitledPane>
+                                                <TitledPane animated="false" prefHeight="242.0" prefWidth="177.0" text="Match Management" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Montserrat ExtraBold" size="12.0" />
+                                                    </font>
+                                                    <content>
+                                                        <VBox alignment="CENTER" spacing="0">
+                                                            <children>
+                                                                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Add Match">
+                                                                    <font>
+                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                    </font>
+                                                                </Button>
+                                                                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Match Results">
+                                                                    <font>
+                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                    </font>
+                                                                </Button>
+                                                            </children>
+                                                        </VBox>
+                                                    </content>
+                                                </TitledPane>
+                                                <TitledPane animated="false" prefHeight="242.0" prefWidth="177.0" text="Teams" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Montserrat ExtraBold" size="12.0" />
+                                                    </font>
+                                                    <content>
+                                                        <VBox alignment="CENTER" spacing="0">
+                                                            <children>
+                                                                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Manage Teams">
+                                                                    <font>
+                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                    </font>
+                                                                </Button>
+                                                            </children>
+                                                        </VBox>
+                                                    </content>
+                                                </TitledPane>
+                                            </panes>
+                                        </Accordion>
+                                        <AnchorPane layoutX="6.0" layoutY="14.0" prefHeight="155.0" prefWidth="200.0">
+                                            <children>
+                                                <ImageView fitHeight="41.0" fitWidth="184.0" layoutX="8.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@/images/logo_horizantal.png" />
+                                                    </image>
+                                                </ImageView>
+                                                <Label alignment="CENTER" layoutY="69.0" prefHeight="38.0" prefWidth="200.0" text="Welcome," textAlignment="CENTER" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Comic Sans MS" size="29.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label alignment="CENTER" layoutY="101.0" prefHeight="38.0" prefWidth="200.0" text="User" textAlignment="CENTER" textFill="WHITE">
+                                                    <font>
+                                                        <Font name="Comic Sans MS Bold" size="35.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </left>
+                    <center>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="-13.6" prefHeight="600.0" prefWidth="916.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@./dashboardDesign.css">
+                                            <styleClass>
+                                                <String fx:value="white-bg" />
+                                                <String fx:value="shadow" />
+                                            </styleClass>
+                                            <children>
+                                                <TabPane fx:id="tabPane" layoutX="13.0" layoutY="19.0" prefHeight="551.0" prefWidth="853.0" tabClosingPolicy="UNAVAILABLE">
+                                                    <tabs>
+                                                        <Tab text="Matches">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
+                                                                    <children>
+                                                                        <TextField fx:id="searchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher un match (ex: RMD)" />
+                                                                        <TableView fx:id="tableViewMatches" layoutX="1.0" layoutY="50.0" prefHeight="278.0" prefWidth="832.0">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="colId" prefWidth="100.0" text="ID Match" maxWidth="100.0" minWidth="100.0" />
+                                                                                <TableColumn fx:id="colC1" prefWidth="180.0" text="Team 1" maxWidth="180.0" minWidth="180.0" />
+                                                                                <TableColumn fx:id="colC2" prefWidth="180.0" text="Team 2" maxWidth="180.0" minWidth="180.0" />
+                                                                                <TableColumn fx:id="colSportType" prefWidth="180.0" text="Sport Type" maxWidth="180.0" minWidth="180.0" />
+                                                                                <TableColumn fx:id="colActions" prefWidth="184.0" text="Actions" maxWidth="184.0" minWidth="184.0" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                        <AnchorPane layoutY="335.0" prefHeight="177.0" prefWidth="830.0">
+                                                                            <children>
+                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@./dashboardDesign.css">
+                                                                                    <children>
+                                                                                        <Button fx:id="addMatchButton" layoutX="58.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddMatchButton" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Add Match" />
+                                                                                        <Button fx:id="exportMatchesButton" layoutX="58.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportMatches" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Export Matches" />
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab text="Schedules">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
+                                                                    <children>
+                                                                        <TextField fx:id="scheduleSearchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher un programme (ex: RMD, rades)" />
+                                                                        <TableView fx:id="tableViewSchedules" layoutX="1.0" layoutY="50.0" prefHeight="278.0" prefWidth="832.0">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="colIdSchedule" prefWidth="80.0" text="ID Schedule" maxWidth="80.0" minWidth="80.0" />
+                                                                                <TableColumn fx:id="colDateMatch" prefWidth="120.0" text="Date" maxWidth="120.0" minWidth="120.0" />
+                                                                                <TableColumn fx:id="colStartTime" prefWidth="100.0" text="Start Time" maxWidth="100.0" minWidth="100.0" />
+                                                                                <TableColumn fx:id="colEndTime" prefWidth="100.0" text="End Time" maxWidth="100.0" minWidth="100.0" />
+                                                                                <TableColumn fx:id="colMatchTeams" prefWidth="140.0" text="Teams" maxWidth="140.0" minWidth="140.0" />
+                                                                                <TableColumn fx:id="colLieuName" prefWidth="120.0" text="Lieu" maxWidth="120.0" minWidth="120.0" />
+                                                                                <TableColumn fx:id="colActionsSchedule" prefWidth="150.0" text="Actions" maxWidth="150.0" minWidth="150.0" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                        <AnchorPane layoutY="335.0" prefHeight="177.0" prefWidth="830.0">
+                                                                            <children>
+                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@./dashboardDesign.css">
+                                                                                    <children>
+                                                                                        <Button fx:id="addScheduleButton" layoutX="50.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddScheduleButton" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Add Schedule" />
+                                                                                        <Button fx:id="exportSchedulesButton" layoutX="50.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportSchedules" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Export Schedules" />
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </AnchorPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

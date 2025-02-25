@@ -19,7 +19,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1114.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ScheduleController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1114.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MatchSchedule.ScheduleController">
     <children>
         <AnchorPane fx:id="main_form" prefHeight="200.0" prefWidth="200.0">
             <children>
@@ -27,10 +27,10 @@
                     <left>
                         <AnchorPane prefHeight="555.0" prefWidth="211.0" BorderPane.alignment="CENTER">
                             <children>
-                                <AnchorPane prefHeight="555.0" prefWidth="207.0" styleClass="nav-form" stylesheets="@./dashboardDesign.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <AnchorPane prefHeight="555.0" prefWidth="207.0" styleClass="nav-form" stylesheets="@../dashboardDesign.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
-                                        <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@./dashboardDesign.css">
+                                        <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@../dashboardDesign.css">
                                             <styleClass>
                                                 <String fx:value="logout" />
                                                 <String fx:value="shadow" />
@@ -139,7 +139,7 @@
                             <children>
                                 <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="-13.6" prefHeight="600.0" prefWidth="916.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@./dashboardDesign.css">
+                                        <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@../dashboardDesign.css">
                                             <styleClass>
                                                 <String fx:value="white-bg" />
                                                 <String fx:value="shadow" />
@@ -151,22 +151,22 @@
                                                             <content>
                                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
                                                                     <children>
-                                                                        <TextField fx:id="searchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher un match (ex: RMD)" />
+                                                                        <TextField fx:id="searchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="832.0" promptText="Rechercher un match :" />
                                                                         <TableView fx:id="tableViewMatches" layoutX="1.0" layoutY="50.0" prefHeight="278.0" prefWidth="832.0">
                                                                             <columns>
-                                                                                <TableColumn fx:id="colId" prefWidth="100.0" text="ID Match" maxWidth="100.0" minWidth="100.0" />
-                                                                                <TableColumn fx:id="colC1" prefWidth="180.0" text="Team 1" maxWidth="180.0" minWidth="180.0" />
-                                                                                <TableColumn fx:id="colC2" prefWidth="180.0" text="Team 2" maxWidth="180.0" minWidth="180.0" />
-                                                                                <TableColumn fx:id="colSportType" prefWidth="180.0" text="Sport Type" maxWidth="180.0" minWidth="180.0" />
-                                                                                <TableColumn fx:id="colActions" prefWidth="184.0" text="Actions" maxWidth="184.0" minWidth="184.0" />
+                                                                                <TableColumn fx:id="colId" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="ID Match" />
+                                                                                <TableColumn fx:id="colC1" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" text="Equipe 1" />
+                                                                                <TableColumn fx:id="colC2" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" text="Equipe 2" />
+                                                                                <TableColumn fx:id="colSportType" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" text="Type du sport" />
+                                                                                <TableColumn fx:id="colActions" maxWidth="184.0" minWidth="184.0" prefWidth="184.0" text="Actions" />
                                                                             </columns>
                                                                         </TableView>
                                                                         <AnchorPane layoutY="335.0" prefHeight="177.0" prefWidth="830.0">
                                                                             <children>
-                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@./dashboardDesign.css">
+                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../dashboardDesign.css">
                                                                                     <children>
-                                                                                        <Button fx:id="addMatchButton" layoutX="58.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddMatchButton" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Add Match" />
-                                                                                        <Button fx:id="exportMatchesButton" layoutX="58.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportMatches" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Export Matches" />
+                                                                                        <Button fx:id="addMatchButton" layoutX="58.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddMatchButton" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Ajouter Match" />
+                                                                                        <Button fx:id="exportMatchesButton" layoutX="58.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportMatches" prefHeight="35.0" prefWidth="144.0" styleClass="btn-primary" text="Export Matchss" />
                                                                                     </children>
                                                                                     <styleClass>
                                                                                         <String fx:value="card" />
@@ -183,29 +183,57 @@
                                                             <content>
                                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
                                                                     <children>
-                                                                        <TextField fx:id="scheduleSearchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher un programme (ex: RMD, rades)" />
+                                                                        <TextField fx:id="scheduleSearchField" layoutX="1.0" layoutY="10.0" prefHeight="30.0" prefWidth="832.0" promptText="Rechercher un programme :" />
                                                                         <TableView fx:id="tableViewSchedules" layoutX="1.0" layoutY="50.0" prefHeight="278.0" prefWidth="832.0">
                                                                             <columns>
-                                                                                <TableColumn fx:id="colIdSchedule" prefWidth="80.0" text="ID Schedule" maxWidth="80.0" minWidth="80.0" />
-                                                                                <TableColumn fx:id="colDateMatch" prefWidth="120.0" text="Date" maxWidth="120.0" minWidth="120.0" />
-                                                                                <TableColumn fx:id="colStartTime" prefWidth="100.0" text="Start Time" maxWidth="100.0" minWidth="100.0" />
-                                                                                <TableColumn fx:id="colEndTime" prefWidth="100.0" text="End Time" maxWidth="100.0" minWidth="100.0" />
-                                                                                <TableColumn fx:id="colMatchTeams" prefWidth="140.0" text="Teams" maxWidth="140.0" minWidth="140.0" />
-                                                                                <TableColumn fx:id="colLieuName" prefWidth="120.0" text="Lieu" maxWidth="120.0" minWidth="120.0" />
-                                                                                <TableColumn fx:id="colActionsSchedule" prefWidth="150.0" text="Actions" maxWidth="150.0" minWidth="150.0" />
+                                                                                <TableColumn fx:id="colIdSchedule" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="ID Planning" />
+                                                                                <TableColumn fx:id="colDateMatch" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Date" />
+                                                                                <TableColumn fx:id="colStartTime" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="H.début" />
+                                                                                <TableColumn fx:id="colEndTime" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="H.fin" />
+                                                                                <TableColumn fx:id="colMatchTeams" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="Match" />
+                                                                                <TableColumn fx:id="colLieuName" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" text="Lieu" />
+                                                                                <TableColumn fx:id="colActionsSchedule" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Actions" />
                                                                             </columns>
                                                                         </TableView>
                                                                         <AnchorPane layoutY="335.0" prefHeight="177.0" prefWidth="830.0">
                                                                             <children>
-                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@./dashboardDesign.css">
+                                                                                <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../dashboardDesign.css">
                                                                                     <children>
-                                                                                        <Button fx:id="addScheduleButton" layoutX="50.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddScheduleButton" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Add Schedule" />
-                                                                                        <Button fx:id="exportSchedulesButton" layoutX="50.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportSchedules" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Export Schedules" />
+                                                                                        <Button fx:id="addScheduleButton" layoutX="50.0" layoutY="28.0" mnemonicParsing="false" onAction="#handleAddScheduleButton" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Ajouter planning" />
+                                                                                        <Button fx:id="exportSchedulesButton" layoutX="50.0" layoutY="70.0" mnemonicParsing="false" onAction="#handleExportSchedules" prefHeight="35.0" prefWidth="164.0" styleClass="btn-primary" text="Export plannings" />
                                                                                     </children>
                                                                                     <styleClass>
                                                                                         <String fx:value="card" />
                                                                                         <String fx:value="shadow" />
                                                                                     </styleClass>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane layoutX="290.0" layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../dashboardDesign.css">
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                    <children>
+                                                                                        <Label layoutX="21.0" layoutY="28.0" prefHeight="22.0" prefWidth="130.0" text="Matches non joués :" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font size="14.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label layoutX="22.0" layoutY="81.0" prefHeight="22.0" prefWidth="101.0" text="Matches joués :" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font size="14.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label fx:id="unplayedMatchesLabel" layoutX="169.0" layoutY="23.0" text="20" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Franklin Gothic Heavy" size="24.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label fx:id="playedMatchesLabel" layoutX="170.0" layoutY="77.0" text="25" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Franklin Gothic Heavy" size="24.0" />
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                    </children>
                                                                                 </AnchorPane>
                                                                             </children>
                                                                         </AnchorPane>

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.MatchSchedule;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
@@ -28,14 +28,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import java.io.IOException;
 
 public class ScheduleController {
     @FXML
@@ -128,6 +127,11 @@ public class ScheduleController {
     @FXML
     private TextField scheduleSearchField; // Schedule search field
 
+    @FXML
+    private Label unplayedMatchesLabel; // Label for unplayed matches count
+    @FXML
+    private Label playedMatchesLabel;    // Label for played matches count
+
     private final ScheduleService scheduleService = new ScheduleService();
     private ObservableList<Schedule> scheduleList = FXCollections.observableArrayList();
     private ObservableList<Schedule> filteredScheduleList = FXCollections.observableArrayList();
@@ -160,8 +164,8 @@ public class ScheduleController {
             colC2.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getC2()));
             colSportType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSportType()));
             colActions.setCellFactory(param -> new TableCell<>() {
-                private final Button btnModifier = new Button("✏");
-                private final Button btnSupprimer = new Button("🗑");
+                private final Button btnModifier = new Button("Modifier");
+                private final Button btnSupprimer = new Button("Supprimer");
                 private final HBox container = new HBox(10, btnModifier, btnSupprimer);
 
                 {
@@ -182,18 +186,13 @@ public class ScheduleController {
                 searchField.textProperty().addListener((observable, oldValue, newValue) -> filterMatches(newValue));
             }
         }
+
         if (exportMatchesButton != null) {
             exportMatchesButton.setDisable(tableViewMatches.getItems().isEmpty());
             tableViewMatches.getItems().addListener((javafx.collections.ListChangeListener<Match>) change -> {
                 exportMatchesButton.setDisable(tableViewMatches.getItems().isEmpty());
             });
         }
-        /*if (exportSchedulesButton != null) {
-            exportSchedulesButton.setDisable(tableViewSchedules.getItems().isEmpty());
-            tableViewSchedules.getItems().addListener((javafx.collections.ListChangeListener<Schedule>) change -> {
-                exportSchedulesButton.setDisable(tableViewSchedules.getItems().isEmpty());
-            });
-        }*/
 
         if (tableViewSchedules != null) {
             colIdSchedule.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdSchedule()).asObject());
@@ -217,8 +216,8 @@ public class ScheduleController {
                 return new SimpleStringProperty(espace != null ? espace.getNomEspace() : "N/A");
             });
             colActionsSchedule.setCellFactory(param -> new TableCell<>() {
-                private final Button btnModifier = new Button("✏");
-                private final Button btnSupprimer = new Button("🗑");
+                private final Button btnModifier = new Button("Modifier");
+                private final Button btnSupprimer = new Button("Supprimer");
                 private final HBox container = new HBox(10, btnModifier, btnSupprimer);
 
                 {
@@ -232,12 +231,46 @@ public class ScheduleController {
                     setGraphic(empty ? null : container);
                 }
             });
+
+            // Add rowFactory to color rows based on schedule status
+            tableViewSchedules.setRowFactory(tv -> new TableRow<Schedule>() {
+                @Override
+                protected void updateItem(Schedule schedule, boolean empty) {
+                    super.updateItem(schedule, empty);
+                    if (empty || schedule == null) {
+                        setStyle(""); // Clear style if row is empty
+                    } else {
+                        LocalDateTime now = LocalDateTime.now();
+                        LocalDateTime startTime = LocalDateTime.of(schedule.getDateMatch(), schedule.getStartTime());
+                        LocalDateTime endTime = LocalDateTime.of(schedule.getDateMatch(), schedule.getEndTime());
+
+                        if (now.isAfter(startTime) && now.isBefore(endTime)) {
+                            // Color the row light green if current time is between startTime and endTime
+                            setStyle("-fx-background-color: #90EE90;"); // Light green
+                        } else if (now.isAfter(endTime)) {
+                            // Color the row light red if the schedule has already ended
+                            setStyle("-fx-background-color: #FF6E6E;"); // Light salmon (light red)
+                        } else {
+                            // No color (default style) if not active or not finished
+                            setStyle("");
+                        }
+                    }
+                }
+            });
+
             loadSchedules();
             tableViewSchedules.setItems(filteredScheduleList);
 
             if (scheduleSearchField != null) {
                 scheduleSearchField.textProperty().addListener((observable, oldValue, newValue) -> filterSchedules(newValue));
             }
+        }
+
+        if (exportSchedulesButton != null) {
+            exportSchedulesButton.setDisable(tableViewSchedules.getItems().isEmpty());
+            tableViewSchedules.getItems().addListener((javafx.collections.ListChangeListener<Schedule>) change -> {
+                exportSchedulesButton.setDisable(tableViewSchedules.getItems().isEmpty());
+            });
         }
 
         if (spinnerStartTime != null) {
@@ -335,6 +368,11 @@ public class ScheduleController {
                 }
             });
         }
+
+        // Check if labels exist before updating counts to avoid NPE
+        if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+            updateMatchCounts();
+        }
     }
 
     private void loadEspaceSportifsFromDB() {
@@ -374,8 +412,8 @@ public class ScheduleController {
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur de base de données", "Impossible de charger les matchs : " + e.getMessage());
         }
-
     }
+
     @FXML
     private void handleExportMatches() {
         ObservableList<Match> matches = tableViewMatches.getItems();
@@ -388,30 +426,20 @@ public class ScheduleController {
 
         try {
             Document document = new Document();
-            // Keep the spacious margins
-            document.setMargins(20, 20, 20, 20); // Left, Right, Top, Bottom
+            document.setMargins(20, 20, 20, 20);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
-
-            // Set the page event for the stylized border
             writer.setPageEvent(new BorderEvent());
-
             document.open();
 
-            // 1. Add bold title
             Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK);
             Paragraph title = new Paragraph("Liste des Matchs", boldFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
-            document.add(new Paragraph(" ")); // Spacing after title
+            document.add(new Paragraph(" "));
 
-            // 2. Create table with deep green headers
-            PdfPTable pdfTable = new PdfPTable(4); // 4 columns
+            PdfPTable pdfTable = new PdfPTable(4);
             pdfTable.setWidthPercentage(100);
-
-            // Define deep green color (RGB: 0, 100, 0)
             BaseColor deepGreen = new BaseColor(0, 100, 0);
-
-            // Add header cells with deep green background
             String[] headers = {"ID Match", "Équipe 1", "Équipe 2", "Type de Sport"};
             for (String header : headers) {
                 PdfPCell headerCell = new PdfPCell(new Paragraph(header));
@@ -421,7 +449,6 @@ public class ScheduleController {
                 pdfTable.addCell(headerCell);
             }
 
-            // Populate the table with match data
             for (Match match : matches) {
                 pdfTable.addCell(String.valueOf(match.getIdMatch()));
                 pdfTable.addCell(match.getC1());
@@ -430,11 +457,8 @@ public class ScheduleController {
             }
 
             document.add(pdfTable);
+            document.add(new Paragraph(" "));
 
-            // 3. Add footer with right-aligned text and centered logo
-            document.add(new Paragraph(" ")); // Spacing before footer
-
-            // Right-aligned text
             Paragraph footer1 = new Paragraph("Gestion des Match et Planification");
             footer1.setAlignment(Element.ALIGN_RIGHT);
             document.add(footer1);
@@ -443,11 +467,10 @@ public class ScheduleController {
             footer2.setAlignment(Element.ALIGN_RIGHT);
             document.add(footer2);
 
-            // Add the logo centered at the bottom
-            document.add(new Paragraph(" ")); // Spacing before logo
-            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantal.png");
+            document.add(new Paragraph(" "));
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpeg");
             if (inputStream == null) {
-                throw new IOException("Image resource not found: /images/logo_horizantal.png");
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpeg");
             }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -458,7 +481,7 @@ public class ScheduleController {
             inputStream.close();
             byte[] imageBytes = baos.toByteArray();
             Image logo = Image.getInstance(imageBytes);
-            logo.scaleToFit(184, 41); // Match FXML size, adjust if needed
+            logo.scaleToFit(184, 41);
             logo.setAlignment(Element.ALIGN_CENTER);
             document.add(logo);
 
@@ -471,26 +494,19 @@ public class ScheduleController {
         }
     }
 
-    // Nested class to handle the stylized page border
     private static class BorderEvent extends PdfPageEventHelper {
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
             PdfContentByte cb = writer.getDirectContent();
-            // Define a more yellowish color (RGB: 255, 204, 0 - golden yellow)
             cb.setColorStroke(new BaseColor(255, 204, 0));
-            cb.setLineWidth(2f); // Border thickness
-
-            // Make it a dashed line for stylization
-            cb.setLineDash(5f, 3f); // 5pt dash, 3pt gap
-
-            // Keep the larger border size
+            cb.setLineWidth(2f);
+            cb.setLineDash(5f, 3f);
             Rectangle pageSize = document.getPageSize();
-            float margin = 10; // 10pt from edges
+            float margin = 10;
             float left = margin;
             float right = pageSize.getWidth() - margin;
             float top = pageSize.getHeight() - margin;
             float bottom = margin;
-
             cb.rectangle(left, bottom, right - left, top - bottom);
             cb.stroke();
         }
@@ -513,18 +529,16 @@ public class ScheduleController {
             writer.setPageEvent(new BorderEvent());
             document.open();
 
-            // 1. Add bold title
             Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK);
             Paragraph title = new Paragraph("Liste des Programmes", boldFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph(" "));
 
-            // 2. Create table with deep green headers (6 columns instead of 7)
-            PdfPTable pdfTable = new PdfPTable(6);  // Changed from 7 to 6
+            PdfPTable pdfTable = new PdfPTable(6);
             pdfTable.setWidthPercentage(100);
             BaseColor deepGreen = new BaseColor(0, 100, 0);
-            String[] headers = {"ID Schedule", "Date", "Heure Début", "Heure Fin", "Équipes", "Lieu"};  // Removed "Actions"
+            String[] headers = {"ID Schedule", "Date", "Heure Début", "Heure Fin", "Équipes", "Lieu"};
             for (String header : headers) {
                 PdfPCell headerCell = new PdfPCell(new Paragraph(header));
                 headerCell.setBackgroundColor(deepGreen);
@@ -533,7 +547,6 @@ public class ScheduleController {
                 pdfTable.addCell(headerCell);
             }
 
-            // Populate the table with schedule data (removed Actions column)
             for (Schedule schedule : schedules) {
                 pdfTable.addCell(String.valueOf(schedule.getIdSchedule()));
                 pdfTable.addCell(schedule.getDateMatch().toString());
@@ -549,13 +562,11 @@ public class ScheduleController {
                         .findFirst()
                         .orElse(null);
                 pdfTable.addCell(espace != null ? espace.getNomEspace() : "N/A");
-                // Removed the empty Actions cell
             }
 
             document.add(pdfTable);
             document.add(new Paragraph(" "));
 
-            // 3. Add footer with right-aligned text and centered logo
             Paragraph footer1 = new Paragraph("Gestion des Match et Planification");
             footer1.setAlignment(Element.ALIGN_RIGHT);
             document.add(footer1);
@@ -565,9 +576,9 @@ public class ScheduleController {
             document.add(footer2);
 
             document.add(new Paragraph(" "));
-            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantal.png");
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpeg");
             if (inputStream == null) {
-                throw new IOException("Image resource not found: /images/logo_horizantal.png");
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpeg");
             }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -601,6 +612,10 @@ public class ScheduleController {
         scheduleList.clear();
         scheduleList.addAll(scheduleService.rechercher());
         filterSchedules(""); // Initially show all schedules
+        // Check if labels exist before updating counts to avoid NPE
+        if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+            updateMatchCounts();
+        }
     }
 
     private void filterMatches(String searchText) {
@@ -624,7 +639,6 @@ public class ScheduleController {
             String lowerSearchText = searchText.trim().toLowerCase();
             filteredScheduleList.addAll(scheduleList.stream()
                     .filter(schedule -> {
-                        // Check Teams (C1 or C2 from linked match)
                         Match match = matchFKList.stream()
                                 .filter(m -> m.getIdMatch() == schedule.getIdMatchFK())
                                 .findFirst()
@@ -633,7 +647,6 @@ public class ScheduleController {
                                 (match.getC1().toLowerCase().contains(lowerSearchText) ||
                                         match.getC2().toLowerCase().contains(lowerSearchText));
 
-                        // Check Lieu
                         EspaceSportif espace = espaceSportifList.stream()
                                 .filter(e -> e.getIdLieu() == schedule.getIdLieu())
                                 .findFirst()
@@ -713,7 +726,11 @@ public class ScheduleController {
             matchList.remove(match);
             loadMatchesForFK();
             filterMatches(searchField != null ? searchField.getText() : "");
-            filterSchedules(scheduleSearchField != null ? scheduleSearchField.getText() : ""); // Refresh schedules too
+            filterSchedules(scheduleSearchField != null ? scheduleSearchField.getText() : "");
+            // Check if labels exist before updating counts
+            if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+                updateMatchCounts();
+            }
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Match et " + schedulesToDelete.size() + " programme(s) associé(s) supprimé(s) !");
         }
     }
@@ -721,7 +738,7 @@ public class ScheduleController {
     private void remplirChampsPourModification(Match match) {
         selectedMatch = match;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditMatch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/EditMatch.fxml"));
             Parent root = loader.load();
             ScheduleController editController = loader.getController();
             editController.textFieldC1.setText(match.getC1());
@@ -783,6 +800,13 @@ public class ScheduleController {
         LocalTime startTime = spinnerStartTime.getValue();
         LocalTime endTime = spinnerEndTime.getValue();
 
+        // Check if the selected date is in the past
+        LocalDate now = LocalDate.now();
+        if (dateMatch.isBefore(now)) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Vous ne pouvez pas ajouter un programme avec une date passée (avant aujourd'hui) !");
+            return;
+        }
+
         Match selectedMatchFK = comboBoxIdMatchFK.getValue();
         if (selectedMatchFK == null) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez sélectionner un match !");
@@ -810,6 +834,10 @@ public class ScheduleController {
         scheduleService.ajouter(schedule);
         scheduleList.add(schedule);
         filterSchedules(scheduleSearchField != null ? scheduleSearchField.getText() : "");
+        // Check if labels exist before updating counts
+        if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+            updateMatchCounts();
+        }
         showAlert(Alert.AlertType.INFORMATION, "Succès", "Programme ajouté avec succès !");
 
         clearFieldsSchedule();
@@ -824,6 +852,13 @@ public class ScheduleController {
         LocalDate dateMatch = datePickerDateMatch.getValue();
         LocalTime startTime = spinnerStartTime.getValue();
         LocalTime endTime = spinnerEndTime.getValue();
+
+        // Check if the selected date is in the past
+        LocalDate now = LocalDate.now();
+        if (dateMatch.isBefore(now)) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Vous ne pouvez pas modifier un programme avec une date passée (avant aujourd'hui) !");
+            return;
+        }
 
         Match selectedMatchFK = comboBoxIdMatchFK.getValue();
         if (selectedMatchFK == null) {
@@ -857,6 +892,10 @@ public class ScheduleController {
             scheduleService.modifier(selectedSchedule);
             loadSchedules();
             filterSchedules(scheduleSearchField != null ? scheduleSearchField.getText() : "");
+            // Check if labels exist before updating counts
+            if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+                updateMatchCounts();
+            }
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Programme modifié avec succès !");
         }
 
@@ -874,6 +913,10 @@ public class ScheduleController {
             scheduleService.supprimer(schedule);
             scheduleList.remove(schedule);
             filterSchedules(scheduleSearchField != null ? scheduleSearchField.getText() : "");
+            // Check if labels exist before updating counts
+            if (unplayedMatchesLabel != null && playedMatchesLabel != null) {
+                updateMatchCounts();
+            }
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Programme supprimé !");
         }
     }
@@ -881,7 +924,7 @@ public class ScheduleController {
     private void remplirChampsPourModificationSchedule(Schedule schedule) {
         selectedSchedule = schedule;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditSchedule.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/EditSchedule.fxml"));
             Parent root = loader.load();
             ScheduleController editController = loader.getController();
             editController.datePickerDateMatch.setValue(schedule.getDateMatch());
@@ -963,7 +1006,7 @@ public class ScheduleController {
     @FXML
     private void handleAddMatchButton() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutMatch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/AjoutMatch.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) addMatchButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -978,7 +1021,7 @@ public class ScheduleController {
     @FXML
     private void handleAddScheduleButton() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutSchedule.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/AjoutSchedule.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) addScheduleButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -993,7 +1036,7 @@ public class ScheduleController {
     @FXML
     private void handleAnnulerButton() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageMatch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/AffichageMatch.fxml"));
             Parent root = loader.load();
             Stage stage = null;
             boolean fromScheduleContext = false;
@@ -1038,5 +1081,29 @@ public class ScheduleController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Échec du retour à l'affichage principal : " + e.getMessage());
         }
+    }
+
+    private void updateMatchCounts() {
+        if (scheduleList == null || scheduleList.isEmpty()) {
+            if (unplayedMatchesLabel != null) unplayedMatchesLabel.setText("0");
+            if (playedMatchesLabel != null) playedMatchesLabel.setText("0");
+            return;
+        }
+
+        int unplayedCount = 0;
+        int playedCount = 0;
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Schedule schedule : scheduleList) {
+            LocalDateTime scheduleTime = LocalDateTime.of(schedule.getDateMatch(), schedule.getStartTime());
+            if (scheduleTime.isAfter(now)) {
+                unplayedCount++; // Match hasn't been played yet (start time is in the future)
+            } else {
+                playedCount++; // Match has already been played (start time is in the past or now)
+            }
+        }
+
+        if (unplayedMatchesLabel != null) unplayedMatchesLabel.setText(String.valueOf(unplayedCount));
+        if (playedMatchesLabel != null) playedMatchesLabel.setText(String.valueOf(playedCount));
     }
 }

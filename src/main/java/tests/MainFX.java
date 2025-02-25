@@ -13,7 +13,7 @@ public class MainFX extends Application {
     public void start(Stage stage) {
         try {
             // Use getClassLoader().getResource() to load the FXML file from the classpath
-            URL fxmlLocation = getClass().getClassLoader().getResource("AffichageMatch.fxml");
+            URL fxmlLocation = getClass().getClassLoader().getResource("MatchSchedule/AffichageMatch.fxml");
 
             if (fxmlLocation == null) {
                 // In case the resource is not found, print a more descriptive error

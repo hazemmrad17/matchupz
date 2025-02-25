@@ -9,7 +9,7 @@ import utils.MyDatabase;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
-
+/*
 public class MainProg {
     public static void main(String[] args) {
         Connection connection = MyDatabase.getInstance().getConnection();
@@ -37,7 +37,7 @@ public class MainProg {
             ess.supprimer(espaceModifie);
             System.out.println("\n=== LISTE DES ESPACES SPORTIFS APRES SUPPRESSION ===");
             ess.rechercher();
-*/
+
             /*
             System.out.println("\n=== AJOUT D'UNE RÉSERVATION ===");
             rs.ajouter(new Reservation(18, Timestamp.valueOf("2025-02-15 14:30:00"), "match", "confirmée"));
@@ -54,8 +54,8 @@ public class MainProg {
             System.out.println("\n=== LISTE DES RÉSERVATIONS APRES SUPPRESSION ===");
             rs.rechercher().forEach(System.out::println);
 
-*/
 
+/*
             System.out.println("\n=== AJOUT D'ABONNEMENTS ===");
             Abonnement abonnement1 = new Abonnement(1, "Mensuel", new Date(), new Date(System.currentTimeMillis() + 2592000000L), 50.0, "Actif");
             Abonnement abonnement2 = new Abonnement(2, "Annuel", new Date(), new Date(System.currentTimeMillis() + 31536000000L), 500.0, "Actif");
@@ -84,4 +84,6 @@ public class MainProg {
             System.out.println("Erreur : " + e.getMessage());
         }
     }
+
 }
+*/

@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
-public class ModifierEspace {
+public class AjouterEspace {
 
     @FXML
     private TextField nomField;
@@ -29,12 +29,11 @@ public class ModifierEspace {
     private TextField capaciteField;
 
     @FXML
-    private Button updateButton;
+    private Button submitButton;
 
     @FXML
     private Button cancelButton;
 
-    private EspaceSportif espaceToEdit;
     private final EspaceSportifService espaceService = new EspaceSportifService();
 
     @FXML
@@ -52,24 +51,8 @@ public class ModifierEspace {
         categorieField.setPromptText("Sélectionner une catégorie"); // Ajout pour guider l'utilisateur
     }
 
-    public void setEspaceToEdit(EspaceSportif espace) {
-        this.espaceToEdit = espace;
-        if (espace != null) {
-            // Pré-remplir les champs avec les données existantes
-            nomField.setText(espace.getNomEspace());
-            adresseField.setText(espace.getAdresse());
-            categorieField.setValue(espace.getCategorie());
-            capaciteField.setText(String.valueOf(espace.getCapacite()));
-        }
-    }
-
     @FXML
-    private void modifierEspace(ActionEvent event) {
-        if (espaceToEdit == null) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun espace sélectionné pour modification.");
-            return;
-        }
-
+    private void ajouterEspace(ActionEvent event) {
         String nom = nomField.getText().trim();
         String adresse = adresseField.getText().trim();
         String categorie = categorieField.getValue();
@@ -91,13 +74,9 @@ public class ModifierEspace {
         }
 
         try {
-            // Mise à jour de l'espace
-            espaceToEdit.setNomEspace(nom);
-            espaceToEdit.setAdresse(adresse);
-            espaceToEdit.setCategorie(categorie);
-            espaceToEdit.setCapacite(capacite);
-
-            espaceService.modifier(espaceToEdit);
+            // Création et ajout de l'espace sportif
+            EspaceSportif espace = new EspaceSportif(nom, adresse, categorie, capacite);
+            espaceService.ajouter(espace);
 
             // Récupération des coordonnées et du climat via les APIs
             double[] coords = espaceService.getCoordonnes(adresse);
@@ -105,14 +84,15 @@ public class ModifierEspace {
             if (coords != null) {
                 String climat = espaceService.getClimat(coords[0], coords[1]);
                 messageSuccess = String.format(
-                        "Espace modifié avec succès !\nCoordonnées : %.4f, %.4f\nClimat : %s",
+                        "Espace ajouté avec succès !\nCoordonnées : %.4f, %.4f\nClimat : %s",
                         coords[0], coords[1], climat != null ? climat : "Non disponible"
                 );
             } else {
-                messageSuccess = "Espace modifié avec succès !\nCoordonnées et climat non disponibles.";
+                messageSuccess = "Espace ajouté avec succès !\nCoordonnées et climat non disponibles.";
             }
 
             showAlert(Alert.AlertType.INFORMATION, "Succès", messageSuccess);
+            clearFields();
             goToAfficherEspace(event);
         } catch (IllegalArgumentException e) {
             // Capture l'exception de setNomEspace dans EspaceSportif
@@ -120,7 +100,8 @@ public class ModifierEspace {
         } catch (IOException e) {
             // Gestion des erreurs API
             showAlert(Alert.AlertType.WARNING, "Attention",
-                    "Espace modifié, mais erreur lors de la récupération des coordonnées/climat : " + e.getMessage());
+                    "Espace ajouté, mais erreur lors de la récupération des coordonnées/climat : " + e.getMessage());
+            clearFields();
             goToAfficherEspace(event);
         }
     }

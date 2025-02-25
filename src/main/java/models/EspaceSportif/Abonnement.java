@@ -5,6 +5,7 @@ import java.util.Date;
 public class Abonnement {
     private int idAbonnement;
     private int idSport;
+    private String nomSport;  // Jointure avec la table Sport
     private String typeAbonnement; // Mensuel, Trimestriel, Annuel
     private Date dateDebut;
     private Date dateFin;
@@ -13,8 +14,11 @@ public class Abonnement {
 
     public Abonnement() {}
 
-    public Abonnement(int idSport, String typeAbonnement, Date dateDebut, Date dateFin, double tarif, String etat) {
+    // Constructeur avec nomSport (via jointure)
+    public Abonnement(int idAbonnement, int idSport, String nomSport, String typeAbonnement, Date dateDebut, Date dateFin, double tarif, String etat) {
+        this.idAbonnement = idAbonnement;
         this.idSport = idSport;
+        this.nomSport = nomSport;
         this.typeAbonnement = typeAbonnement;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
@@ -29,13 +33,16 @@ public class Abonnement {
     public int getIdSport() { return idSport; }
     public void setIdSport(int idSport) { this.idSport = idSport; }
 
+    public String getNomSport() { return nomSport; }
+    public void setNomSport(String nomSport) { this.nomSport = nomSport; }
+
     public String getTypeAbonnement() { return typeAbonnement; }
     public void setTypeAbonnement(String typeAbonnement) { this.typeAbonnement = typeAbonnement; }
 
-    public Date getDateDebut() { return dateDebut; }
+    public java.sql.Date getDateDebut() { return (java.sql.Date) dateDebut; }
     public void setDateDebut(Date dateDebut) { this.dateDebut = dateDebut; }
 
-    public Date getDateFin() { return dateFin; }
+    public java.sql.Date getDateFin() { return (java.sql.Date) dateFin; }
     public void setDateFin(Date dateFin) { this.dateFin = dateFin; }
 
     public double getTarif() { return tarif; }
@@ -43,4 +50,18 @@ public class Abonnement {
 
     public String getEtat() { return etat; }
     public void setEtat(String etat) { this.etat = etat; }
+
+    @Override
+    public String toString() {
+        return "Abonnement{" +
+                "idAbonnement=" + idAbonnement +
+                ", idSport=" + idSport +
+                ", nomSport='" + nomSport + '\'' +
+                ", typeAbonnement='" + typeAbonnement + '\'' +
+                ", dateDebut=" + dateDebut +
+                ", dateFin=" + dateFin +
+                ", tarif=" + tarif +
+                ", etat='" + etat + '\'' +
+                '}';
+    }
 }

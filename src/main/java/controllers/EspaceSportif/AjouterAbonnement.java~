@@ -4,7 +4,6 @@ import models.EspaceSportif.Abonnement;
 import models.Sport;
 import services.EspaceSportif.AbonnementService;
 import services.SportService;
-import utils.MyDatabase; // Import your MyDatabase class for connection
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -48,9 +48,8 @@ public class AjouterAbonnement {
     private final AbonnementService abonnementService;
     private final SportService sportService;
 
-    // Default constructor using MyDatabase singleton (similar to AffichageAbonnement)
-    public AjouterAbonnement() {
-        this.abonnementService = new AbonnementService(MyDatabase.getInstance().getConnection());
+    public AjouterAbonnement(Connection connection) {
+        this.abonnementService = new AbonnementService(connection);
         this.sportService = new SportService();
     }
 
@@ -67,8 +66,6 @@ public class AjouterAbonnement {
             for (Sport sport : sports) {
                 sportField.getItems().add(sport.getNomSport()); // Ajoute les noms des sports
             }
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun sport trouvé dans la base de données.");
         }
     }
 
@@ -122,8 +119,8 @@ public class AjouterAbonnement {
             abonnementService.ajouter(abonnement);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Abonnement ajouté avec succès !");
             goToAfficherAbonnements(event);
-        } catch (RuntimeException e) { // Updated to catch RuntimeException (from AbonnementService)
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ajouter l'abonnement : " + e.getMessage());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ajouter l'abonnement.");
             e.printStackTrace();
         }
     }
@@ -148,7 +145,7 @@ public class AjouterAbonnement {
             stage.setTitle("Liste des Abonnements");
             stage.show();
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page AffichageAbonnement : " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page AffichageAbonnement.");
             e.printStackTrace();
         }
     }

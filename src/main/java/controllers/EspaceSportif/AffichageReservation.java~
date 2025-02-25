@@ -202,17 +202,4 @@ public class AffichageReservation {
     }
 
 
-    @FXML
-    public void goToAbonnement(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageAbonnement.fxml")); // Ou une autre vue
-            Parent root = loader.load();
-            Stage stage = (Stage) tableView.getScene().getWindow(); // Récupère la fenêtre actuelle
-            stage.setScene(new Scene(root));
-            stage.setTitle("Liste des Abonnements");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Erreur lors du chargement des Abonnements.fxml");
-        }
-    }
 }

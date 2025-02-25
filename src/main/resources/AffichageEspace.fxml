@@ -17,9 +17,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageEspace">
+<AnchorPane prefHeight="618.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageEspace">
    <!-- Background panel with shadow -->
-   <AnchorPane layoutX="219.0" layoutY="11.0" prefHeight="589.0" prefWidth="782.0" stylesheets="@dashboardDesign.css">
+   <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="787.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />
@@ -163,6 +163,7 @@
          <TextField fx:id="searchField" prefHeight="30.0" promptText="Rechercher un espace sportif..." styleClass="search-field" />
          <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
          <Button fx:id="btnReservations" onAction="#goToReservation" text="📅 Réservations" />
+         <Button fx:id="btnAbonnements" text="🎟️ Abonnements" onAction="#goToAbonnement" />
       </HBox>
 
       <!-- TableView -->

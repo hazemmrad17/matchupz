@@ -18,9 +18,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AjouterEspace">
+<AnchorPane prefHeight="600.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.ModifierEspace">
    <!-- Background panel with shadow -->
-   <AnchorPane layoutX="223.0" layoutY="11.0" prefHeight="583.0" prefWidth="778.0" stylesheets="@dashboardDesign.css">
+   <AnchorPane layoutX="216.0" layoutY="14.0" prefHeight="591.0" prefWidth="783.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />
@@ -28,7 +28,7 @@
    </AnchorPane>
 
    <!-- Navigation sidebar -->
-   <AnchorPane layoutY="-5.0" prefHeight="608.0" prefWidth="214.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
+   <AnchorPane prefHeight="613.0" prefWidth="206.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
       <children>
          <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
          <Button fx:id="logout" layoutX="36.0" layoutY="505.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="41.0" stylesheets="@dashboardDesign.css">
@@ -153,9 +153,9 @@
       </children>
    </AnchorPane>
 
-   <!-- Formulaire d'ajout -->
-   <VBox alignment="CENTER" layoutX="249.0" layoutY="16.0" prefHeight="555.0" prefWidth="739.0" spacing="20" style="-fx-padding: 20px;">
-      <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Ajouter un Espace Sportif" />
+   <!-- Formulaire de modification -->
+   <VBox alignment="CENTER" layoutX="240.0" layoutY="14.0" prefHeight="571.0" prefWidth="747.0" spacing="20" style="-fx-padding: 20px;">
+      <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Modifier un Espace Sportif" />
 
       <GridPane alignment="CENTER" hgap="15" vgap="20">
          <Label text="Nom :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -183,7 +183,7 @@
       </GridPane>
 
       <HBox alignment="CENTER" spacing="20">
-         <Button fx:id="submitButton" onAction="#ajouterEspace" styleClass="form-button" text="Ajouter" />
+         <Button fx:id="updateButton" onAction="#modifierEspace" styleClass="form-button" text="Modifier" />
          <Button fx:id="cancelButton" onAction="#annuler" styleClass="form-button" text="Annuler" />
          <Button fx:id="retourButton" onAction="#goToAfficherEspace" styleClass="form-button" text="Retour" />
       </HBox>

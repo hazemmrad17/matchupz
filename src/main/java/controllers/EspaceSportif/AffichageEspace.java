@@ -2,6 +2,7 @@ package controllers.EspaceSportif;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Parent;
 import models.EspaceSportif.EspaceSportif;
 import services.EspaceSportif.EspaceSportifService;
 import javafx.beans.property.SimpleFloatProperty;
@@ -214,4 +215,20 @@ public class AffichageEspace {
             System.err.println("Erreur lors du chargement de Reservation.fxml");
         }
     }
+
+    @FXML
+    public void goToAbonnement(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageAbonnement.fxml")); // Ou une autre vue
+            Parent root = loader.load();
+            Stage stage = (Stage) tableView.getScene().getWindow(); // Récupère la fenêtre actuelle
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste des Abonnements");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors du chargement des Abonnements.fxml");
+        }
+    }
+
+
 }

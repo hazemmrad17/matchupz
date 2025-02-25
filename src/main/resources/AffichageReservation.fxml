@@ -37,6 +37,7 @@
              <TextField fx:id="searchField" prefHeight="34.0" prefWidth="479.0" promptText="Rechercher une réservation..." styleClass="search-field" />
              <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
              <Button fx:id="btnEspaceSportif" onAction="#goToEspaceSportif" text="📍 Espaces Sportifs" />
+            <Button fx:id="btnAbonnements" text="🎟️ Abonnements" onAction="#goToAbonnement" />
          </HBox>
 
          <TableView fx:id="tableView" prefHeight="391.0" prefWidth="747.0">

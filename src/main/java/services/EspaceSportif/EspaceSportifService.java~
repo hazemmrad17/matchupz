@@ -1,14 +1,25 @@
 package services.EspaceSportif;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import models.EspaceSportif.EspaceSportif;
 import utils.MyDatabase;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class EspaceSportifService implements EspaceService<EspaceSportif> {
 
+    private static final String API_KEY = "XCW8/1wIsfqTq2rNk1EKUQ==J1mWGCjrLv2PR8Kh"; // Remplacez par votre clé API Ninja
+    private static final String API_COORDONNEES = "https://api.api-ninjas.com/v1/geocoding?city=";
+    private static final String API_CLIMAT = "http://climateapi.scottpinkelman.com/api/v1/location/";
     private final Connection connection = MyDatabase.getInstance().getConnection();
 
     @Override
@@ -21,8 +32,20 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
             ps.setFloat(4, espaceSportif.getCapacite());
             ps.executeUpdate();
             System.out.println("✅ Espace sportif ajouté !");
+
+            // Appel des APIs pour affichage uniquement
+            double[] coords = getCoordonnes(espaceSportif.getAdresse());
+            if (coords != null) {
+                String climat = getClimat(coords[0], coords[1]);
+                System.out.println("Coordonnées : Latitude = " + coords[0] + ", Longitude = " + coords[1]);
+                System.out.println("Climat : " + climat);
+            } else {
+                System.out.println("Impossible de récupérer les coordonnées pour cette adresse.");
+            }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de l'ajout : " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Erreur lors de l'appel API : " + e.getMessage());
         }
     }
 
@@ -37,8 +60,20 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
             ps.setInt(5, espaceSportif.getIdLieu());
             ps.executeUpdate();
             System.out.println("✅ Espace sportif modifié !");
+
+            // Appel des APIs pour affichage uniquement
+            double[] coords = getCoordonnes(espaceSportif.getAdresse());
+            if (coords != null) {
+                String climat = getClimat(coords[0], coords[1]);
+                System.out.println("Coordonnées : Latitude = " + coords[0] + ", Longitude = " + coords[1]);
+                System.out.println("Climat : " + climat);
+            } else {
+                System.out.println("Impossible de récupérer les coordonnées pour cette adresse.");
+            }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la modification : " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Erreur lors de l'appel API : " + e.getMessage());
         }
     }
 
@@ -70,14 +105,22 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
                 espaceSportif.setCategorie(rs.getString("categorie"));
                 espaceSportif.setCapacite(rs.getFloat("capacite"));
                 espacesSportifs.add(espaceSportif);
+
+                // Appel des APIs pour affichage uniquement
+                double[] coords = getCoordonnes(espaceSportif.getAdresse());
+                if (coords != null) {
+                    String climat = getClimat(coords[0], coords[1]);
+                    System.out.println("Espace : " + espaceSportif.getNomEspace() + " - Coordonnées : " + coords[0] + ", " + coords[1] + " - Climat : " + climat);
+                }
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la récupération : " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Erreur lors de l'appel API : " + e.getMessage());
         }
 
         return espacesSportifs;
     }
-
 
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
@@ -118,17 +161,26 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
                     espaceSportif.setCategorie(rs.getString("categorie"));
                     espaceSportif.setCapacite(rs.getFloat("capacite"));
                     espacesSportifs.add(espaceSportif);
+
+                    // Appel des APIs pour affichage uniquement
+                    double[] coords = getCoordonnes(espaceSportif.getAdresse());
+                    if (coords != null) {
+                        String climat = getClimat(coords[0], coords[1]);
+                        System.out.println("Espace : " + espaceSportif.getNomEspace() + " - Coordonnées : " + coords[0] + ", " + coords[1] + " - Climat : " + climat);
+                    }
                 }
             }
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la récupération des espaces sportifs par mot-clé : " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Erreur lors de l'appel API : " + e.getMessage());
         }
 
         return espacesSportifs;
     }
 
     public int getIdLieuByName(String nomLieu) {
-        String req = "SELECT id_lieu FROM espacesportif WHERE id_lieu = ?";
+        String req = "SELECT id_lieu FROM espacesportif WHERE nom_espace = ?";
         try (PreparedStatement ps = connection.prepareStatement(req)) {
             ps.setString(1, nomLieu);
             try (ResultSet rs = ps.executeQuery()) {
@@ -139,8 +191,9 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la récupération de l'ID du lieu : " + e.getMessage());
         }
-        return -1; // Retourne -1 si aucun ID trouvé
+        return -1;
     }
+
     public List<String> getLieux() {
         List<String> lieux = new ArrayList<>();
         String req = "SELECT nom_espace FROM espacesportif";
@@ -157,19 +210,81 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
 
         return lieux;
     }
+
     public String getNomLieuById(int idLieu) {
         String query = "SELECT nom_espace FROM espacesportif WHERE id_lieu = ?";
-        try {
-            PreparedStatement ps = connection.prepareStatement(query);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, idLieu);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("nom");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("nom_espace");
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("❌ Erreur lors de la récupération du nom du lieu : " + e.getMessage());
         }
         return null;
     }
 
+    // Méthode pour récupérer les coordonnées (pas de stockage)
+    public double[] getCoordonnes(String address) throws IOException {
+        String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
+        String urlString = API_COORDONNEES + encodedAddress;
+        HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("X-Api-Key", API_KEY);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        int status = connection.getResponseCode();
+        if (status != 200) {
+            System.out.println("Error fetching coordinates: " + status);
+            return null;
+        }
+
+        try (Scanner scanner = new Scanner(connection.getInputStream())) {
+            StringBuilder response = new StringBuilder();
+            while (scanner.hasNext()) {
+                response.append(scanner.nextLine());
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(response.toString());
+
+            JsonNode firstResult = jsonResponse.get(0);
+            if (firstResult == null) return null;
+
+            double latitude = firstResult.get("latitude").asDouble();
+            double longitude = firstResult.get("longitude").asDouble();
+
+            return new double[]{latitude, longitude};
+        }
+    }
+
+    // Méthode pour récupérer le climat sous forme de String (pas de ClimatEnum)
+    public String getClimat(double latitude, double longitude) throws IOException {
+        String urlString = API_CLIMAT + latitude + "/" + longitude;
+        HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+
+        int status = connection.getResponseCode();
+        if (status != 200) {
+            System.out.println("Error fetching climate data: " + status);
+            return null;
+        }
+
+        try (Scanner scanner = new Scanner(connection.getInputStream())) {
+            StringBuilder response = new StringBuilder();
+            while (scanner.hasNext()) {
+                response.append(scanner.nextLine());
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonResponse = objectMapper.readTree(response.toString());
+            JsonNode climateData = jsonResponse.get("return_values").get(0);
+            return climateData.get("koppen_geiger_zone").asText(); // Retourne directement la zone climatique (ex. "Cfa")
+        }
+    }
 }

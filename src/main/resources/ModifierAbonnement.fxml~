@@ -1,66 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.TitledPane?>
-
-<AnchorPane prefHeight="618.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageAbonnement">
-    <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="787.0" stylesheets="@dashboardDesign.css">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.ModifierAbonnement">
+    <!-- Fond blanc avec ombre -->
+    <AnchorPane layoutX="216.0" layoutY="9.0" prefHeight="605.0" prefWidth="760.0" stylesheets="@dashboardDesign.css">
         <styleClass>
             <String fx:value="white-bg" />
             <String fx:value="shadow" />
         </styleClass>
     </AnchorPane>
 
-    <!-- Contenu principal -->
-    <VBox alignment="CENTER" layoutX="211.0" layoutY="27.0" prefHeight="565.0" prefWidth="787.0" spacing="15" style="-fx-padding: 20px;">
-        <Label text="Liste des Abonnements" />
+    <!-- Formulaire de modification -->
+    <VBox alignment="CENTER" layoutX="228.0" layoutY="18.0" prefHeight="581.0" prefWidth="760.0" spacing="15" style="-fx-padding: 20px;">
+        <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Modifier un Abonnement" />
 
-        <!-- Champ de recherche avec icône 🔍 -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label style="-fx-font-size: 16px; -fx-text-fill: #5cb85c;" text="🔍" />
-            <TextField fx:id="searchField" prefHeight="34.0" prefWidth="300.0" promptText="Rechercher un abonnement..." styleClass="search-field" />
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnEspaceSportif" onAction="#goToEspaceSportif" text="📍 Espaces Sportifs" />
-            <Button fx:id="btnReservations" onAction="#goToReservation" text="📅 Réservations" /> <!-- Added onAction for Reservations navigation -->
-        </HBox>
+        <GridPane alignment="CENTER" hgap="15" vgap="15">
+            <!-- Champ Sport -->
+            <Label text="Sport :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <ComboBox fx:id="sportField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <TableView fx:id="tableView" prefHeight="391.0" prefWidth="747.0">
-            <columns>
-                <TableColumn fx:id="colId" minWidth="50" text="ID" />
-                <TableColumn fx:id="colSport" minWidth="100" text="Sport" />
-                <TableColumn fx:id="colType" minWidth="100" text="Type" />
-                <TableColumn fx:id="colDateDebut" minWidth="120" text="Date Début" />
-                <TableColumn fx:id="colDateFin" minWidth="120" text="Date Fin" />
-                <TableColumn fx:id="colTarif" minWidth="80" text="Tarif" />
-                <TableColumn fx:id="colEtat" minWidth="80" text="État" />
-                <TableColumn fx:id="colActions" minWidth="150" text="Actions" />
-            </columns>
-        </TableView>
+            <!-- Champ Type d'abonnement -->
+            <Label text="Type :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <ComboBox fx:id="typeField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <!-- Boutons (Ajouter, Rafraîchir) -->
+            <!-- Champ Date de début -->
+            <Label text="Date de début :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <DatePicker fx:id="dateDebutField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <!-- Champ Date de fin -->
+            <Label text="Date de fin :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <DatePicker fx:id="dateFinField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <!-- Champ Tarif -->
+            <Label text="Tarif :" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="tarifField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <!-- Champ État -->
+            <Label text="État :" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <ComboBox fx:id="etatField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+            <!-- Contraintes de colonnes et lignes -->
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+
+        <!-- Boutons -->
         <HBox spacing="10">
-            <Button fx:id="btnAjouter" onAction="#addAbonnement" text="Ajouter" styleClass="form-button" />
-            <Button fx:id="btnRefresh" onAction="#refreshList" text="🔄" styleClass="form-button" />
+            <Button fx:id="updateButton" onAction="#updateAbonnement" styleClass="form-button" text="Modifier" />
+            <Button fx:id="cancelButton" onAction="#annuler" styleClass="form-button" text="Annuler" />
+            <!-- Bouton Retour optionnel, à adapter selon vos besoins -->
+            <Button fx:id="retourButton" onAction="#goToAfficherAbonnement" styleClass="form-button" text="Retour" />
         </HBox>
     </VBox>
 
-    <!-- Barre latérale (inchangée par rapport à AffichageEspace.fxml, but updated for consistency) -->
-    <AnchorPane prefHeight="618.0" prefWidth="206.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
+    <!-- Barre de navigation latérale -->
+    <AnchorPane prefHeight="623.0" prefWidth="206.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
         <children>
             <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
             <Button fx:id="logout" layoutX="36.0" layoutY="505.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="38.0" stylesheets="@dashboardDesign.css">
@@ -126,7 +148,7 @@
                                             <Font name="Montserrat Medium" size="12.0" />
                                         </font>
                                     </Button>
-                                    <Button fx:id="btnEspaceSportif" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif" onAction="#goToEspaceSportif">
+                                    <Button fx:id="btnEspaceSportif1" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif">
                                         <font>
                                             <Font name="Montserrat Medium" size="12.0" />
                                         </font>

@@ -59,6 +59,11 @@ public class AjouterSponsor {
             return;
         }
 
+        if (!nom.matches("[a-zA-Z]+")) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le nom doit contenir uniquement des lettres.");
+            return;
+        }
+
         if (!contact.matches("\\d{8}")) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Le contact doit contenir exactement 8 chiffres.");
             return;
@@ -73,6 +78,7 @@ public class AjouterSponsor {
         sponsorService.ajouter(sponsor);
         showAlert(Alert.AlertType.INFORMATION, "Succès", "Le sponsor a été ajouté avec succès.");
         clearFields();
+        handleAnnulerButton();
     }
 
     @FXML

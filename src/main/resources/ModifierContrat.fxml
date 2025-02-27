@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="609.0" prefWidth="820.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterContrat">
+<AnchorPane prefHeight="609.0" prefWidth="820.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierContrat">
    <children>
       <VBox alignment="CENTER" layoutX="100.0" layoutY="50.0" spacing="10" style="-fx-padding: 20px;" />
       <HBox layoutY="7.0" spacing="10" />
@@ -34,7 +34,7 @@
                      <left>
                         <AnchorPane prefHeight="570.0" prefWidth="211.0" BorderPane.alignment="CENTER">
                            <children>
-                              <AnchorPane layoutY="-14.0" prefHeight="618.0" prefWidth="210.0" styleClass="nav-form" stylesheets="@dashboardDesign.css" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-14.0">
+                              <AnchorPane layoutY="-14.0" prefHeight="618.0" prefWidth="210.0" styleClass="nav-form" stylesheets="dashboardDesign.css" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-14.0">
                                  <children>
                                     <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
                                     <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@dashboardDesign.css">
@@ -45,7 +45,7 @@
                                        <graphic>
                                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@logout_w.png" />
+                                                <Image url="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/images/logout_w.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -168,13 +168,13 @@
                            <children>
                               <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="87.0" prefHeight="587.0" prefWidth="863.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane layoutX="8.0" layoutY="8.0" prefHeight="570.0" prefWidth="890.0" stylesheets="@dashboardDesign.css">
+                                    <AnchorPane layoutX="8.0" layoutY="8.0" prefHeight="570.0" prefWidth="890.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
                                        <styleClass>
                                           <String fx:value="white-bg" />
                                           <String fx:value="shadow" />
                                        </styleClass>
                                        <children>
-                                          <Text layoutX="164.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ajout d'un Nouveau Contrat" textAlignment="CENTER" wrappingWidth="534.9367065429688">
+                                          <Text layoutX="164.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modifier un Contrat" textAlignment="CENTER" wrappingWidth="534.9367065429688">
                                              <font>
                                                 <Font name="Montserrat SemiBold" size="36.0" />
                                              </font>
@@ -240,12 +240,12 @@
                                           </Text>
                                           <AnchorPane prefHeight="46.0" prefWidth="607.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
                                              <children>
-                                                <Button id="btn-secondary" fx:id="btnAnnuler" layoutX="14.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Go Back" />
-                                                <Button fx:id="btnAjouterContrat" layoutX="440.0" layoutY="6.0" mnemonicParsing="false" onAction="#ajouterContrat" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Add" />
+                                                <Button id="btn-secondary" fx:id="btnAnnulerContrat" layoutX="14.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Go Back" />
+                                                <Button fx:id="btnAjouterContrat" layoutX="440.0" layoutY="6.0" mnemonicParsing="false" onAction="#modifier" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Modify" />
                                              </children>
                                           </AnchorPane>
                                           <DatePicker fx:id="dp_date_fin" prefHeight="31.0" prefWidth="398.0" promptText="Sélectionner la date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <ComboBox fx:id="tx_contrat_sponsor"  prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="tx_contrat_sponsor" onAction="#initialize" prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>

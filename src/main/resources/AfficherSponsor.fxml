@@ -4,10 +4,9 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -30,10 +29,10 @@
                   <left>
                      <AnchorPane prefHeight="555.0" prefWidth="211.0" BorderPane.alignment="CENTER">
                         <children>
-                           <AnchorPane prefHeight="602.0" prefWidth="211.0" styleClass="nav-form" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <AnchorPane prefHeight="602.0" prefWidth="211.0" styleClass="nav-form" stylesheets="@dashboardDesign.css" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
                                  <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
-                                 <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
+                                 <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@dashboardDesign.css">
                                     <styleClass>
                                        <String fx:value="logout" />
                                        <String fx:value="shadow" />
@@ -41,7 +40,7 @@
                                     <graphic>
                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/images/logout_w.png" />
+                                             <Image url="@logout_w.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -86,7 +85,7 @@
                                                          <Font name="Montserrat Medium" size="12.0" />
                                                       </font>
                                                    </Button>
-                                                   <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Contract Sponsors" />
+                                                   <Button fx:id="page2button" alignment="CENTER" mnemonicParsing="false" onAction="#handleHome" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Contract Sponsors" />
                                                 </children>
                                              </VBox>
                                           </content>
@@ -139,7 +138,7 @@
                                     <children>
                                        <ImageView fitHeight="41.0" fitWidth="184.0" layoutX="8.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/images/logo_horizantal.png" />
+                                             <Image url="@logo_horizantal.png" />
                                           </image>
                                        </ImageView>
                                        <Label alignment="CENTER" layoutY="69.0" prefHeight="38.0" prefWidth="200.0" text="Welcome," textAlignment="CENTER" textFill="WHITE">
@@ -164,115 +163,49 @@
                         <children>
                            <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="-13.6" prefHeight="600.0" prefWidth="916.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                 <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                    <styleClass>
-                                       <String fx:value="white-bg" />
-                                       <String fx:value="shadow" />
-                                    </styleClass>
+                                 <VBox prefHeight="590.0" prefWidth="883.0">
                                     <children>
-                                       <TabPane layoutX="13.0" layoutY="19.0" prefHeight="551.0" prefWidth="853.0" tabClosingPolicy="UNAVAILABLE">
-                                          <tabs>
-                                             <Tab text="Sponsor">
-                                                <content>
-                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
+                                       <AnchorPane prefHeight="578.0" prefWidth="882.0" stylesheets="@dashboardDesign.css">
+                                          <styleClass>
+                                             <String fx:value="white-bg" />
+                                             <String fx:value="shadow" />
+                                          </styleClass>
+                                          <children>
+                                             <TableView fx:id="tableViewSponsors" layoutX="25.0" layoutY="108.0" prefHeight="278.0" prefWidth="857.0">
+                                                <columns>
+                                                   <TableColumn fx:id="colNom" prefWidth="200.0" text="Nom Sponsor" />
+                                                   <TableColumn fx:id="colContact" prefWidth="200.0" text="Contact" />
+                                                   <TableColumn fx:id="colPack" prefWidth="200.0" text="Pack" />
+                                                   <TableColumn fx:id="modifierColumn" prefWidth="250.0" text="Actions" />
+                                                </columns>
+                                             </TableView>
+                                             <AnchorPane layoutX="14.0" layoutY="393.0" prefHeight="177.0" prefWidth="830.0">
+                                                <children>
+                                                   <AnchorPane layoutX="14.0" layoutY="5.0" prefHeight="160.0" prefWidth="250.0" stylesheets="@dashboardDesign.css">
                                                       <children>
-                                                         <TableView fx:id="tableViewSponsors" layoutX="1.0" layoutY="50.0" prefHeight="278.0" prefWidth="832.0">
-                                                            <columns>
-                                                               <TableColumn fx:id="colNom" prefWidth="200.0" text="Nom Sponsor" />
-                                                               <TableColumn fx:id="colContact" prefWidth="200.0" text="Contact" />
-                                                               <TableColumn fx:id="colPack" prefWidth="200.0" text="Pack" />
-                                                               <TableColumn fx:id="modifierColumn" prefWidth="250.0" text="Actions" />
-                                                            </columns>
-                                                         </TableView>
-                                                         <AnchorPane layoutY="335.0" prefHeight="177.0" prefWidth="830.0">
-                                                            <children>
-                                                               <AnchorPane layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                                  <children>
-                                                                     <Button fx:id="addSponsorButton" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" onAction="#addSponsor" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Add Sponsor" />
-                                                                  </children>
-                                                                  <styleClass>
-                                                                     <String fx:value="card" />
-                                                                     <String fx:value="shadow" />
-                                                                  </styleClass>
-                                                               </AnchorPane>
-                                                               <AnchorPane layoutX="290.0" layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                                  <children>
-                                                                     <Button fx:id="addJoueurButton1" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Analytics" />
-                                                                  </children>
-                                                                  <styleClass>
-                                                                     <String fx:value="card" />
-                                                                     <String fx:value="shadow" />
-                                                                  </styleClass>
-                                                               </AnchorPane>
-                                                               <AnchorPane layoutX="579.0" layoutY="7.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                                  <children>
-                                                                     <Button fx:id="addJoueurButton11" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Statistics" />
-                                                                  </children>
-                                                                  <styleClass>
-                                                                     <String fx:value="card" />
-                                                                     <String fx:value="shadow" />
-                                                                  </styleClass>
-                                                               </AnchorPane>
-                                                            </children>
-                                                         </AnchorPane>
+                                                         <Button fx:id="addSponsorButton" layoutX="57.0" layoutY="14.0" mnemonicParsing="false" onAction="#addSponsor" prefHeight="35.0" prefWidth="135.0" styleClass="btn-primary" text="Add Sponsor" />
+                                                         <Button fx:id="exportSponsor" layoutX="58.0" layoutY="62.0" mnemonicParsing="false" onAction="#handleExportSponsors" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Export" />
+                                                         <Button fx:id="statbutton" layoutX="58.0" layoutY="110.0" mnemonicParsing="false" onAction="#showSponsorPackStats" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Statistics" />
                                                       </children>
+                                                      <styleClass>
+                                                         <String fx:value="card" />
+                                                         <String fx:value="shadow" />
+                                                      </styleClass>
                                                    </AnchorPane>
-                                                </content>
-                                             </Tab>
-                                             <Tab text="Contrat">
-                                                <content>
-                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                      <children>
-                                                         <TableView fx:id="tableViewSponsors1" layoutY="52.0" prefHeight="278.0" prefWidth="832.0">
-                                                            <columns>
-                                                               <TableColumn fx:id="colNom1" prefWidth="150.0" text="Titre" />
-                                                               <TableColumn fx:id="colContact1" prefWidth="150.0" text="Sponsor" />
-                                                               <TableColumn fx:id="colPack1" prefWidth="110.0" text="Date Debut" />
-                                                               <TableColumn fx:id="modifierColumn1" prefWidth="110.0" text="Date Fin" />
-                                                               <TableColumn fx:id="deleteColumn1" prefWidth="150.0" text="Montant" />
-                                                               <TableColumn prefWidth="160.0" text="Actions" />
-                                                            </columns>
-                                                         </TableView>
-                                                         <AnchorPane layoutX="14.0" layoutY="349.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                            <children>
-                                                               <Button fx:id="addSponsorButton1" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" onAction="#addSponsor" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Add Contrat" />
-                                                            </children>
-                                                            <styleClass>
-                                                               <String fx:value="card" />
-                                                               <String fx:value="shadow" />
-                                                            </styleClass>
-                                                         </AnchorPane>
-                                                         <AnchorPane layoutX="290.0" layoutY="349.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                            <children>
-                                                               <Button fx:id="addJoueurButton12" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Analytics" />
-                                                            </children>
-                                                            <styleClass>
-                                                               <String fx:value="card" />
-                                                               <String fx:value="shadow" />
-                                                            </styleClass>
-                                                         </AnchorPane>
-                                                         <AnchorPane layoutX="568.0" layoutY="349.0" prefHeight="131.0" prefWidth="250.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
-                                                            <children>
-                                                               <Button fx:id="addJoueurButton111" layoutX="58.0" layoutY="53.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="134.0" styleClass="btn-primary" text="Statistics" />
-                                                            </children>
-                                                            <styleClass>
-                                                               <String fx:value="card" />
-                                                               <String fx:value="shadow" />
-                                                            </styleClass>
-                                                         </AnchorPane>
-                                                      </children>
+                                                   <AnchorPane fx:id="stats" layoutX="324.0" layoutY="3.0" prefHeight="172.0" prefWidth="540.0" stylesheets="@dashboardDesign.css">
+                                                      <styleClass>
+                                                         <String fx:value="card" />
+                                                         <String fx:value="shadow" />
+                                                      </styleClass>
                                                    </AnchorPane>
-                                                </content>
-                                             </Tab>
-                                             <Tab text="Transaction">
-                                                <content>
-                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                </content>
-                                             </Tab>
-                                          </tabs>
-                                       </TabPane>
+                                                </children>
+                                             </AnchorPane>
+                                             <TextField fx:id="searchField" layoutX="24.0" layoutY="54.0" prefHeight="34.0" prefWidth="858.0" promptText="Rechercher un sponsor :" />
+                                             <Label layoutX="376.0" layoutY="14.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Sponsors" />
+                                          </children>
+                                       </AnchorPane>
                                     </children>
-                                 </AnchorPane>
+                                 </VBox>
                               </children>
                            </AnchorPane>
                         </children>

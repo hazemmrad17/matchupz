@@ -2,6 +2,7 @@ package models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 public class Contrat {
     private int id_contrat;
@@ -72,6 +73,14 @@ public class Contrat {
         this.montant = montant;
     }
 
+    public int getId_sponsor() {
+        return id_sponsor;
+    }
+
+    public void setId_sponsor(int id_sponsor) {
+        this.id_sponsor = id_sponsor;
+    }
+
     @Override
     public String toString() {
         return "Contrat{" +
@@ -80,14 +89,6 @@ public class Contrat {
                 ", DateFin='" + DateFin + '\'' +
                 ", montant=" + montant +
                 '}';
-    }
-
-    public int getId_sponsor() {
-        return id_sponsor;
-    }
-
-    public void setId_sponsor(int id_sponsor) {
-        this.id_sponsor = id_sponsor;
     }
 
 

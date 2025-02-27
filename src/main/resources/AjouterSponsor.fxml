@@ -216,8 +216,8 @@
                                              <TextField fx:id="contactField" promptText="Entrer le numero du sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                              <AnchorPane prefHeight="50.0" prefWidth="630.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
                                                 <children>
-                                                   <Button id="btn-secondary" fx:id="annulerButton" layoutY="7.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Annuler" />
-                                                   <Button fx:id="ajouterButton" layoutX="467.0" layoutY="7.0" mnemonicParsing="false" onAction="#ajouterSponsor" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Ajouter" />
+                                                   <Button id="btn-secondary" fx:id="annulerButton" layoutY="7.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Go back" />
+                                                   <Button fx:id="ajouterButton" layoutX="467.0" layoutY="7.0" mnemonicParsing="false" onAction="#ajouterSponsor" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Add" />
                                                 </children>
                                              </AnchorPane>
                                              <ComboBox fx:id="packField" onAction="#initializer" prefHeight="0.0" prefWidth="626.0" promptText="Sélectionnez un pack" GridPane.columnIndex="1" GridPane.rowIndex="2" />

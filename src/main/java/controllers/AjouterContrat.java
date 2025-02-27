@@ -1,7 +1,5 @@
 package controllers;
 
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,137 +10,181 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import models.Contrat;
+import models.Sponsor;
 import services.ContratService;
+import services.SponsorService;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static models.Contrat.convertToDateFormat;
 
 public class AjouterContrat {
 
     @FXML
-    private Button btnAjouterContrat, btnAnnuler, btnSupprimerContrat, btnModifierContrat, btnActualiserContrat;
+    private Button btnAjouterContrat, btnAnnuler;
 
     @FXML
-    private TextField tx_contrat_titre, tx_contrat_montant, tx_contrat_sponsor;
+    private TextField tx_contrat_titre, tx_contrat_montant;
+
+    @FXML
+    private ComboBox<Sponsor> tx_contrat_sponsor;
 
     @FXML
     private DatePicker dp_date_debut, dp_date_fin;
 
-    @FXML
-    private TableView<Contrat> tableViewContrats;
-
-    @FXML
-    private TableColumn<Contrat, String> colTitre, colSponsor, colDateDebut, colDateFin;
-
-    @FXML
-    private TableColumn<Contrat, Float> colMontant;
-
     private final ContratService contratService = new ContratService();
+    private final SponsorService sponsorService = new SponsorService();
     private ObservableList<Contrat> contratList = FXCollections.observableArrayList();
+    private ObservableList<Sponsor> sponsorList = FXCollections.observableArrayList();
     private Contrat selectedContrat = null;
+
+    // Define the date formatter once for reuse
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @FXML
     private void ajouterContrat(ActionEvent event) {
-        handleAjouterOuModifier();
+        handleAjouterOuModifier(event);
     }
 
     @FXML
     private void goToAfficherContrats(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherContrat.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Liste des Contrats");
-            stage.show();
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page AfficherContrat.");
-            e.printStackTrace();
-        }
+        loadFXML("/AfficherContrat.fxml", "Liste des Contrats", event);
     }
 
     @FXML
     public void initialize() {
-        colTitre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitre()));
-        colSponsor.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId_sponsor())));
-        colDateDebut.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateDebut()));
-        colDateFin.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDateFin()));
-        colMontant.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getMontant()).asObject());
-
-        tableViewContrats.setItems(contratList);
-        loadContrats();
-
-        btnAjouterContrat.setOnAction(event -> handleAjouterOuModifier());
-        btnAnnuler.setOnAction(event -> clearFields());
-        btnSupprimerContrat.setOnAction(event -> handleSupprimer());
-        btnActualiserContrat.setOnAction(event -> loadContrats());
-
-        tableViewContrats.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                selectedContrat = newSelection;
-                tx_contrat_titre.setText(selectedContrat.getTitre());
-                tx_contrat_sponsor.setText(String.valueOf(selectedContrat.getId_sponsor()));
-                dp_date_debut.setValue(java.time.LocalDate.parse(selectedContrat.getDateDebut()));
-                dp_date_fin.setValue(java.time.LocalDate.parse(selectedContrat.getDateFin()));
-                tx_contrat_montant.setText(String.valueOf(selectedContrat.getMontant()));
+        // Set up the DatePicker converters
+        dp_date_debut.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? DATE_FORMATTER.format(date) : "";
             }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return string != null && !string.isEmpty() ? LocalDate.parse(string, DATE_FORMATTER) : null;
+            }
+        });
+
+        dp_date_fin.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? DATE_FORMATTER.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return string != null && !string.isEmpty() ? LocalDate.parse(string, DATE_FORMATTER) : null;
+            }
+        });
+
+        // Load sponsors into ComboBox
+        loadSponsors();
+        if (sponsorList.isEmpty()) {
+            System.out.println("Warning: No sponsors loaded into ComboBox.");
+        }
+        tx_contrat_sponsor.setItems(sponsorList);
+        tx_contrat_sponsor.setPromptText("Sélectionner un sponsor");
+
+        // Configure ComboBox to display sponsor names
+        tx_contrat_sponsor.setCellFactory(param -> new ListCell<Sponsor>() {
+            @Override
+            protected void updateItem(Sponsor item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNom());
+            }
+        });
+
+        tx_contrat_sponsor.setConverter(new StringConverter<Sponsor>() {
+            @Override
+            public String toString(Sponsor sponsor) {
+                return sponsor == null ? "" : sponsor.getNom();
+            }
+
+            @Override
+            public Sponsor fromString(String string) {
+                return sponsorList.stream()
+                        .filter(s -> s.getNom().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Optional: Add a listener to debug selection
+        tx_contrat_sponsor.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Selected Sponsor: " + (newVal != null ? newVal.getNom() : "None"));
         });
     }
 
-    private void handleAjouterOuModifier() {
+    @FXML
+    private void handleAjouterOuModifier(ActionEvent event) {
         String titre = tx_contrat_titre.getText().trim();
-        String sponsorStr = tx_contrat_sponsor.getText().trim();
-        String dateDebut = (dp_date_debut.getValue() != null) ? dp_date_debut.getValue().toString() : "";
-        String dateFin = (dp_date_fin.getValue() != null) ? dp_date_fin.getValue().toString() : "";
+        Sponsor selectedSponsor = tx_contrat_sponsor.getValue();
+        LocalDate dateDebut = dp_date_debut.getValue();
+        LocalDate dateFin = dp_date_fin.getValue();
         String montantStr = tx_contrat_montant.getText().trim();
 
-        if (titre.isEmpty() || sponsorStr.isEmpty() || dateDebut.isEmpty() || dateFin.isEmpty() || montantStr.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Tous les champs sont obligatoires !");
+        // Validation: Check for empty fields
+        if (titre.isEmpty() || selectedSponsor == null || dateDebut == null || dateFin == null || montantStr.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs.");
             return;
         }
 
-        dateDebut = convertToDateFormat(dateDebut);
-        dateFin = convertToDateFormat(dateFin);
-
-        if (dateDebut == null || dateFin == null) {
-            showAlert(Alert.AlertType.ERROR, "Format de date incorrect", "La date doit avoir le format AAAA/MM/JJ !");
+        // Validation: Check title format (letters only)
+        if (!titre.matches("[a-zA-Z\\s]+")) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le titre doit contenir uniquement des lettres.");
             return;
         }
 
-        int sponsorId;
-        try {
-            sponsorId = Integer.parseInt(sponsorStr);
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "L'ID du sponsor doit être un nombre valide !");
+        // Validation: Check date logic
+        if (!dateFin.isAfter(dateDebut)) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "La date de fin doit être postérieure à la date de début.");
             return;
         }
 
+        // Validation: Check montant format
         float montant;
         try {
             montant = Float.parseFloat(montantStr);
+            if (montant <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Le montant doit être supérieur à 0.");
+                return;
+            }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Le montant doit être un nombre valide !");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le montant doit être un nombre valide.");
             return;
         }
 
+        // Check if contract with the same title exists (for new contracts only)
+        if (selectedContrat == null && contratService.isContratTitreExists(titre)) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Un contrat avec ce titre existe déjà.");
+            return;
+        }
+
+        // Format dates as "yyyy-MM-dd" (e.g., 2025-02-15)
+        String dateDebutStr = dateDebut.format(DATE_FORMATTER);
+        String dateFinStr = dateFin.format(DATE_FORMATTER);
+
         if (selectedContrat == null) {
-            Contrat contrat = new Contrat(sponsorId, titre, dateDebut, dateFin, montant);
+            Contrat contrat = new Contrat(selectedSponsor.getId_sponsor(), titre, dateDebutStr, dateFinStr, montant);
             contratService.ajouter(contrat);
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Le contrat a été ajouté avec succès.");
             contratList.add(contrat);
         } else {
             selectedContrat.setTitre(titre);
-            selectedContrat.setId_sponsor(sponsorId);
-            selectedContrat.setDateDebut(dateDebut);
-            selectedContrat.setDateFin(dateFin);
+            selectedContrat.setId_sponsor(selectedSponsor.getId_sponsor());
+            selectedContrat.setDateDebut(dateDebutStr);
+            selectedContrat.setDateFin(dateFinStr);
             selectedContrat.setMontant(montant);
             contratService.modifier(selectedContrat);
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Le contrat a été modifié avec succès.");
             loadContrats();
         }
-
         clearFields();
+        handleAnnulerButton();
     }
 
     private void loadContrats() {
@@ -150,17 +192,28 @@ public class AjouterContrat {
         contratList.addAll(contratService.rechercher());
     }
 
-    private void handleSupprimer() {
-        Contrat selected = tableViewContrats.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            contratService.supprimer(selected);
-            contratList.remove(selected);
+    private void loadSponsors() {
+        sponsorList.clear();
+        try {
+            List<Sponsor> sponsors = sponsorService.rechercher();
+            sponsorList.addAll(sponsors);
+            if (sponsors.isEmpty()) {
+                System.out.println("No sponsors found in the database.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading sponsors: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleAnnulerButton() {
+        loadFXML("/AfficherContrat.fxml", "Liste des Contrats", btnAnnuler);
     }
 
     private void clearFields() {
         tx_contrat_titre.clear();
-        tx_contrat_sponsor.clear();
+        tx_contrat_sponsor.setValue(null);
         dp_date_debut.setValue(null);
         dp_date_fin.setValue(null);
         tx_contrat_montant.clear();
@@ -174,4 +227,20 @@ public class AjouterContrat {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    private void loadFXML(String fxmlPath, String stageTitle, Object eventSource) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) (eventSource instanceof Node ? ((Node) eventSource).getScene().getWindow() : ((Button) eventSource).getScene().getWindow());
+            stage.setScene(new Scene(root));
+            stage.setTitle(stageTitle);
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page: " + fxmlPath);
+            e.printStackTrace();
+        }
+    }
+
+    
 }

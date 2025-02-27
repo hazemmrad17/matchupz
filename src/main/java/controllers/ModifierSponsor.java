@@ -32,8 +32,6 @@ public class ModifierSponsor {
     @FXML
     private Button ajouterButton;
 
-
-
     @FXML
     private AnchorPane home_form;
 
@@ -43,10 +41,7 @@ public class ModifierSponsor {
 
     @FXML
     private Button modifierButton;
-    @FXML
-    void ajouterSponsor(ActionEvent event) {
 
-    }
 
     @FXML
     private void handleAnnulerButton() {
@@ -84,6 +79,7 @@ public class ModifierSponsor {
         }
 
         try {
+
             String nom = nomField.getText().trim();
             String contact = contactField.getText().trim();
             String pack = packField.getValue();
@@ -107,6 +103,7 @@ public class ModifierSponsor {
             alert.setContentText("Détails : " + e.getMessage());
             alert.showAndWait();
         }
+        handleAnnulerButton();
     }
 
 

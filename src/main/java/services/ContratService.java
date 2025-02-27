@@ -32,10 +32,10 @@ public class ContratService implements IService<Contrat> {
             rs.next();
 
             // Validate dates
-            String formattedDateDebut = formatDate(contrat.getDateDebut());
-            String formattedDateFin = formatDate(contrat.getDateFin());
-            if (formattedDateDebut == null || formattedDateFin == null) {
-                System.out.println("Error: Les dates doivent être au format DD/MM/YYYY!");
+            //String formattedDateDebut = formatDate(contrat.getDateDebut());
+            //String formattedDateFin = formatDate(contrat.getDateFin());
+            if (contrat.getDateFin() == null || contrat.getDateFin() == null) {
+                System.out.println("Error: Les dates doivent être au format yyyy/MM/dd!");
                 return;
             }
 
@@ -72,9 +72,9 @@ public class ContratService implements IService<Contrat> {
             ResultSet rs = checkPs.executeQuery();
             rs.next();
             // Validate dates
-            String formattedDateDebut = formatDate(contrat.getDateDebut());
-            String formattedDateFin = formatDate(contrat.getDateFin());
-            if (formattedDateDebut == null || formattedDateFin == null) {
+            //String formattedDateDebut = formatDate(contrat.getDateDebut());
+            //String formattedDateFin = formatDate(contrat.getDateFin());
+            if (contrat.getDateDebut() == null || contrat.getDateFin() == null) {
                 System.out.println("Error: Les dates doivent être au format DD/MM/YYYY!");
                 return;
             }
@@ -95,9 +95,18 @@ public class ContratService implements IService<Contrat> {
             ps.setInt(6, contrat.getId_contrat());
             ps.executeUpdate();
             System.out.println("Contrat modifié!");
+            System.out.println("Updating contract with id: " + contrat.getId_contrat());
+            System.out.println("New id_sponsor: " + contrat.getId_sponsor());
+            System.out.println("New title: " + contrat.getTitre());
+            System.out.println("New DateDebut: " + contrat.getDateDebut());
+            System.out.println("New DateFin: " + contrat.getDateFin());
+            System.out.println("New montant: " + contrat.getMontant());
+            int rowsAffected = ps.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -142,6 +151,7 @@ public class ContratService implements IService<Contrat> {
         return contrats;
     }
 
+    /*
     private String formatDate(String date) {
         try {
             SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -152,5 +162,23 @@ public class ContratService implements IService<Contrat> {
             System.out.println("Error: Invalid date format: " + date);
             return null;
         }
+    }*/
+
+
+    public boolean isContratTitreExists(String nom) {
+        String checkNameQuery = "SELECT COUNT(*) FROM contrats WHERE titre = ?";
+
+        try (PreparedStatement checkPs = this.connection.prepareStatement(checkNameQuery)) {
+            checkPs.setString(1, nom);
+            ResultSet rs = checkPs.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification du titre du contrat : " + e.getMessage());
+        }
+
+        return false;
     }
 }

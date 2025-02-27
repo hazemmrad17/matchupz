@@ -35,7 +35,7 @@
                            <left>
                               <AnchorPane prefHeight="570.0" prefWidth="211.0" BorderPane.alignment="CENTER">
                                  <children>
-                                    <AnchorPane layoutX="-8.0" layoutY="-25.6" prefHeight="630.0" prefWidth="218.0" styleClass="nav-form" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-8.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-26.0">
+                                    <AnchorPane layoutX="-8.0" layoutY="-25.6" prefHeight="630.0" prefWidth="218.0" styleClass="nav-form" stylesheets="@dashboardDesign.css" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="-8.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-26.0">
                                        <children>
                                           <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
                                           <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@../../../../../../../Downloads/matchupz-joueur/matchupz-joueur/src/main/resources/dashboardDesign.css">
@@ -214,11 +214,11 @@
                                                       <TextField fx:id="contactField" promptText="Entrer le numero du sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                       <AnchorPane prefHeight="50.0" prefWidth="630.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
                                                          <children>
-                                                            <Button id="btn-secondary" fx:id="annulerButton" layoutY="7.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Annuler" />
-                                                            <Button fx:id="ajouterButton" layoutX="467.0" layoutY="7.0" mnemonicParsing="false" onAction="#modifier" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Ajouter" />
+                                                            <Button id="btn-secondary" fx:id="annulerButton" layoutY="7.0" mnemonicParsing="false" onAction="#handleAnnulerButton" prefHeight="35.0" prefWidth="164.0" text="Go back" />
+                                                            <Button fx:id="ajouterButton" layoutX="467.0" layoutY="7.0" mnemonicParsing="false" onAction="#modifier" prefHeight="35.0" prefWidth="156.0" styleClass="btn-primary" text="Modify" />
                                                          </children>
                                                       </AnchorPane>
-                                                      <ComboBox fx:id="packField" onAction="#initialize" prefHeight="0.0" prefWidth="626.0" promptText="Sélectionnez un pack" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                      <ComboBox fx:id="packField" disable="true" prefHeight="0.0" prefWidth="626.0" promptText="Sélectionnez un pack" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                    </children>
                                                 </GridPane>
                                                 <Text layoutX="164.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modification du Sponsor" textAlignment="CENTER" wrappingWidth="534.9367065429688">

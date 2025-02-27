@@ -126,7 +126,6 @@ public class MaterielService implements IService<Materiel> {
                 m.setEtat(EtatMateriel.valueOf(rs.getString("etat")));
                 m.setPrix_unitaire(rs.getFloat("prix_unitaire"));
                 m.setBarcode(rs.getString("barcode"));
-                rs.getBytes("image_data");
                 return m;
             }
         } catch (SQLException e) {

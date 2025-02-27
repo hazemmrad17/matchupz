@@ -97,5 +97,37 @@ public class FournisseurService implements IService<Fournisseur> {
         }
         return lastId;
     }
-
+    public List<Fournisseur> getFournisseursByCategory(String category) {
+        List<Fournisseur> fournisseurs = new ArrayList<>();
+        String query = "SELECT * FROM fournisseur WHERE categorie_produit = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, category);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Fournisseur f = new Fournisseur();
+                f.setId_fournisseur(rs.getInt("id_fournisseur"));
+                f.setNom(rs.getString("nom"));
+                f.setEmail(rs.getString("email"));
+                f.setAdresse(rs.getString("adresse"));
+                f.setCategorie_produit(rs.getString("categorie_produit"));
+                fournisseurs.add(f);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return fournisseurs;
+    }
+    public boolean exists(String nom) {
+        String query = "SELECT COUNT(*) FROM fournisseur WHERE nom = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, nom);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

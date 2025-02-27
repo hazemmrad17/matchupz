@@ -61,8 +61,7 @@ public class Materiel {
     public void setBarcode(String barcode) { this.barcode = barcode; }
     public boolean isRepairRequested() { return repairRequested; }
     public void setRepairRequested(boolean repairRequested) { this.repairRequested = repairRequested; }
-    public byte[] getImageData() { return imageData; }
-    public void setImageData(byte[] imageData) { this.imageData = imageData; }
+
     @Override
     public String toString() {
         return "Materiel{id_materiel=" + id_materiel + ", id_fournisseur=" + id_fournisseur +

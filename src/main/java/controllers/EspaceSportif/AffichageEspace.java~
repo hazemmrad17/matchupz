@@ -368,7 +368,7 @@ public class AffichageEspace {
             document.add(title);
             document.add(new Paragraph(" "));
 
-            PdfPTable pdfTable = new PdfPTable(5);
+            PdfPTable pdfTable = new PdfPTable(6);
             pdfTable.setWidthPercentage(100);
             BaseColor deepGreen = new BaseColor(0, 100, 0);
             String[] headers = {"ID", "Nom", "Adresse", "Catégorie", "Capacité"};

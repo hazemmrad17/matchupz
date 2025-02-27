@@ -274,8 +274,12 @@ public class AffichageEspace {
     // Méthode pour afficher les détails climatiques dans une alerte
     private void showClimateDetails(EspaceSportif espace) {
         try {
-            String normalizedAddress = espace.getAdresse() + ", Tunisie";
-            double[] coords = espaceService.getCoordonnes(normalizedAddress);
+            // Use the address as provided, expecting it to include city and country (e.g., "Tunis, Tunisie")
+            String address = espace.getAdresse();
+            if (!address.contains(",")) {
+                address += ", Tunisie"; // Default to Tunisia if no country is specified
+            }
+            double[] coords = espaceService.getCoordonnes(address);
             if (coords != null) {
                 String climat = espaceService.getClimat(coords[0], coords[1]);
                 String mapUrl = espaceService.getMapUrl(coords[0], coords[1]);
@@ -302,25 +306,33 @@ public class AffichageEspace {
                 alert.getDialogPane().setContent(content);
                 alert.showAndWait();
             } else {
-                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + normalizedAddress);
+                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + address);
             }
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la récupération des données climatiques : " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            showAlert(Alert.AlertType.WARNING, "Avertissement", "Format d'adresse incorrect : " + e.getMessage());
         }
     }
 
     private void showMap(EspaceSportif espace) {
         try {
-            String normalizedAddress = espace.getAdresse() + ", Tunisie";
-            double[] coords = espaceService.getCoordonnes(normalizedAddress);
+            // Use the address as provided, expecting it to include city and country (e.g., "Tunis, Tunisie")
+            String address = espace.getAdresse();
+            if (!address.contains(",")) {
+                address += ", Tunisie"; // Default to Tunisia if no country is specified
+            }
+            double[] coords = espaceService.getCoordonnes(address);
             if (coords != null) {
                 String mapUrl = espaceService.getMapUrl(coords[0], coords[1]);
                 Desktop.getDesktop().browse(URI.create(mapUrl));
             } else {
-                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + normalizedAddress);
+                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + address);
             }
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la carte : " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            showAlert(Alert.AlertType.WARNING, "Avertissement", "Format d'adresse incorrect : " + e.getMessage());
         }
     }
 

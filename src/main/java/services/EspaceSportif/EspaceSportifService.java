@@ -34,7 +34,7 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
             System.out.println("✅ Espace sportif ajouté !");
 
             // Appel des APIs pour affichage uniquement
-            double[] coords = getCoordonnes(espaceSportif.getAdresse());
+            double[] coords = getCoordonnes(espaceSportif.getAdresse() + ", Tunisie"); // Append country
             if (coords != null) {
                 String climat = getClimat(coords[0], coords[1]);
                 System.out.println("Coordonnées : Latitude = " + coords[0] + ", Longitude = " + coords[1]);
@@ -62,7 +62,7 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
             System.out.println("✅ Espace sportif modifié !");
 
             // Appel des APIs pour affichage uniquement
-            double[] coords = getCoordonnes(espaceSportif.getAdresse());
+            double[] coords = getCoordonnes(espaceSportif.getAdresse() + ", Tunisie"); // Append country
             if (coords != null) {
                 String climat = getClimat(coords[0], coords[1]);
                 System.out.println("Coordonnées : Latitude = " + coords[0] + ", Longitude = " + coords[1]);
@@ -107,7 +107,7 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
                 espacesSportifs.add(espaceSportif);
 
                 // Appel des APIs pour affichage uniquement (non utilisé directement dans la liste)
-                double[] coords = getCoordonnes(espaceSportif.getAdresse());
+                double[] coords = getCoordonnes(espaceSportif.getAdresse() + ", Tunisie"); // Append country
                 if (coords != null) {
                     String climat = getClimat(coords[0], coords[1]);
                     System.out.println("Espace : " + espaceSportif.getNomEspace() + " - Coordonnées : " + coords[0] + ", " + coords[1] + " - Climat : " + climat);
@@ -163,7 +163,7 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
                     espacesSportifs.add(espaceSportif);
 
                     // Appel des APIs pour affichage uniquement (non utilisé directement dans la liste)
-                    double[] coords = getCoordonnes(espaceSportif.getAdresse());
+                    double[] coords = getCoordonnes(espaceSportif.getAdresse() + ", Tunisie"); // Append country
                     if (coords != null) {
                         String climat = getClimat(coords[0], coords[1]);
                         System.out.println("Espace : " + espaceSportif.getNomEspace() + " - Coordonnées : " + coords[0] + ", " + coords[1] + " - Climat : " + climat);
@@ -227,8 +227,12 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
     }
 
     // Méthode pour récupérer les coordonnées (pas de stockage)
-// Méthode pour récupérer les coordonnées (pas de stockage)
     public double[] getCoordonnes(String address) throws IOException {
+        // Ensure the address includes a country (e.g., "City, Country")
+        if (!address.contains(",")) {
+            throw new IllegalArgumentException("L'adresse doit inclure la ville et le pays, sous forme 'Ville, Pays' (ex. 'Tunis, Tunisie')");
+        }
+
         String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
         String urlString = API_COORDONNEES + encodedAddress;
         System.out.println("Tentative de récupération des coordonnées pour l'adresse : " + address + " (URL : " + urlString + ")");
@@ -236,8 +240,8 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("X-Api-Key", API_KEY);
-        connection.setConnectTimeout(10000); // Augmentation du timeout à 10 secondes
-        connection.setReadTimeout(10000);    // Augmentation du timeout à 10 secondes
+        connection.setConnectTimeout(5000); // Augmentation du timeout à 10 secondes
+        connection.setReadTimeout(5000);    // Augmentation du timeout à 10 secondes
 
         int status = connection.getResponseCode();
         if (status != 200) {
@@ -304,9 +308,17 @@ public class EspaceSportifService implements EspaceService<EspaceSportif> {
         }
     }
 
-    // Nouvelle méthode pour générer une URL de carte OpenStreetMap
     public String getMapUrl(double latitude, double longitude) {
-        // Utilise OpenStreetMap pour générer une URL statique de carte
-        return String.format("https://www.openstreetmap.org/#map=15/%f/%f", latitude, longitude);
+        // Utilise Mapbox pour générer une URL statique de carte avec un template
+        String baseUrl = "https://api.mapbox.com/styles/v1/mapbox/streets-v11.html?access_token=pk.eyJ1IjoiaXNtYWlsMDIiLCJhIjoiY200cmJoajV4MDNibDJtc2VycmE2NnJ2MCJ9.6Nu1GLxUDkC9Odep6mKsmA#16/{lat}/{lon}";
+        String accessToken = "pk.eyJ1IjoiaXNtYWlsMDIiLCJhIjoiY200cmJoajV4MDNibDJtc2VycmE2NnJ2MCJ9.6Nu1GLxUDkC9Odep6mKsmA"; // Note: Consider moving to config
+        int zoomLevel = 15; // Default zoom level as specified
+
+        // Replace placeholders with actual latitude and longitude
+        String urlString = baseUrl
+                .replace("{lat}", String.valueOf(latitude))
+                .replace("{lon}", String.valueOf(longitude));
+
+        return urlString;
     }
 }

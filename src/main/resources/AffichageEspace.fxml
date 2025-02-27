@@ -17,9 +17,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="618.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageEspace">
+<AnchorPane prefHeight="618.0" prefWidth="1050.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageEspace">
    <!-- Background panel with shadow -->
-   <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="787.0" stylesheets="@dashboardDesign.css">
+   <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="824.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />
@@ -27,7 +27,7 @@
    </AnchorPane>
 
    <!-- Navigation sidebar -->
-   <AnchorPane prefHeight="608.0" prefWidth="187.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
+   <AnchorPane prefHeight="618.0" prefWidth="206.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
       <children>
          <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
          <Button fx:id="logout" layoutX="36.0" layoutY="505.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="41.0" stylesheets="@dashboardDesign.css">
@@ -93,7 +93,7 @@
                                  <Font name="Montserrat Medium" size="12.0" />
                               </font>
                            </Button>
-                           <Button fx:id="btnEspaceSportif" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif" onAction="#goToEspaceSportif">
+                           <Button fx:id="btnEspaceSportif" alignment="CENTER" mnemonicParsing="false" onAction="#goToEspaceSportif" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif">
                               <font>
                                  <Font name="Montserrat Medium" size="12.0" />
                               </font>
@@ -153,35 +153,39 @@
    </AnchorPane>
 
    <!-- Main content -->
-   <VBox alignment="CENTER" layoutX="214.0" layoutY="7.0" prefHeight="589.0" prefWidth="789.0" spacing="15" style="-fx-padding: 20px;">
+   <VBox alignment="CENTER" layoutX="214.0" layoutY="7.0" prefHeight="593.0" prefWidth="830.0" spacing="15" style="-fx-padding: 20px;">
       <!-- Title -->
       <Label text="Liste des Espaces Sportifs" />
 
       <!-- Search bar with icon -->
       <HBox alignment="CENTER_LEFT" spacing="10">
          <Label style="-fx-font-size: 16px; -fx-text-fill: #5cb85c;" text="🔍" />
-         <TextField fx:id="searchField" prefHeight="30.0" promptText="Rechercher un espace sportif..." styleClass="search-field" />
+         <TextField fx:id="searchField" prefHeight="32.0" prefWidth="431.0" promptText="Rechercher un espace sportif..." styleClass="search-field" />
          <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
          <Button fx:id="btnReservations" onAction="#goToReservation" text="📅 Réservations" />
-         <Button fx:id="btnAbonnements" text="🎟️ Abonnements" onAction="#goToAbonnement" />
+         <Button fx:id="btnAbonnements" onAction="#goToAbonnement" text="🎟️ Abonnements" />
       </HBox>
 
-      <!-- TableView -->
-      <TableView fx:id="tableView" prefHeight="400.0" prefWidth="771.0">
+      <!-- TableView with modified columns -->
+      <TableView fx:id="tableView" prefHeight="295.0" prefWidth="768.0">
          <columns>
             <TableColumn fx:id="colId" minWidth="50" text="ID" />
             <TableColumn fx:id="colNom" minWidth="150" text="Nom" />
             <TableColumn fx:id="colAdresse" minWidth="200" text="Adresse" />
             <TableColumn fx:id="colCategorie" minWidth="100" text="Catégorie" />
             <TableColumn fx:id="colCapacite" minWidth="100" text="Capacité" />
+            <TableColumn fx:id="colClimat" minWidth="100" text="Climat" />
+            <TableColumn fx:id="colMap" minWidth="100" text="Carte" />
             <TableColumn fx:id="colActions" minWidth="150" text="Actions" />
          </columns>
       </TableView>
 
-      <!-- Buttons (Ajouter, Rafraîchir) -->
-      <HBox spacing="10">
-         <Button fx:id="btnAjouter" onAction="#addEspace" text="Ajouter" styleClass="form-button" />
-         <Button fx:id="btnRefresh" onAction="#refreshList" text="🔄" styleClass="form-button" />
+      <!-- Buttons (Ajouter, Rafraîchir on the left, Exporter en PDF on the far right) -->
+      <HBox alignment="CENTER" spacing="20">
+         <Button fx:id="btnAjouter" onAction="#addEspace" styleClass="form-button" text="Ajouter" />
+         <Button fx:id="btnRefresh" onAction="#refreshList" styleClass="form-button" text="🔄" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Button fx:id="btnExport" onAction="#handleExportEspaces" text="Exporter en PDF" styleClass="form-button" />
       </HBox>
    </VBox>
 </AnchorPane>

@@ -1,10 +1,10 @@
 package controllers.EspaceSportif;
 
 import models.EspaceSportif.Abonnement;
-import models.Sport;
+import models.Club;  // Changé de Sport à Club
 import services.EspaceSportif.AbonnementService;
-import services.SportService;
-import utils.MyDatabase; // Import your MyDatabase class for connection
+import services.ClubService;  // Changé de SportService à ClubService
+import utils.MyDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +22,7 @@ import java.util.List;
 public class AjouterAbonnement {
 
     @FXML
-    private ComboBox<String> sportField; // Utilisation de Sport au lieu de Personne
+    private ComboBox<String> clubField;  // Changé de sportField à clubField
 
     @FXML
     private ComboBox<String> typeField;
@@ -46,29 +46,28 @@ public class AjouterAbonnement {
     private Button cancelButton;
 
     private final AbonnementService abonnementService;
-    private final SportService sportService;
+    private final ClubService clubService;  // Changé de SportService à ClubService
 
-    // Default constructor using MyDatabase singleton (similar to AffichageAbonnement)
     public AjouterAbonnement() {
         this.abonnementService = new AbonnementService(MyDatabase.getInstance().getConnection());
-        this.sportService = new SportService();
+        this.clubService = new ClubService();  // Changé de SportService à ClubService
     }
 
     @FXML
     public void initialize() {
-        loadSports();
+        loadClubs();  // Changé de loadSports à loadClubs
         loadTypes();
         loadEtats();
     }
 
-    private void loadSports() {
-        List<Sport> sports = sportService.rechercher(); // Récupère la liste des sports depuis SportService
-        if (sports != null && !sports.isEmpty()) {
-            for (Sport sport : sports) {
-                sportField.getItems().add(sport.getNomSport()); // Ajoute les noms des sports
+    private void loadClubs() {  // Changé de loadSports à loadClubs
+        List<Club> clubs = clubService.rechercher();  // Changé de sportService à clubService
+        if (clubs != null && !clubs.isEmpty()) {
+            for (Club club : clubs) {
+                clubField.getItems().add(club.getNomClub());  // Changé de getNomSport() à getNomClub()
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun sport trouvé dans la base de données.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun club trouvé dans la base de données.");
         }
     }
 
@@ -82,14 +81,14 @@ public class AjouterAbonnement {
 
     @FXML
     private void ajouterAbonnement(ActionEvent event) {
-        String sportNom = sportField.getValue();
+        String clubNom = clubField.getValue();  // Changé de sportNom à clubNom
         String type = typeField.getValue();
         LocalDate dateDebut = dateDebutField.getValue();
         LocalDate dateFin = dateFinField.getValue();
         String tarifText = tarifField.getText();
         String etat = etatField.getValue();
 
-        if (sportNom == null || type == null || dateDebut == null || dateFin == null || tarifText.isEmpty() || etat == null) {
+        if (clubNom == null || type == null || dateDebut == null || dateFin == null || tarifText.isEmpty() || etat == null) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs !");
             return;
         }
@@ -110,29 +109,29 @@ public class AjouterAbonnement {
             return;
         }
 
-        // Récupérer l'ID du sport sélectionné
-        int idSport = getIdSportByName(sportNom);
-        if (idSport == -1) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Sport non trouvé.");
+        // Récupérer l'ID du club sélectionné
+        int idClub = getIdClubByName(clubNom);  // Changé de getIdSportByName à getIdClubByName
+        if (idClub == -1) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Club non trouvé.");
             return;
         }
 
-        Abonnement abonnement = new Abonnement(0, idSport, sportNom, type, Date.valueOf(dateDebut), Date.valueOf(dateFin), tarif, etat);
+        Abonnement abonnement = new Abonnement(0, idClub, clubNom, type, Date.valueOf(dateDebut), Date.valueOf(dateFin), tarif, etat);  // Changé idSport à idClub et sportNom à clubNom
         try {
             abonnementService.ajouter(abonnement);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Abonnement ajouté avec succès !");
             goToAfficherAbonnements(event);
-        } catch (RuntimeException e) { // Updated to catch RuntimeException (from AbonnementService)
+        } catch (RuntimeException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ajouter l'abonnement : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private int getIdSportByName(String nomSport) {
-        List<Sport> sports = sportService.rechercher();
-        for (Sport sport : sports) {
-            if (sport.getNomSport().equals(nomSport)) {
-                return sport.getIdSport();
+    private int getIdClubByName(String nomClub) {  // Changé de getIdSportByName à getIdClubByName
+        List<Club> clubs = clubService.rechercher();  // Changé de sportService à clubService
+        for (Club club : clubs) {
+            if (club.getNomClub().equals(nomClub)) {  // Changé de getNomSport() à getNomClub()
+                return club.getIdClub();  // Changé de getIdSport() à getIdClub()
             }
         }
         return -1;
@@ -155,7 +154,7 @@ public class AjouterAbonnement {
 
     @FXML
     private void annuler() {
-        sportField.setValue(null);
+        clubField.setValue(null);  // Changé de sportField à clubField
         typeField.setValue(null);
         dateDebutField.setValue(null);
         dateFinField.setValue(null);

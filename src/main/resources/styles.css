@@ -473,7 +473,7 @@ and open the template in the editor.
     -fx-background-radius: 5px;
     -fx-background-color: white;
     -fx-text-fill: black;
-    -fx-pref-width: 500px;
+    -fx-pref-width: 450px; /* Reduced from 500px to 250px */
 }
 .search-field:focused {
     -fx-border-color: #4cae4c;
@@ -610,3 +610,31 @@ VBox > HBox {
     -fx-border-color: #1F618D;
 }
 
+/* Specific Styling for Export PDF Button */
+#btnExport {
+    -fx-background-color: #F39C12; /* Warm orange for "Export" to suggest documents */
+    -fx-border-color: #E67E22;
+    -fx-border-width: 1px;
+    -fx-font-family: "Montserrat SemiBold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 6px 15px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#btnExport:hover {
+    -fx-background-color: #E67E22;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-border-color: #D35400;
+}
+
+#btnExport:pressed {
+    -fx-background-color: #D35400;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-border-color: #BA4A00;
+}

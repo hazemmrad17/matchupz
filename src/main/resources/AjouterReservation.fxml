@@ -18,8 +18,8 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AjouterReservation">
-   <AnchorPane layoutX="213.0" layoutY="12.0" prefHeight="593.0" prefWidth="788.0" stylesheets="@dashboardDesign.css">
+<AnchorPane prefHeight="600.0" prefWidth="1050.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AjouterReservation">
+   <AnchorPane layoutX="213.0" layoutY="12.0" prefHeight="593.0" prefWidth="826.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />

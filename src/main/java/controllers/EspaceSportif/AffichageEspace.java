@@ -1,25 +1,33 @@
 package controllers.EspaceSportif;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Parent;
-import models.EspaceSportif.EspaceSportif;
-import services.EspaceSportif.EspaceSportifService;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import models.EspaceSportif.EspaceSportif;
+import services.EspaceSportif.EspaceSportifService;
 
-import java.io.IOException;
+import java.awt.Desktop;
+import java.io.*;
+import java.net.URI;
 import java.util.List;
 
 public class AffichageEspace {
@@ -46,9 +54,15 @@ public class AffichageEspace {
     private TableColumn<EspaceSportif, String> colActions;
 
     @FXML
+    private TableColumn<EspaceSportif, String> colClimat;
+
+    @FXML
+    private TableColumn<EspaceSportif, String> colMap;
+
+    @FXML
     private TextField searchField;
 
-    private EspaceSportifService espaceService;
+    private final EspaceSportifService espaceService;
 
     public AffichageEspace() {
         this.espaceService = new EspaceSportifService();
@@ -56,83 +70,118 @@ public class AffichageEspace {
 
     @FXML
     public void initialize() {
-        if (colNom == null || tableView == null) {
-            System.err.println("⚠ Erreur : Vérifie ton fichier FXML !");
+        if (tableView == null || colNom == null || colClimat == null || colMap == null) {
+            System.err.println("⚠ Erreur : Vérifie ton fichier FXML ! Les éléments n'ont pas été correctement injectés.");
             return;
         }
 
+        // Configuration des colonnes existantes
         colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getIdLieu()).asObject());
         colNom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNomEspace()));
         colAdresse.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAdresse()));
         colCategorie.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategorie()));
         colCapacite.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getCapacite()).asObject());
 
+        // Colonne pour afficher un bouton "Climat" qui ouvre une alerte
+        colClimat.setCellValueFactory(cellData -> new SimpleStringProperty("Climat"));
+        colClimat.setCellFactory(param -> new TableCell<>() {
+            final Button button = new Button("Climat");
+
+            {
+                button.setOnAction(event -> {
+                    EspaceSportif espace = getTableRow().getItem();
+                    if (espace != null) {
+                        showClimateDetails(espace);
+                    }
+                });
+            }
+
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : button);
+            }
+        });
+
+        // Colonne pour afficher un bouton "Carte" qui ouvre une carte dans le navigateur
+        colMap.setCellValueFactory(cellData -> new SimpleStringProperty("Carte"));
+        colMap.setCellFactory(param -> new TableCell<>() {
+            final Button button = new Button("Carte");
+
+            {
+                button.setOnAction(event -> {
+                    EspaceSportif espace = getTableRow().getItem();
+                    if (espace != null) {
+                        showMap(espace);
+                    }
+                });
+            }
+
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : button);
+            }
+        });
+
+        // Colonne Actions (modifier/supprimer)
         addActionsColumn();
         loadEspaces();
 
-        // Ajout d'un listener pour la recherche dynamique
+        // Listener pour la recherche dynamique
         searchField.textProperty().addListener((observable, oldValue, newValue) -> searchEspaceSportif(newValue));
     }
 
     private void loadEspaces() {
         List<EspaceSportif> espaces = espaceService.rechercher();
-        if (espaces == null) {
+        if (espaces == null || espaces.isEmpty()) {
             System.err.println("⚠ Aucun espace sportif trouvé !");
-            return;
+            tableView.setItems(FXCollections.observableArrayList());
+        } else {
+            tableView.setItems(FXCollections.observableArrayList(espaces));
         }
-        tableView.getItems().setAll(espaces);
     }
 
     private void addActionsColumn() {
         colActions.setCellValueFactory(cellData -> new SimpleStringProperty("Actions"));
 
-        colActions.setCellFactory(new Callback<>() {
+        colActions.setCellFactory(param -> new TableCell<>() {
+            final Button editButton = new Button("Modifier");
+            final Button deleteButton = new Button("Supprimer");
+            final HBox hBox = new HBox(10, editButton, deleteButton);
+
+            {
+                editButton.setOnAction(event -> handleEdit(getTableRow().getItem()));
+                deleteButton.setOnAction(event -> handleDelete(getTableRow().getItem()));
+            }
+
             @Override
-            public TableCell<EspaceSportif, String> call(TableColumn<EspaceSportif, String> param) {
-                return new TableCell<>() {
-                    final Button editButton = new Button("Modifier");
-                    final Button deleteButton = new Button("Supprimer");
-                    final HBox hBox = new HBox(10, editButton, deleteButton);
-
-                    {
-                        editButton.setOnAction(event -> handleEdit(getTableRow().getItem()));
-                        deleteButton.setOnAction(event -> handleDelete(getTableRow().getItem()));
-                    }
-
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setGraphic(empty ? null : hBox);
-                    }
-                };
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : hBox);
             }
         });
     }
 
     private void handleEdit(EspaceSportif espace) {
         try {
-            // Charger la fenêtre de modification de l'espace sportif
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierEspace.fxml"));
             AnchorPane modifLayout = loader.load();
-
-            // Obtenir le contrôleur de la fenêtre de modification
             ModifierEspace controller = loader.getController();
             controller.setEspaceToEdit(espace);
 
-            // Obtenir le stage actuel (fenêtre précédente) et le fermer
             Stage currentStage = (Stage) tableView.getScene().getWindow();
-            currentStage.close();  // Fermer la fenêtre précédente
+            currentStage.close();
 
-            // Créer une nouvelle scène avec la fenêtre de modification et l'afficher
             Stage newStage = new Stage();
             newStage.setScene(new Scene(modifLayout));
+            newStage.setTitle("Modifier un espace sportif");
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Erreur lors du chargement de ModifierEspace.fxml");
         }
     }
-
 
     private void handleDelete(EspaceSportif espace) {
         if (espace == null) return;
@@ -157,15 +206,12 @@ public class AffichageEspace {
     @FXML
     private void addEspace() {
         try {
-            // Charger la fenêtre d'ajout d'un espace sportif
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterEspace.fxml"));
             AnchorPane ajoutLayout = loader.load();
 
-            // Obtenir le stage actuel et le fermer
             Stage currentStage = (Stage) tableView.getScene().getWindow();
-            currentStage.close();  // Fermer la fenêtre précédente
+            currentStage.close();
 
-            // Créer une nouvelle scène et l'afficher
             Stage newStage = new Stage();
             newStage.setScene(new Scene(ajoutLayout));
             newStage.setTitle("Ajouter un espace sportif");
@@ -176,7 +222,6 @@ public class AffichageEspace {
         }
     }
 
-
     @FXML
     private void refreshList() {
         loadEspaces();
@@ -184,12 +229,8 @@ public class AffichageEspace {
 
     private void searchEspaceSportif(String motCle) {
         List<EspaceSportif> resultatRecherche = espaceService.rechercherParMotCle(motCle.toLowerCase());
-
-        ObservableList<EspaceSportif> data = FXCollections.observableArrayList(resultatRecherche);
-        tableView.setItems(data);
+        tableView.setItems(FXCollections.observableArrayList(resultatRecherche));
     }
-
-
 
     @FXML
     private void goToEspaceSportif(ActionEvent event) throws IOException {
@@ -219,9 +260,9 @@ public class AffichageEspace {
     @FXML
     public void goToAbonnement(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageAbonnement.fxml")); // Ou une autre vue
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageAbonnement.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) tableView.getScene().getWindow(); // Récupère la fenêtre actuelle
+            Stage stage = (Stage) tableView.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Liste des Abonnements");
         } catch (IOException e) {
@@ -230,5 +271,159 @@ public class AffichageEspace {
         }
     }
 
+    // Méthode pour afficher les détails climatiques dans une alerte
+    private void showClimateDetails(EspaceSportif espace) {
+        try {
+            String normalizedAddress = espace.getAdresse() + ", Tunisie";
+            double[] coords = espaceService.getCoordonnes(normalizedAddress);
+            if (coords != null) {
+                String climat = espaceService.getClimat(coords[0], coords[1]);
+                String mapUrl = espaceService.getMapUrl(coords[0], coords[1]);
 
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Détails climatiques et emplacement");
+                alert.setHeaderText("Informations pour " + espace.getNomEspace());
+                alert.setContentText(
+                        "Climat : " + climat + "\n" +
+                                "Emplacement : Cliquez sur le lien pour voir la carte\n" +
+                                "[Carte](" + mapUrl + ")"
+                );
+
+                Hyperlink mapLink = new Hyperlink("Ouvrir la carte");
+                mapLink.setOnAction(e -> {
+                    try {
+                        Desktop.getDesktop().browse(URI.create(mapUrl));
+                    } catch (IOException e1) {
+                        System.err.println("Erreur lors de l'ouverture de la carte : " + e1.getMessage());
+                    }
+                });
+
+                VBox content = new VBox(10, new Label("Climat : " + climat), mapLink);
+                alert.getDialogPane().setContent(content);
+                alert.showAndWait();
+            } else {
+                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + normalizedAddress);
+            }
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la récupération des données climatiques : " + e.getMessage());
+        }
+    }
+
+    private void showMap(EspaceSportif espace) {
+        try {
+            String normalizedAddress = espace.getAdresse() + ", Tunisie";
+            double[] coords = espaceService.getCoordonnes(normalizedAddress);
+            if (coords != null) {
+                String mapUrl = espaceService.getMapUrl(coords[0], coords[1]);
+                Desktop.getDesktop().browse(URI.create(mapUrl));
+            } else {
+                showAlert(Alert.AlertType.WARNING, "Avertissement", "Impossible de récupérer les coordonnées pour l'adresse : " + normalizedAddress);
+            }
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la carte : " + e.getMessage());
+        }
+    }
+
+    // Méthode utilitaire pour afficher des alertes
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleExportEspaces() {
+        ObservableList<EspaceSportif> espaces = tableView.getItems();
+        if (espaces.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucun Espace", "Il n'y a aucun espace sportif à exporter !");
+            return;
+        }
+
+        // Create a FileChooser to let the user select the save location
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer la liste des espaces sportifs");
+        fileChooser.setInitialFileName("EspacesSportifs_" + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        // Show save dialog and get the selected file
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Annulé", "L'exportation a été annulée.");
+            return; // User canceled the dialog
+        }
+
+        String fileName = file.getAbsolutePath();
+
+        try {
+            Document document = new Document();
+            document.setMargins(20, 20, 20, 20);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            document.open();
+
+            Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.BLACK);
+            Paragraph title = new Paragraph("Liste des Espaces Sportifs", boldFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph(" "));
+
+            PdfPTable pdfTable = new PdfPTable(6);
+            pdfTable.setWidthPercentage(100);
+            BaseColor deepGreen = new BaseColor(0, 100, 0);
+            String[] headers = {"ID", "Nom", "Adresse", "Catégorie", "Capacité"};
+            for (String header : headers) {
+                PdfPCell headerCell = new PdfPCell(new Paragraph(header));
+                headerCell.setBackgroundColor(deepGreen);
+                headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                headerCell.setPadding(5);
+                pdfTable.addCell(headerCell);
+            }
+
+            for (EspaceSportif espace : espaces) {
+                pdfTable.addCell(String.valueOf(espace.getIdLieu()));
+                pdfTable.addCell(espace.getNomEspace());
+                pdfTable.addCell(espace.getAdresse());
+                pdfTable.addCell(espace.getCategorie());
+                pdfTable.addCell(String.valueOf(espace.getCapacite()));
+                pdfTable.addCell("N/A"); // Replace with actual climat data if available via espaceService
+            }
+
+            document.add(pdfTable);
+            document.add(new Paragraph(" "));
+
+            Paragraph footer1 = new Paragraph("Gestion des Espaces Sportifs");
+            footer1.setAlignment(Element.ALIGN_RIGHT);
+            document.add(footer1);
+
+            Paragraph footer2 = new Paragraph("Nexus Team 2025 ©");
+            footer2.setAlignment(Element.ALIGN_RIGHT);
+            document.add(footer2);
+
+            document.add(new Paragraph(" "));
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpg");
+            if (inputStream == null) {
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpg");
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            byte[] imageBytes = baos.toByteArray();
+            Image logo = Image.getInstance(imageBytes);
+            logo.scaleToFit(184, 41);
+            logo.setAlignment(Element.ALIGN_CENTER);
+            document.add(logo);
+
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Les espaces sportifs ont été exportés dans " + fileName + " !");
+        } catch (DocumentException | IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'exportation des espaces sportifs : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

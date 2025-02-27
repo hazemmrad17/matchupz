@@ -18,8 +18,8 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.ModifierReservation">
-   <AnchorPane layoutX="216.0" layoutY="9.0" prefHeight="605.0" prefWidth="760.0" stylesheets="@dashboardDesign.css">
+<AnchorPane prefHeight="600.0" prefWidth="1050" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.ModifierReservation">
+   <AnchorPane layoutX="216.0" layoutY="9.0" prefHeight="605.0" prefWidth="826.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />
@@ -34,16 +34,16 @@
 
                      <GridPane alignment="CENTER" hgap="15" vgap="15">
              <Label text="Lieu :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-             <ComboBox fx:id="lieuField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+             <ComboBox fx:id="lieuField" prefHeight="42.0" prefWidth="439.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                          <Label text="Date :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-             <DatePicker fx:id="dateField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+             <DatePicker fx:id="dateField" prefHeight="32.0" prefWidth="441.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                          <Label text="Motif :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-             <ComboBox fx:id="motifField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+             <ComboBox fx:id="motifField" prefHeight="42.0" prefWidth="442.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                          <Label text="Statut :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-             <ComboBox fx:id="statusField" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+             <ComboBox fx:id="statusField" prefHeight="42.0" prefWidth="443.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          <columnConstraints>
             <ColumnConstraints />
             <ColumnConstraints />

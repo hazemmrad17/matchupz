@@ -48,6 +48,7 @@ public class AjouterEspace {
         } else {
             categorieField.getItems().setAll(categories);
         }
+        categorieField.setPromptText("Sélectionner une catégorie"); // Ajout pour guider l'utilisateur
     }
 
     @FXML
@@ -57,6 +58,7 @@ public class AjouterEspace {
         String categorie = categorieField.getValue();
         String capaciteText = capaciteField.getText().trim();
 
+        // Validation des champs
         if (nom.isEmpty() || adresse.isEmpty() || categorie == null || capaciteText.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs !");
             return;
@@ -65,18 +67,43 @@ public class AjouterEspace {
         float capacite;
         try {
             capacite = Float.parseFloat(capaciteText.replace(",", "."));
-            if (capacite <= 0) throw new NumberFormatException();
+            if (capacite <= 0) throw new NumberFormatException("Capacité doit être positive");
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Capacité doit être un nombre positif valide.");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "La capacité doit être un nombre positif valide.");
             return;
         }
 
-        EspaceSportif espace = new EspaceSportif(nom, adresse, categorie, capacite);
-        espaceService.ajouter(espace);
+        try {
+            // Création et ajout de l'espace sportif
+            EspaceSportif espace = new EspaceSportif(nom, adresse, categorie, capacite);
+            espaceService.ajouter(espace);
 
-        showAlert(Alert.AlertType.INFORMATION, "Succès", "Espace ajouté avec succès !");
-        clearFields();
-        goToAfficherEspace(event);
+            // Récupération des coordonnées et du climat via les APIs
+            double[] coords = espaceService.getCoordonnes(adresse);
+            String messageSuccess;
+            if (coords != null) {
+                String climat = espaceService.getClimat(coords[0], coords[1]);
+                messageSuccess = String.format(
+                        "Espace ajouté avec succès !\nCoordonnées : %.4f, %.4f\nClimat : %s",
+                        coords[0], coords[1], climat != null ? climat : "Non disponible"
+                );
+            } else {
+                messageSuccess = "Espace ajouté avec succès !\nCoordonnées et climat non disponibles.";
+            }
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", messageSuccess);
+            clearFields();
+            goToAfficherEspace(event);
+        } catch (IllegalArgumentException e) {
+            // Capture l'exception de setNomEspace dans EspaceSportif
+            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        } catch (IOException e) {
+            // Gestion des erreurs API
+            showAlert(Alert.AlertType.WARNING, "Attention",
+                    "Espace ajouté, mais erreur lors de la récupération des coordonnées/climat : " + e.getMessage());
+            clearFields();
+            goToAfficherEspace(event);
+        }
     }
 
     @FXML

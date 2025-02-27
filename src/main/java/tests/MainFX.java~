@@ -18,7 +18,7 @@ public class MainFX extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gestion des Espaces Sportifs");
-            stage.setResizable(false); // Empêche le redimensionnement de la fenêtre
+            stage.setResizable(true); // Empêche le redimensionnement de la fenêtre
             stage.show();
         } catch (Exception e) {
             System.err.println("⚠ Erreur lors du chargement du fichier FXML !");

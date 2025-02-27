@@ -17,8 +17,8 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="618.0" prefWidth="1010.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageReservation">
-   <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="787.0" stylesheets="@dashboardDesign.css">
+<AnchorPane prefHeight="618.0" prefWidth="1050.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EspaceSportif.AffichageReservation">
+   <AnchorPane layoutX="217.0" layoutY="14.0" prefHeight="593.0" prefWidth="825.0" stylesheets="@dashboardDesign.css">
       <styleClass>
          <String fx:value="white-bg" />
          <String fx:value="shadow" />
@@ -28,7 +28,7 @@
     <HBox alignment="CENTER" spacing="10" />
 
      <!-- Contenu principal -->
-     <VBox alignment="CENTER" layoutX="211.0" layoutY="27.0" prefHeight="565.0" prefWidth="787.0" spacing="15" style="-fx-padding: 20px;">
+     <VBox alignment="CENTER" layoutX="211.0" layoutY="27.0" prefHeight="565.0" prefWidth="819.0" spacing="15" style="-fx-padding: 20px;">
          <Label text="Liste des Réservations" />
 
          <!-- Champ de recherche avec icône 🔍 -->
@@ -36,8 +36,8 @@
              <Label style="-fx-font-size: 16px; -fx-text-fill: #5cb85c;" text="🔍" />
              <TextField fx:id="searchField" prefHeight="34.0" prefWidth="479.0" promptText="Rechercher une réservation..." styleClass="search-field" />
              <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-             <Button fx:id="btnEspaceSportif" onAction="#goToEspaceSportif" text="📍 Espaces Sportifs" />
-            <Button fx:id="btnAbonnements" text="🎟️ Abonnements" onAction="#goToAbonnement" />
+             <Button fx:id="btnEspaceSportif" onAction="#goToEspaceSportif" text="📍 Espaces" />
+            <Button fx:id="btnAbonnements" onAction="#goToAbonnement" text="🎟️ Abonnements" />
          </HBox>
 
          <TableView fx:id="tableView" prefHeight="391.0" prefWidth="747.0">
@@ -53,8 +53,10 @@
 
          <!-- Boutons (Ajouter, Rafraîchir) -->
          <HBox spacing="10">
-            <Button fx:id="btnAjouter" onAction="#addReservation" text="Ajouter" styleClass="form-button" />
-            <Button fx:id="btnRefresh" onAction="#refreshList" text="🔄" styleClass="form-button" />
+            <Button fx:id="btnAjouter" onAction="#addReservation" styleClass="form-button" text="Ajouter" />
+            <Button fx:id="btnRefresh" onAction="#refreshList" styleClass="form-button" text="🔄" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnExport" onAction="#handleExportReservations" text="Exporter en PDF" styleClass="form-button" />
          </HBox>
      </VBox>
    <AnchorPane prefHeight="618.0" prefWidth="206.0" styleClass="nav-form" stylesheets="@dashboardDesign.css">
@@ -123,7 +125,7 @@
                                  <Font name="Montserrat Medium" size="12.0" />
                               </font>
                            </Button>
-                           <Button fx:id="btnEspaceSportif1" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif" onAction="#goToEspaceSportif">
+                           <Button fx:id="btnEspaceSportif1" alignment="CENTER" mnemonicParsing="false" onAction="#goToEspaceSportif" prefHeight="30.0" prefWidth="160.0" styleClass="accordion-button" text="Espace Sportif">
                               <font>
                                  <Font name="Montserrat Medium" size="12.0" />
                               </font>

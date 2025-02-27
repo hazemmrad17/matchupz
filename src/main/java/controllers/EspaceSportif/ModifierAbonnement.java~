@@ -9,19 +9,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.EspaceSportif.Abonnement;
-import models.Club;  // Changé de Sport à Club
+import models.Sport;
 import services.EspaceSportif.AbonnementService;
-import services.ClubService;  // Changé de SportService à ClubService
-import utils.MyDatabase;
+import services.SportService;
+import utils.MyDatabase; // Import your MyDatabase class for connection
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 public class ModifierAbonnement {
 
     @FXML
-    private ComboBox<String> clubField;  // Changé de sportField à clubField
+    private ComboBox<String> sportField;
 
     @FXML
     private ComboBox<String> typeField;
@@ -45,31 +46,32 @@ public class ModifierAbonnement {
     private Button cancelButton;
 
     private final AbonnementService abonnementService;
-    private final ClubService clubService;  // Changé de SportService à ClubService
+    private final SportService sportService;
     private Abonnement abonnementToEdit;
 
+    // Default constructor using MyDatabase singleton (similar to ModifierReservation)
     public ModifierAbonnement() {
         this.abonnementService = new AbonnementService(MyDatabase.getInstance().getConnection());
-        this.clubService = new ClubService();  // Changé de SportService à ClubService
+        this.sportService = new SportService();
     }
 
     @FXML
     public void initialize() {
-        loadClubs();  // Changé de loadSports à loadClubs
+        loadSports();
         loadTypes();
         loadEtats();
     }
 
-    private void loadClubs() {  // Changé de loadSports à loadClubs
+    private void loadSports() {
         try {
-            List<Club> clubs = clubService.rechercher();  // Changé de sportService à clubService
-            if (clubs != null && !clubs.isEmpty()) {
-                clubField.getItems().setAll(clubs.stream().map(Club::getNomClub).toList());  // Changé de getNomSport à getNomClub
+            List<Sport> sports = sportService.rechercher();
+            if (sports != null && !sports.isEmpty()) {
+                sportField.getItems().setAll(sports.stream().map(Sport::getNomSport).toList());
             } else {
-                showAlert(Alert.AlertType.WARNING, "Aucun club", "Aucun club disponible.");
+                showAlert(Alert.AlertType.WARNING, "Aucun sport", "Aucun sport disponible.");
             }
-        } catch (RuntimeException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les clubs : " + e.getMessage());
+        } catch (RuntimeException e) { // Updated to catch RuntimeException (from SportService)
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les sports : " + e.getMessage());
         }
     }
 
@@ -81,6 +83,7 @@ public class ModifierAbonnement {
         etatField.getItems().setAll("Actif", "Expiré", "Suspendu");
     }
 
+    // Méthode utilitaire pour convertir java.sql.Date en LocalDate
     private LocalDate sqlDateToLocalDate(Date sqlDate) {
         if (sqlDate == null) return null;
         return sqlDate.toLocalDate();
@@ -88,8 +91,9 @@ public class ModifierAbonnement {
 
     public void setAbonnementToEdit(Abonnement abonnement) {
         this.abonnementToEdit = abonnement;
-        clubField.setValue(abonnement.getNomClub());  // Changé de getNomSport à getNomClub
+        sportField.setValue(abonnement.getNomSport());
         typeField.setValue(abonnement.getTypeAbonnement());
+        // Conversion de java.sql.Date en LocalDate
         dateDebutField.setValue(sqlDateToLocalDate(abonnement.getDateDebut()));
         dateFinField.setValue(sqlDateToLocalDate(abonnement.getDateFin()));
         tarifField.setText(String.valueOf(abonnement.getTarif()));
@@ -100,7 +104,7 @@ public class ModifierAbonnement {
     private void updateAbonnement(ActionEvent event) {
         if (abonnementToEdit == null) return;
 
-        String clubNom = clubField.getValue();  // Changé de sportNom à clubNom
+        String sportNom = sportField.getValue();
         String type = typeField.getValue();
         LocalDate dateDebut = dateDebutField.getValue();
         LocalDate dateFin = dateFinField.getValue();
@@ -108,7 +112,7 @@ public class ModifierAbonnement {
         String etat = etatField.getValue();
 
         // Validation des champs
-        if (clubNom == null || type == null || dateDebut == null || dateFin == null || tarifText.isEmpty() || etat == null) {
+        if (sportNom == null || type == null || dateDebut == null || dateFin == null || tarifText.isEmpty() || etat == null) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs !");
             return;
         }
@@ -129,17 +133,18 @@ public class ModifierAbonnement {
             return;
         }
 
-        // Récupérer l'ID du club
-        int idClub = getIdClubByName(clubNom);  // Changé de getIdSport à getIdClub
-        if (idClub == -1) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Club non trouvé.");
+        // Récupérer l'ID du sport
+        int idSport = getIdSportByName(sportNom);
+        if (idSport == -1) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Sport non trouvé.");
             return;
         }
 
         // Mettre à jour l'objet Abonnement
-        abonnementToEdit.setIdClub(idClub);  // Changé de setIdSport à setIdClub
-        abonnementToEdit.setNomClub(clubNom);  // Changé de setNomSport à setNomClub
+        abonnementToEdit.setIdSport(idSport);
+        abonnementToEdit.setNomSport(sportNom);
         abonnementToEdit.setTypeAbonnement(type);
+        // Conversion de LocalDate en java.sql.Date
         abonnementToEdit.setDateDebut(Date.valueOf(dateDebut));
         abonnementToEdit.setDateFin(Date.valueOf(dateFin));
         abonnementToEdit.setTarif(tarif);
@@ -149,7 +154,7 @@ public class ModifierAbonnement {
             abonnementService.modifier(abonnementToEdit);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Abonnement modifié avec succès !");
             goToAfficherAbonnements(event);
-        } catch (RuntimeException e) {
+        } catch (RuntimeException e) { // Updated to catch RuntimeException (from AbonnementService)
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de modifier l'abonnement : " + e.getMessage());
         }
     }
@@ -159,16 +164,16 @@ public class ModifierAbonnement {
         closeWindow(event);
     }
 
-    private int getIdClubByName(String nomClub) {  // Changé de getIdSportByName à getIdClubByName
+    private int getIdSportByName(String nomSport) {
         try {
-            List<Club> clubs = clubService.rechercher();  // Changé de sportService à clubService
-            for (Club club : clubs) {
-                if (club.getNomClub().equals(nomClub)) {  // Changé de getNomSport à getNomClub
-                    return club.getIdClub();  // Changé de getIdSport à getIdClub
+            List<Sport> sports = sportService.rechercher();
+            for (Sport sport : sports) {
+                if (sport.getNomSport().equals(nomSport)) {
+                    return sport.getIdSport();
                 }
             }
-        } catch (RuntimeException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la récupération des clubs : " + e.getMessage());
+        } catch (RuntimeException e) { // Updated to catch RuntimeException (from SportService)
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la récupération des sports : " + e.getMessage());
         }
         return -1;
     }

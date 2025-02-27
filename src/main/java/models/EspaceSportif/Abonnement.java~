@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class Abonnement {
     private int idAbonnement;
-    private int idClub;
-    private String nomClub;  // Jointure avec la table Club
+    private int idSport;
+    private String nomSport;  // Jointure avec la table Sport
     private String typeAbonnement; // Mensuel, Trimestriel, Annuel
     private Date dateDebut;
     private Date dateFin;
@@ -14,11 +14,11 @@ public class Abonnement {
 
     public Abonnement() {}
 
-    // Constructeur avec nomClub (via jointure)
-    public Abonnement(int idAbonnement, int idClub, String nomClub, String typeAbonnement, Date dateDebut, Date dateFin, double tarif, String etat) {
+    // Constructeur avec nomSport (via jointure)
+    public Abonnement(int idAbonnement, int idSport, String nomSport, String typeAbonnement, Date dateDebut, Date dateFin, double tarif, String etat) {
         this.idAbonnement = idAbonnement;
-        this.idClub = idClub;
-        this.nomClub = nomClub;
+        this.idSport = idSport;
+        this.nomSport = nomSport;
         this.typeAbonnement = typeAbonnement;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
@@ -30,11 +30,11 @@ public class Abonnement {
     public int getIdAbonnement() { return idAbonnement; }
     public void setIdAbonnement(int idAbonnement) { this.idAbonnement = idAbonnement; }
 
-    public int getIdClub() { return idClub; }
-    public void setIdClub(int idClub) { this.idClub = idClub; }
+    public int getIdSport() { return idSport; }
+    public void setIdSport(int idSport) { this.idSport = idSport; }
 
-    public String getNomClub() { return nomClub; }
-    public void setNomClub(String nomClub) { this.nomClub = nomClub; }
+    public String getNomSport() { return nomSport; }
+    public void setNomSport(String nomSport) { this.nomSport = nomSport; }
 
     public String getTypeAbonnement() { return typeAbonnement; }
     public void setTypeAbonnement(String typeAbonnement) { this.typeAbonnement = typeAbonnement; }
@@ -55,8 +55,8 @@ public class Abonnement {
     public String toString() {
         return "Abonnement{" +
                 "idAbonnement=" + idAbonnement +
-                ", idClub=" + idClub +
-                ", nomClub='" + nomClub + '\'' +
+                ", idSport=" + idSport +
+                ", nomSport='" + nomSport + '\'' +
                 ", typeAbonnement='" + typeAbonnement + '\'' +
                 ", dateDebut=" + dateDebut +
                 ", dateFin=" + dateFin +

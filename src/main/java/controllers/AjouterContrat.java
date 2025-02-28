@@ -326,7 +326,7 @@ public class AjouterContrat {
         try {
             // Debug: Log Twilio initialization
             System.out.println("Initializing Twilio with credentials...");
-            Twilio.init("AC9192d3a406d49f6389fad1a6d7e33bfc", "275b9f165cf58235592e2649ac0ca900");
+            Twilio.init("", "");
 
             // Debug: Log before sending the message
             System.out.println("Attempting to send message to " + toNumber + " from " + fromNumber);

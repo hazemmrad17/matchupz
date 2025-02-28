@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -8,6 +9,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -232,7 +234,6 @@
                                                 <Font name="Montserrat Medium" size="15.0" />
                                              </font>
                                           </Text>
-                                          <TextField fx:id="signature" promptText="Taper votre signature" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                           <Text textAlignment="CENTER" wrappingWidth="150.0" GridPane.rowIndex="6">
                                              <font>
                                                 <Font name="Montserrat Medium" size="15.0" />
@@ -245,7 +246,12 @@
                                              </children>
                                           </AnchorPane>
                                           <DatePicker fx:id="dp_date_fin" prefHeight="31.0" prefWidth="398.0" promptText="Sélectionner la date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <ComboBox fx:id="tx_contrat_sponsor"  prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="tx_contrat_sponsor" prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Canvas fx:id="signature" height="103.0" width="390.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                             <effect>
+                                                <Glow />
+                                             </effect>
+                                          </Canvas>
                                        </children>
                                     </GridPane>
                                  </children>

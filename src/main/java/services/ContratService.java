@@ -22,7 +22,7 @@ public class ContratService implements IService<Contrat> {
     @Override
     public void ajouter(Contrat contrat) {
         String checkTitleQuery = "SELECT COUNT(*) FROM `contrats` WHERE `titre` = ?";
-        String insertQuery = "INSERT INTO `contrats`( `id_sponsor`, `titre`, `DateDebut`, `DateFin`, `montant`) VALUES (?,?,?,?,?)";
+        String insertQuery = "INSERT INTO `contrats`( `id_sponsor`, `titre`, `DateDebut`, `DateFin`, `montant`, `signature`) VALUES (?,?,?,?,?,?)";
 
         try {
             // Check if the title is unique
@@ -62,7 +62,7 @@ public class ContratService implements IService<Contrat> {
     @Override
     public void modifier(Contrat contrat) {
         String checkTitleQuery = "SELECT COUNT(*) FROM `contrats` WHERE `titre` = ? AND `id_contrat` != ?";
-        String updateQuery = "UPDATE `contrats` SET id_sponsor=?, titre=?, DateDebut=?, DateFin=?, montant=? WHERE id_contrat=?";
+        String updateQuery = "UPDATE `contrats` SET id_sponsor=?, titre=?, DateDebut=?, DateFin=?, montant=?, signature=? WHERE id_contrat=?";
 
         try {
             // Check if the title is unique
@@ -92,7 +92,8 @@ public class ContratService implements IService<Contrat> {
             ps.setString(3, contrat.getDateDebut());
             ps.setString(4, contrat.getDateFin());
             ps.setFloat(5, contrat.getMontant());
-            ps.setInt(6, contrat.getId_contrat());
+            ps.setString(6, contrat.getSignaturePath());
+            ps.setInt(7, contrat.getId_contrat());
             ps.executeUpdate();
             System.out.println("Contrat modifié!");
             System.out.println("Updating contract with id: " + contrat.getId_contrat());
@@ -151,18 +152,6 @@ public class ContratService implements IService<Contrat> {
         return contrats;
     }
 
-    /*
-    private String formatDate(String date) {
-        try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = inputFormat.parse(date);
-            return outputFormat.format(parsedDate);
-        } catch (ParseException e) {
-            System.out.println("Error: Invalid date format: " + date);
-            return null;
-        }
-    }*/
 
 
     public boolean isContratTitreExists(String nom) {

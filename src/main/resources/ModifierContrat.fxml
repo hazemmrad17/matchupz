@@ -245,7 +245,7 @@
                                              </children>
                                           </AnchorPane>
                                           <DatePicker fx:id="dp_date_fin" prefHeight="31.0" prefWidth="398.0" promptText="Sélectionner la date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <ComboBox fx:id="tx_contrat_sponsor" onAction="#initialize" prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="tx_contrat_sponsor" disable="true" onAction="#initialize" prefHeight="43.0" prefWidth="401.0" promptText="Sélectionner un sponsor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>

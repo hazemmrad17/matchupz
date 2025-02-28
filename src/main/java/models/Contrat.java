@@ -11,6 +11,7 @@ public class Contrat {
     private String DateDebut;
     private String DateFin;
     private float montant;
+    private String signaturePath;
 
     public Contrat() {
 
@@ -80,6 +81,10 @@ public class Contrat {
     public void setId_sponsor(int id_sponsor) {
         this.id_sponsor = id_sponsor;
     }
+
+    public String getSignaturePath() { return signaturePath; }
+
+    public void setSignaturePath(String signaturePath) { this.signaturePath = signaturePath; }
 
     @Override
     public String toString() {

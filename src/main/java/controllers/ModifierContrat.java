@@ -77,6 +77,15 @@ public class ModifierContrat {
             dp_date_fin.setValue(LocalDate.parse(contrat.getDateFin(), DATE_FORMATTER));
             // Pre-selection of sponsor will be handled in initialize()
         }
+
+        // Load existing signature if available
+        /*
+        String signaturePath = contrat.getSignaturePath();
+        if (signaturePath != null && !signaturePath.isEmpty()) {
+            Image signatureImage = new Image(new File(signaturePath).toURI().toString());
+            gc.clearRect(0, 0, signatureCanvas.getWidth(), signatureCanvas.getHeight());
+            gc.drawImage(signatureImage, 0, 0, signatureCanvas.getWidth(), signatureCanvas.getHeight());
+        }*/
     }
 
 

@@ -1,0 +1,197 @@
+package controllers.joueur;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import models.joueur.Club;
+import models.match.SessionManager;
+import models.utilisateur.Role;
+import models.utilisateur.User;
+import services.joueur.ClubService;
+
+import java.io.File;
+import java.io.IOException;
+
+public class AjoutClub {
+
+    @FXML private Button bt_user;
+    @FXML private Button teams;
+    @FXML private Button dashboard;
+    @FXML private Button espace;
+    @FXML private Button logistique;
+    @FXML private Button logout;
+    @FXML private Button logout2; // The button to toggle themes
+    @FXML private Label nom_user;
+    @FXML private Button homeButton;
+    @FXML private TextField nomField;
+    @FXML private TextField photoField;
+    @FXML private Button selectPhotoButton;
+    @FXML private Button ajouterButton;
+    @FXML private Button annulerButton;
+
+    private ClubService clubService = new ClubService();
+    private boolean isBlueTheme = true; // Track the current theme (start with blue)
+
+    // Existing methods...
+
+    @FXML
+    private void toggleTheme(ActionEvent event) {
+        if (isBlueTheme) {
+            // Switch to green theme
+            logout2.getStyleClass().remove("blue");
+            logout2.getStyleClass().add("green");
+        } else {
+            // Switch to blue theme
+            logout2.getStyleClass().remove("green");
+            logout2.getStyleClass().add("blue");
+        }
+        isBlueTheme = !isBlueTheme; // Toggle the state
+    }
+
+    // Initialize the button with the blue theme by default
+    @FXML
+    public void initialize() {
+        logout2.getStyleClass().add("blue"); // Start with blue theme
+    }
+
+    // Existing methods...
+
+    private void afficherProfil(User user) {
+        if (user.getImage() != null && !user.getImage().isEmpty()) {
+            javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
+            String name = user.getPrenom();
+            nom_user.setText(name);
+        }
+    }
+
+    @FXML void match(ActionEvent event) { }
+
+    @FXML
+    void pageuser(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                Stage stage = (Stage) bt_user.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté ou non-admin !");
+        }
+    }
+
+    @FXML void sponsor(ActionEvent event) { }
+
+    @FXML
+    void teams(ActionEvent event) {
+        loadScene("/joueur/MainController.fxml", teams);
+    }
+
+    @FXML void dashboard(ActionEvent event) { }
+
+    @FXML
+    void espace(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+                Stage stage = (Stage) espace.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté ou non-admin !");
+        }
+    }
+
+    @FXML
+    void logistique(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fournisseur/DisplayFournisseur.fxml"));
+            Stage stage = (Stage) logistique.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+        }
+    }
+
+    private void loadScene(String fxmlPath, Button button) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) button.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Échec du chargement", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleHome() {
+        loadScene("/joueur/MainController.fxml", homeButton);
+    }
+
+    @FXML
+    private void selectPhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une photo de club");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+        File file = fileChooser.showOpenDialog(selectPhotoButton.getScene().getWindow());
+        if (file != null) {
+            photoField.setText(file.toURI().toString());
+        }
+    }
+
+    @FXML
+    private void ajouter() {
+        String nom = nomField.getText().trim();
+        String photoUrl = photoField.getText().trim();
+
+        if (nom.isEmpty()) {
+            showAlert("Erreur", "Nom requis", "Le nom du club ne peut pas être vide.");
+            return;
+        }
+
+        Club club = new Club(nom, photoUrl.isEmpty() ? null : photoUrl);
+        clubService.ajouter(club);
+        handleAnnulerButton();
+    }
+
+    @FXML
+    private void handleAnnulerButton() {
+        loadScene("/joueur/DisplayClub.fxml", annulerButton);
+    }
+
+    private void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}

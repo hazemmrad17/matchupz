@@ -7,8 +7,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import models.Contrat;
@@ -16,10 +21,16 @@ import models.Sponsor;
 import services.ContratService;
 import services.SponsorService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static javafx.embed.swing.SwingFXUtils.fromFXImage;
+import static javafx.embed.swing.SwingFXUtils.toFXImage;
 
 public class ModifierContrat {
 
@@ -27,7 +38,7 @@ public class ModifierContrat {
     private Button btnAjouterContrat;
 
     @FXML
-    private Button btnSupprimerContrat;
+    private Button btnAnnulerContrat;
 
     @FXML
     private DatePicker dp_date_debut;
@@ -48,7 +59,7 @@ public class ModifierContrat {
     private AnchorPane main_form;
 
     @FXML
-    private TextField signature;
+    private Canvas signature;
 
     @FXML
     private TextField tx_contrat_montant;
@@ -64,8 +75,8 @@ public class ModifierContrat {
     private final SponsorService sponsorService = new SponsorService();
     private ObservableList<Contrat> contratList = FXCollections.observableArrayList();
     private ObservableList<Sponsor> sponsorList = FXCollections.observableArrayList();
+    private GraphicsContext gc;
 
-    // Define the date formatter once for reuse
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public void setContratToModify(Contrat contrat) {
@@ -75,26 +86,16 @@ public class ModifierContrat {
             tx_contrat_montant.setText(String.valueOf(contrat.getMontant()));
             dp_date_debut.setValue(LocalDate.parse(contrat.getDateDebut(), DATE_FORMATTER));
             dp_date_fin.setValue(LocalDate.parse(contrat.getDateFin(), DATE_FORMATTER));
-            // Pre-selection of sponsor will be handled in initialize()
+            loadSignature(contrat.getSignaturePath());
         }
-
-        // Load existing signature if available
-        /*
-        String signaturePath = contrat.getSignaturePath();
-        if (signaturePath != null && !signaturePath.isEmpty()) {
-            Image signatureImage = new Image(new File(signaturePath).toURI().toString());
-            gc.clearRect(0, 0, signatureCanvas.getWidth(), signatureCanvas.getHeight());
-            gc.drawImage(signatureImage, 0, 0, signatureCanvas.getWidth(), signatureCanvas.getHeight());
-        }*/
     }
-
 
     @FXML
     void handleAnnulerButton(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherContrat.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) btnAjouterContrat.getScene().getWindow();
+            Stage stage = (Stage) btnAnnulerContrat.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -119,7 +120,6 @@ public class ModifierContrat {
 
     @FXML
     void modifier(ActionEvent event) {
-        // Vérification initiale des champs vides
         if (tx_contrat_titre.getText().trim().isEmpty() ||
                 tx_contrat_montant.getText().trim().isEmpty() ||
                 dp_date_debut.getValue() == null ||
@@ -136,45 +136,46 @@ public class ModifierContrat {
             LocalDate dateDebut = dp_date_debut.getValue();
             LocalDate dateFin = dp_date_fin.getValue();
 
-            // Validation du format du titre (lettres et espaces uniquement)
             if (!newTitre.matches("[a-zA-Z\\s]+")) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Le titre doit contenir uniquement des lettres.");
                 return;
             }
 
-            // Validation de la logique des dates
             if (!dateFin.isAfter(dateDebut)) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "La date de fin doit être postérieure à la date de début.");
                 return;
             }
 
-            // Validation du montant (doit être positif)
             if (montant <= 0) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Le montant doit être supérieur à 0.");
                 return;
             }
 
-            // Vérification de l'unicité du titre si modifié
             String originalTitre = contratToModify.getTitre();
-            if (!newTitre.equals(originalTitre)) {
-                if (contratService.isContratTitreExists(newTitre)) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Un contrat avec ce titre existe déjà.");
-                    return;
-                }
+            if (!newTitre.equals(originalTitre) && contratService.isContratTitreExists(newTitre)) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Un contrat avec ce titre existe déjà.");
+                return;
             }
 
-            // Mise à jour de l'objet contratToModify
+            // Save the modified signature
+            String signaturePath = saveSignatureToFile(newTitre);
+            if (signaturePath == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la sauvegarde de la signature. Veuillez réessayer.");
+                return;
+            }
+
+            // Update the Contrat object
             String dateDebutStr = dateDebut.format(DATE_FORMATTER);
             String dateFinStr = dateFin.format(DATE_FORMATTER);
             contratToModify.setTitre(newTitre);
             contratToModify.setMontant(montant);
             contratToModify.setDateDebut(dateDebutStr);
             contratToModify.setDateFin(dateFinStr);
+            contratToModify.setSignaturePath(signaturePath);
 
-            // Appel du service pour modifier
+            // Modify the contract in the database
             contratService.modifier(contratToModify);
 
-            // Affichage du message de succès et retour à la liste
             showAlert(Alert.AlertType.INFORMATION,
                     "Succès",
                     "Les informations du contrat ont été modifiées avec succès.");
@@ -192,6 +193,29 @@ public class ModifierContrat {
 
     @FXML
     public void initialize() {
+        // Initialize the canvas
+        gc = signature.getGraphicsContext2D();
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, 0, signature.getWidth(), signature.getHeight());
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+
+        // Add drawing event handlers
+        signature.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            gc.beginPath();
+            gc.moveTo(e.getX(), e.getY());
+            gc.stroke();
+        });
+
+        signature.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            gc.lineTo(e.getX(), e.getY());
+            gc.stroke();
+        });
+
+        signature.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+            // Drawing completed
+        });
+
         // Set up the DatePicker converters
         dp_date_debut.setConverter(new StringConverter<LocalDate>() {
             @Override
@@ -226,7 +250,6 @@ public class ModifierContrat {
             tx_contrat_sponsor.setItems(sponsorList);
             tx_contrat_sponsor.setPromptText("Sponsor bloqué");
 
-            // Configure ComboBox to display sponsor names
             tx_contrat_sponsor.setCellFactory(param -> new ListCell<Sponsor>() {
                 @Override
                 protected void updateItem(Sponsor item, boolean empty) {
@@ -250,7 +273,6 @@ public class ModifierContrat {
                 }
             });
 
-            // Pre-select the sponsor for the contract being modified
             if (contratToModify != null) {
                 Sponsor selectedSponsor = sponsorList.stream()
                         .filter(s -> s.getId_sponsor() == contratToModify.getId_sponsor())
@@ -263,9 +285,55 @@ public class ModifierContrat {
                 }
             }
 
-            // Disable the ComboBox to prevent modification
             tx_contrat_sponsor.setDisable(true);
         }
+    }
+
+    private void loadSignature(String signaturePath) {
+        if (signaturePath != null && !signaturePath.isEmpty()) {
+            try {
+                File file = new File(signaturePath);
+                if (file.exists()) {
+                    BufferedImage bufferedImage = ImageIO.read(file);
+                    Image fxImage = toFXImage(bufferedImage, null);
+                    gc.drawImage(fxImage, 0, 0, signature.getWidth(), signature.getHeight());
+                } else {
+                    System.out.println("Signature file not found: " + signaturePath);
+                }
+            } catch (IOException e) {
+                System.out.println("Error loading signature: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String saveSignatureToFile(String titre) {
+        String filePath = null;
+        try {
+            String existingPath = contratToModify.getSignaturePath();
+            if (existingPath != null && !existingPath.isEmpty() && new File(existingPath).exists()) {
+                filePath = existingPath;
+            } else {
+                filePath = "signatures/signature_" + titre.replaceAll("\\s+", "_") + "_" + System.currentTimeMillis() + ".png";
+                File directory = new File("signatures");
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+            }
+
+            javafx.scene.image.WritableImage snapshot = signature.snapshot(null, null);
+            BufferedImage bufferedImage = fromFXImage(snapshot, null);
+            File outputFile = new File(filePath);
+            ImageIO.write(bufferedImage, "png", outputFile);
+            System.out.println("Signature saved successfully at: " + filePath);
+
+            gc.setFill(Color.WHITE);
+            gc.fillRect(0, 0, signature.getWidth(), signature.getHeight());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la sauvegarde de la signature : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return filePath;
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {

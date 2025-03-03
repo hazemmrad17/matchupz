@@ -28,7 +28,7 @@
                             <left>
                                 <AnchorPane prefHeight="555.0" prefWidth="211.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <AnchorPane prefHeight="602.0" prefWidth="211.0" styleClass="nav-form" stylesheets="@/dashboardDesign.css" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <AnchorPane prefHeight="602.0" prefWidth="211.0" styleClass="nav-form" stylesheets="@dashboardDesign.css" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
                                                 <Line endX="69.0" layoutX="121.0" layoutY="178.0" startX="-100.0" stroke="WHITE" />
                                                 <Button fx:id="logout" layoutX="21.0" layoutY="504.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="32.0" stylesheets="@/dashboardDesign.css">
@@ -162,7 +162,7 @@
                                     <children>
                                         <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="-13.6" prefHeight="600.0" prefWidth="916.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@/dashboardDesign.css">
+                                                <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0" stylesheets="@dashboardDesign.css">
                                                     <styleClass>
                                                         <String fx:value="white-bg" />
                                                         <String fx:value="shadow" />
@@ -179,7 +179,7 @@
                                                                         <TableColumn fx:id="colDateDebut" prefWidth="100.0" text="Date Début" />
                                                                         <TableColumn fx:id="colDateFin" prefWidth="100.0" text="Date Fin" />
                                                                         <TableColumn fx:id="colMontant" prefWidth="100.0" text="Montant (€)" />
-                                                      <TableColumn fx:id="colSignature" prefWidth="75.0" text="Signature" />
+                                                      <TableColumn fx:id="colSignature" prefWidth="120.0" text="Signature" />
                                                                         <TableColumn fx:id="colActions" prefWidth="200.0" text="Actions" />
                                                                     </columns>
                                                                 </TableView>

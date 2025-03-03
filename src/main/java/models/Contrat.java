@@ -17,21 +17,23 @@ public class Contrat {
 
     }
 
-    public Contrat(int idSponsor, String titre, String DateDebut, String DateFin, float montant) {
+    public Contrat(int idSponsor, String titre, String DateDebut, String DateFin, float montant, String signaturePath) {
         this.id_sponsor = idSponsor;
         this.titre = titre;
         this.DateDebut = DateDebut;
         this.DateFin = DateFin;
         this.montant = montant;
+        this.signaturePath = signaturePath;
     }
 
-    public Contrat(int id_contrat, int idSponsor, String titre, String DateDebut, String DateFin, float montant) {
+    public Contrat(int id_contrat, int idSponsor, String titre, String DateDebut, String DateFin, float montant, String signaturePath) {
         this.id_contrat = id_contrat;
         this.id_sponsor = idSponsor;
         this.titre = titre;
         this.DateDebut = DateDebut;
         this.DateFin = DateFin;
         this.montant = montant;
+        this.signaturePath = signaturePath;
     }
 
     public int getId_contrat() {

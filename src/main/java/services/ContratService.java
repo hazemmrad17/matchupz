@@ -52,6 +52,7 @@ public class ContratService implements IService<Contrat> {
             ps.setString(3, contrat.getDateDebut());
             ps.setString(4, contrat.getDateFin());
             ps.setFloat(5, contrat.getMontant());
+            ps.setString(6, contrat.getSignaturePath());
             ps.executeUpdate();
             System.out.println("Contrat ajouté!");
         } catch (SQLException e) {
@@ -102,6 +103,7 @@ public class ContratService implements IService<Contrat> {
             System.out.println("New DateDebut: " + contrat.getDateDebut());
             System.out.println("New DateFin: " + contrat.getDateFin());
             System.out.println("New montant: " + contrat.getMontant());
+            System.out.println("New montant: " + contrat.getSignaturePath());
             int rowsAffected = ps.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
         } catch (SQLException e) {
@@ -141,6 +143,7 @@ public class ContratService implements IService<Contrat> {
                 contrat.setDateDebut(rs.getString("DateDebut"));
                 contrat.setDateFin(rs.getString("DateFin"));
                 contrat.setMontant(rs.getFloat("montant"));
+                contrat.setSignaturePath(rs.getString("signature"));
                 contrats.add(contrat);
             }
 

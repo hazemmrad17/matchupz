@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../style_file_blue.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.user.Code">
+   <left>
+      <!-- Left Side: Promotional Area with Image -->
+      <AnchorPane prefHeight="600.0" prefWidth="400.0" styleClass="card">
+         <children>
+            <!-- Promotional Image -->
+
+            <!-- Promotional Text -->
+            <VBox alignment="CENTER" layoutX="50.0" layoutY="420.0" prefHeight="150.0" prefWidth="300.0" spacing="10">
+               <children>
+                  <Label prefHeight="92.0" prefWidth="300.0" styleClass="form-title" text="Réinitialisez votre mot de passe" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat ExtraBold" size="1.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="label-text" text="Vérifiez votre code pour continuer" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat Medium" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="600.0" prefWidth="374.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane layoutX="21.0" layoutY="37.0" prefHeight="513.0" prefWidth="354.0" styleClass="shadow white-bg">
+               <children>
+                  <ImageView fx:id="logo" fitHeight="58.0" fitWidth="268.0" layoutX="43.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/matchupz.png" />
+                     </image>
+                  </ImageView>
+                  <Text layoutX="30.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modifier le mot de passe" textAlignment="CENTER" wrappingWidth="274.13671875">
+                     <font>
+                        <Font name="Poppins Medium" size="22.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="21.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entrer le code de vérification envoyé sur votre email" textAlignment="CENTER" wrappingWidth="310.13677978515625">
+                     <font>
+                        <Font name="Montserrat Medium" size="11.0" />
+                     </font>
+                  </Text>
+                  <!-- Form Fields -->
+                  <TextField fx:id="codeField" layoutX="27.0" layoutY="237.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter verification code" />
+                  <!-- Buttons -->
+                  <Button fx:id="submitButton" layoutX="51.0" layoutY="414.0" mnemonicParsing="false" onAction="#handleSubmit" prefHeight="40.0" prefWidth="250.0" styleClass="btn-primary" text="Verifier code" />
+               </children>
+               <styleClass>
+                  <String fx:value="shadow" />
+                  <String fx:value="white-bg" />
+               </styleClass>
+            </AnchorPane>
+            <Text layoutX="61.0" layoutY="583.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MatchUPZ © Copyright Reserved 2025" textAlignment="CENTER" wrappingWidth="274.13671875">
+               <font>
+                  <Font name="Montserrat Medium" size="12.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../style_file_blue.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.user.AddUtilisateurController">
+   <left>
+      <!-- Left Side: Promotional Area -->
+      <AnchorPane prefHeight="600.0" prefWidth="300.0" styleClass="card">
+         <children>
+            <!-- Promotional Image or Placeholder -->
+            <ImageView fx:id="promoImage" fitHeight="606.0" fitWidth="311.0" layoutX="-8.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
+
+            </ImageView>
+            <!-- Promotional Text -->
+            <VBox alignment="CENTER" layoutX="25.0" layoutY="460.0" prefHeight="130.0" prefWidth="250.0" spacing="10">
+               <children>
+                  <Label prefHeight="46.0" prefWidth="250.0" text="Manage Your Team" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat ExtraBold" size="23.0" />
+                     </font>
+                  </Label>
+                  <Label text="Add users effortlessly with MatchUPZ" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat Medium" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <!-- Right Side: User Creation Form -->
+      <AnchorPane prefHeight="600.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane layoutX="25.0" layoutY="25.0" prefHeight="550.0" prefWidth="450.0">
+               <children>
+                  <!-- Form Title -->
+                  <Label layoutX="72.0" prefHeight="46.0" prefWidth="314.0" text="Créer un nouveau utilisateur" textAlignment="CENTER" textFill="#22577A">
+                     <font>
+                        <Font name="Poppins SemiBold" size="21.0" />
+                     </font></Label>
+                  <!-- Form Fields in GridPane -->
+                  <GridPane hgap="15" layoutX="13.0" layoutY="46.0" prefHeight="443.0" prefWidth="423.0" vgap="10">
+                     <children>
+                        <Label styleClass="label-text" text="Nom" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="tf_nom" prefHeight="40.0" prefWidth="200.0" promptText="Entrer le nom" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Label styleClass="label-text" text="Prénom" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="tf_prenom" prefHeight="40.0" prefWidth="200.0" promptText="Entrer le prénom" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label styleClass="label-text" text="Email" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="tf_email" prefHeight="40.0" prefWidth="200.0" promptText="Entrer l'email" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label styleClass="label-text" text="Mot de passe" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <PasswordField fx:id="tf_mot_de_passe" prefHeight="40.0" prefWidth="200.0" promptText="Entrer le mot de passe" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label styleClass="label-text" text="Téléphone" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <TextField fx:id="tf_tel" prefHeight="40.0" prefWidth="200.0" promptText="Entrer le téléphone" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label styleClass="label-text" text="Date de naissance" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <DatePicker fx:id="date_date_naiss" prefHeight="43.0" prefWidth="323.0" promptText="Choisir la date" styleClass="date-picker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label styleClass="label-text" text="Genre" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <children>
+                              <RadioButton fx:id="rb_homme" contentDisplay="CENTER" mnemonicParsing="false" styleClass="label-text" text="Homme" textAlignment="CENTER" />
+                              <RadioButton fx:id="rb_femme" contentDisplay="CENTER" mnemonicParsing="false" styleClass="label-text" text="Femme" textAlignment="CENTER" />
+                           </children>
+                        </HBox>
+                        <Label styleClass="label-text" text="Rôle" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <ComboBox fx:id="combo_role" prefHeight="40.0" prefWidth="314.0" promptText="Sélectionner un rôle" styleClass="combo-box" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label styleClass="label-text" text="Image" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                        <TextField fx:id="tf_image" prefHeight="40.0" prefWidth="200.0" promptText="Chemin de l'image" styleClass="text-input" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.20001220703125" minWidth="100.0" prefWidth="121.60008239746094" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="361.5999298095703" minWidth="200.0" prefWidth="346.39991760253906" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <!-- Buttons -->
+                  <HBox alignment="CENTER" layoutX="50.0" layoutY="450.0" spacing="15" />
+                  <Button fx:id="button_ajout_user" layoutX="316.0" layoutY="504.0" mnemonicParsing="false" onAction="#ajouter" prefHeight="40.0" prefWidth="120.0" styleClass="btn-primary" text="Ajouter" />
+                  <Button fx:id="button_annuler_user" layoutX="170.0" layoutY="504.0" mnemonicParsing="false" onAction="#annuler" prefHeight="40.0" prefWidth="120.0" styleClass="btn-secondary" text="Annuler" />
+                  <Button fx:id="button_retour" layoutX="13.0" layoutY="504.0" mnemonicParsing="false" onAction="#retour" prefHeight="40.0" prefWidth="120.0" styleClass="btn-tertiary" text="Retour" />
+               </children>
+               <styleClass>
+                  <String fx:value="shadow" />
+                  <String fx:value="white-bg" />
+               </styleClass>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

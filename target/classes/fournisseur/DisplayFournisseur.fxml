@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1114.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.fournisseur.DisplayFournisseur">
+    <children>
+        <AnchorPane fx:id="main_form" prefHeight="600.0" prefWidth="1100.0" stylesheets="@../style_file_blue.css">
+            <children>
+                <BorderPane layoutX="79.0" layoutY="100.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <left>
+                        <AnchorPane prefHeight="600.0" prefWidth="240.0" styleClass="nav-form" BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane layoutX="20.0" layoutY="14.0" prefHeight="155.0" prefWidth="200.0">
+                                    <children>
+                                        <ImageView fitHeight="41.0" fitWidth="184.0" layoutX="8.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../images/logo_horizantal.png" />
+                                            </image>
+                                        </ImageView>
+                                        <Label alignment="CENTER" layoutY="57.0" prefHeight="38.0" prefWidth="200.0" text="Welcome," textAlignment="CENTER" textFill="WHITE">
+                                            <font>
+                                                <Font name="Comic Sans MS" size="29.0" />
+                                            </font>
+                                        </Label>
+                                        <Label alignment="CENTER" layoutY="99.0" prefHeight="38.0" prefWidth="200.0" text="User" textAlignment="CENTER" textFill="WHITE">
+                                            <font>
+                                                <Font name="Comic Sans MS Bold" size="35.0" />
+                                            </font>
+                                        </Label>
+                                        <Line endX="80.99998474121094" endY="0.1999969482421875" layoutX="121.0" layoutY="155.0" startX="-100.0" stroke="WHITE" />
+                                    </children>
+                                </AnchorPane>
+                                <Accordion layoutX="11.0" layoutY="170.0" styleClass="accordion">
+                                    <panes>
+                                        <TitledPane animated="false" text="Home" textFill="WHITE">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="200.0">
+                                                    <children>
+                                                        <Button fx:id="dashboard" alignment="CENTER" layoutX="2.0" layoutY="-1.0" mnemonicParsing="false" onAction="#dashboard" prefHeight="40.0" prefWidth="195.0" styleClass="accordion-button" text="Home">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/safe-home.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane animated="false" text="Responsable Sportive" textFill="WHITE">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="200.0">
+                                                    <children>
+                                                        <Button fx:id="teams" alignment="CENTER" layoutX="2.0" mnemonicParsing="false" onAction="#teams" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Teams">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/people.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                        <Button fx:id="match" alignment="CENTER" layoutX="2.0" layoutY="50.0" mnemonicParsing="false" onAction="#match" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Match">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/calendar-tick.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane animated="false" text="Responsable Logistique" textFill="WHITE">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="200.0">
+                                                    <children>
+                                                        <Button fx:id="logistique" alignment="CENTER" layoutX="2.0" mnemonicParsing="false" onAction="#logistique" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Logistique">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/flag-2.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                        <Button fx:id="espace" alignment="CENTER" layoutX="2.0" layoutY="45.0" mnemonicParsing="false" onAction="#espace" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Espace Sportif">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/buildings.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane animated="false" text="Responsable Financier" textFill="WHITE">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="190.0">
+                                                    <children>
+                                                        <Button fx:id="sponsor" alignment="CENTER" layoutX="2.0" layoutY="-1.0" mnemonicParsing="false" onAction="#sponsor" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Sponsor">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/money-recive.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane animated="false" text="Utilisateurs" textFill="WHITE">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="200.0">
+                                                    <children>
+                                                        <Button fx:id="bt_user" alignment="CENTER" layoutX="2.0" layoutY="-1.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#pageuser" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Utilisateur">
+                                                            <graphic>
+                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@../icons/user.png" />
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                            <font>
+                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                            </font>
+                                                        </Button>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                    </panes>
+                                </Accordion>
+                                <AnchorPane layoutX="15.0" layoutY="531.0" prefHeight="54.0" prefWidth="216.0">
+                                    <children>
+                                        <Button fx:id="logout" alignment="CENTER" layoutY="2.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="154.0" styleClass="logout" text="LOGOUT" textAlignment="CENTER" textFill="WHITE">
+                                            <styleClass>
+                                                <String fx:value="logout" />
+                                                <String fx:value="shadow" />
+                                            </styleClass>
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <graphic>
+                                                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/login.png" />
+                                                    </image>
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="logout2" alignment="CENTER" layoutX="165.0" layoutY="2.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="logout" textAlignment="CENTER" textFill="WHITE">
+                                            <styleClass>
+                                                <String fx:value="logout" />
+                                                <String fx:value="shadow" />
+                                            </styleClass>
+                                            <font>
+                                                <Font name="Montserrat Black" size="11.0" />
+                                            </font>
+                                            <graphic>
+                                                <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/chart.png" />
+                                                    </image>
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </left>
+                    <center>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane fx:id="home_form" layoutX="63.0" layoutY="-13.6" prefHeight="600.0" prefWidth="916.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-27.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <AnchorPane layoutX="8.0" layoutY="4.0" prefHeight="578.0" prefWidth="882.0">
+                                            <styleClass>
+                                                <String fx:value="white-bg" />
+                                                <String fx:value="shadow" />
+                                            </styleClass>
+                                            <children>
+                                                <TabPane fx:id="tabPane" layoutX="13.0" layoutY="19.0" prefHeight="551.0" prefWidth="853.0" tabClosingPolicy="UNAVAILABLE">
+                                                    <tabs>
+                                                        <Tab fx:id="fournisseurTab" text="Fournisseurs">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="481.0" prefWidth="849.0">
+                                                                    <children>
+                                                                        <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="20.0" prefHeight="40.0" prefWidth="870.0" spacing="10.0">
+                                                                            <children>
+                                                                                <AnchorPane prefHeight="40.0" prefWidth="652.0">
+                                                                                    <children>
+                                                                                        <AnchorPane prefHeight="40.0" prefWidth="702.0">
+                                                                                            <children>
+                                                                                                <TextField fx:id="fournisseurSearchField" layoutX="50.0" prefHeight="40.0" prefWidth="665.0" promptText="Entrez nom du sport ou description ou id" styleClass="search-field">
+                                                                                                    <font>
+                                                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                                                    </font>
+                                                                                                </TextField>
+                                                                                                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                                                                    <font>
+                                                                                                        <Font size="17.0" />
+                                                                                                    </font>
+                                                                                                    <graphic>
+                                                                                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                            <image>
+                                                                                                                <Image url="@../icons/search-status.png" />
+                                                                                                            </image>
+                                                                                                        </ImageView>
+                                                                                                    </graphic>
+                                                                                                </Button>
+                                                                                            </children>
+                                                                                        </AnchorPane>
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane prefHeight="40.0" prefWidth="40.0">
+                                                                                    <children>
+                                                                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Black" size="17.0" />
+                                                                                            </font>
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" styleClass="small-button">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/export.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                        </Button>
+                                                                                        <Button alignment="CENTER" layoutX="47.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Black" size="4.0" />
+                                                                                            </font>
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/sort.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </HBox>
+                                                                        <TableView fx:id="tableView" layoutY="70.0" prefHeight="189.0" prefWidth="830.0">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="nomColumn" prefWidth="150.0" text="Nom" />
+                                                                                <TableColumn fx:id="emailColumn" prefWidth="200.0" text="Email" />
+                                                                                <TableColumn fx:id="adresseColumn" prefWidth="200.0" text="Adresse" />
+                                                                                <TableColumn fx:id="categorieProduitColumn" prefWidth="150.0" text="Catégorie" />
+                                                                                <TableColumn fx:id="modifierColumn" prefWidth="80.0" text="Modifier" />
+                                                                                <TableColumn fx:id="deleteColumn" prefWidth="80.0" text="Supprimer" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                        <AnchorPane layoutY="270.0" prefHeight="210.0" prefWidth="840.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-7.0">
+                                                                            <children>
+                                                                                <AnchorPane layoutX="14.0" layoutY="19.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image1.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button fx:id="addMaterielButton" layoutX="29.0" layoutY="108.0" mnemonicParsing="false" onAction="#handleAddMaterielButton" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Ajouter Matérial">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/user-add.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane layoutX="303.0" layoutY="19.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image2.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button layoutX="27.0" layoutY="110.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Métier Avancé">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/Variant7.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane layoutX="593.0" layoutY="21.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image3.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Statistiques">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/graph.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                            <styleClass>
+                                                                                <String fx:value="shadow" />
+                                                                                <String fx:value="white-bg" />
+                                                                            </styleClass>
+                                                                        </AnchorPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab fx:id="materielTab" text="Matériels">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="833.0">
+                                                                    <children>
+                                                                        <HBox alignment="CENTER_LEFT" layoutX="16.0" layoutY="20.0" prefHeight="40.0" prefWidth="870.0" spacing="10.0">
+                                                                            <children>
+                                                                                <AnchorPane prefHeight="40.0" prefWidth="652.0">
+                                                                                    <children>
+                                                                                        <AnchorPane prefHeight="40.0" prefWidth="711.0">
+                                                                                            <children>
+                                                                                                <TextField fx:id="materielSearchField" layoutX="50.0" prefHeight="40.0" prefWidth="665.0" promptText="Entrez nom du sport ou description ou id" styleClass="search-field">
+                                                                                                    <font>
+                                                                                                        <Font name="Montserrat Medium" size="12.0" />
+                                                                                                    </font>
+                                                                                                </TextField>
+                                                                                                <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                                                                    <font>
+                                                                                                        <Font size="17.0" />
+                                                                                                    </font>
+                                                                                                    <graphic>
+                                                                                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                            <image>
+                                                                                                                <Image url="@../icons/search-status.png" />
+                                                                                                            </image>
+                                                                                                        </ImageView>
+                                                                                                    </graphic>
+                                                                                                </Button>
+                                                                                            </children>
+                                                                                        </AnchorPane>
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane prefHeight="40.0" prefWidth="40.0">
+                                                                                    <children>
+                                                                                        <Button fx:id="logout1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Black" size="17.0" />
+                                                                                            </font>
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" styleClass="small-button">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/export.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                        </Button>
+                                                                                        <Button fx:id="logout11" alignment="CENTER" layoutX="47.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE">
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Black" size="4.0" />
+                                                                                            </font>
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/sort.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </HBox>
+
+                                                                        <TableView fx:id="materielTableView" layoutY="70.0" prefHeight="260.0" prefWidth="830.0">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="materielImageColumn" prefWidth="100.0" text="Image" />
+                                                                                <TableColumn fx:id="materielNomColumn" prefWidth="120.0" text="Nom" />
+                                                                                <TableColumn fx:id="typeColumn" prefWidth="120.0" text="Type" />
+                                                                                <TableColumn fx:id="quantiteColumn" prefWidth="100.0" text="Quantité" />
+                                                                                <TableColumn fx:id="etatColumn" prefWidth="100.0" text="État" />
+                                                                                <TableColumn fx:id="prixUnitaireColumn" prefWidth="100.0" text="Prix Unitaire" />
+                                                                                <TableColumn fx:id="fournisseurNomColumn" prefWidth="120.0" text="Fournisseur" />
+                                                                                <TableColumn fx:id="barcodeColumn" prefWidth="100.0" text="Code-Barres" />
+                                                                                <TableColumn fx:id="materielModifierColumn" prefWidth="80.0" text="Modifier" />
+                                                                                <TableColumn fx:id="materielDeleteColumn" prefWidth="80.0" text="Supprimer" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                        <AnchorPane layoutY="270.0" prefHeight="210.0" prefWidth="840.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-7.0">
+                                                                            <children>
+                                                                                <AnchorPane layoutX="14.0" layoutY="19.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image1.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button fx:id="addFournisseurButton" layoutX="29.0" layoutY="108.0" mnemonicParsing="false" onAction="#handleAddFournisseurButton" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Ajouter Joueur">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/user-add.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane layoutX="303.0" layoutY="19.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image2.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button layoutX="27.0" layoutY="110.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Track Players">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/Variant7.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                                <AnchorPane layoutX="593.0" layoutY="21.0" prefHeight="150.0" prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                            <image>
+                                                                                                <Image url="@../images/image3.png" />
+                                                                                            </image>
+                                                                                        </ImageView>
+                                                                                        <Button layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Statistiques">
+                                                                                            <graphic>
+                                                                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                                                                    <image>
+                                                                                                        <Image url="@../icons/graph.png" />
+                                                                                                    </image>
+                                                                                                </ImageView>
+                                                                                            </graphic>
+                                                                                            <font>
+                                                                                                <Font name="Montserrat Medium" size="12.0" />
+                                                                                            </font>
+                                                                                        </Button>
+                                                                                    </children>
+                                                                                    <styleClass>
+                                                                                        <String fx:value="card" />
+                                                                                        <String fx:value="shadow" />
+                                                                                    </styleClass>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                            <styleClass>
+                                                                                <String fx:value="shadow" />
+                                                                                <String fx:value="white-bg" />
+                                                                            </styleClass>
+                                                                        </AnchorPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

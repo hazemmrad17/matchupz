@@ -1,0 +1,51 @@
+.root {
+    -fx-background-color: #1a1a2e;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+}
+
+.table-view {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .column-header {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+}
+
+.button {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #1a5d9e;
+}
+
+.canvas {
+    -fx-background-color: #16213e;
+}
+
+.chart {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box .list-view {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+}

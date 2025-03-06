@@ -1,5 +1,16 @@
 package controllers.joueur;
 
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.joueur.Club;
 import models.joueur.HistoriqueClub;
@@ -18,101 +30,94 @@ import models.utilisateur.User;
 import services.joueur.ClubService;
 import services.joueur.HistoriqueClubService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class DisplayHistorique {
-    @FXML
-    private Button bt_user;
+    @FXML private Button bt_user;
+    @FXML private Button dashboard;
+    @FXML private Button espace;
+    @FXML private Button logistique;
+    @FXML private Label nom_user;
+    @FXML private Button joueurButton;
+    @FXML private Button homeButton;
+    @FXML private Button addHistoriqueButton;
+    @FXML private TextField searchField;
+    @FXML private TableView<HistoriqueClub> tableView;
+    @FXML private TableColumn<HistoriqueClub, Integer> idHistoriqueColumn;
+    @FXML private TableColumn<HistoriqueClub, Integer> idJoueurColumn;
+    @FXML private TableColumn<HistoriqueClub, String> nomClubColumn;
+    @FXML private TableColumn<HistoriqueClub, String> saisonDebutColumn;
+    @FXML private TableColumn<HistoriqueClub, String> saisonFinColumn;
+    @FXML private TableColumn<HistoriqueClub, Void> modifierColumn;
+    @FXML private TableColumn<HistoriqueClub, Void> deleteColumn;
+    @FXML private Button exportButton; // Added for export
+    @FXML private Button sortButton;   // Added for sort
 
-    @FXML
-    private Button dashboard;
-    @FXML
-    private Button espace;
-    @FXML
-    private Button logistique;
-    @FXML
-    private Label nom_user;
+    private ObservableList<HistoriqueClub> historiqueList = FXCollections.observableArrayList();
+    private ObservableList<HistoriqueClub> allHistorique = FXCollections.observableArrayList(); // For filtering
+    private HistoriqueClubService historiqueClubService = new HistoriqueClubService();
+    private ClubService clubService = new ClubService();
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
     private void afficherProfil(User user) {
-
         if (user.getImage() != null && !user.getImage().isEmpty()) {
             javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
             String name = user.getPrenom();
             nom_user.setText(name);
-            // profileImageView.setImage(image);
-
         }
     }
-    @FXML
-    void match(ActionEvent event) {
 
-    }
-
+    @FXML void match(ActionEvent event) {}
 
     @FXML
     void pageuser(ActionEvent event) {
         User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
-                    Stage stage = (Stage) bt_user.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                Stage stage = (Stage) bt_user.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
             }
-
         } else {
-            System.out.println("Aucun utilisateur connecté !");
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
         }
-
-
-    }
-    @FXML
-    void sponsor(ActionEvent event) {
-
     }
 
-    @FXML
-    void teams(ActionEvent event) {
+    @FXML void sponsor(ActionEvent event) {}
 
-    }
+    @FXML void teams(ActionEvent event) {}
 
-    @FXML
-    void dashboard(ActionEvent event) {
-
-    }
+    @FXML void dashboard(ActionEvent event) {}
 
     @FXML
     void espace(ActionEvent event) {
         User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
-                    Stage stage = (Stage) espace.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+                Stage stage = (Stage) espace.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
             }
-
         } else {
-            System.out.println("Aucun utilisateur connecté !");
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
         }
-
-
     }
 
     @FXML
@@ -126,30 +131,19 @@ public class DisplayHistorique {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
         }
-
-
     }
 
-    private void showAlert(Alert.AlertType alertType, String erreur, String content) {
+    private void loadScene(String fxmlPath, Button button) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) button.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Failed to load the FXML file", "Details: " + e.getMessage());
+        }
     }
-
-    @FXML private Button joueurButton;
-    @FXML private Button homeButton;
-    @FXML private Button addHistoriqueButton;
-    @FXML private TextField searchField; // Added for search functionality
-    @FXML private TableView<HistoriqueClub> tableView;
-    @FXML private TableColumn<HistoriqueClub, Integer> idHistoriqueColumn;
-    @FXML private TableColumn<HistoriqueClub, Integer> idJoueurColumn;
-    @FXML private TableColumn<HistoriqueClub, String> nomClubColumn;
-    @FXML private TableColumn<HistoriqueClub, String> saisonDebutColumn;
-    @FXML private TableColumn<HistoriqueClub, String> saisonFinColumn;
-    @FXML private TableColumn<HistoriqueClub, Void> modifierColumn;
-    @FXML private TableColumn<HistoriqueClub, Void> deleteColumn;
-
-    private ObservableList<HistoriqueClub> historiqueList = FXCollections.observableArrayList();
-    private HistoriqueClubService historiqueClubService = new HistoriqueClubService();
-    private ClubService clubService = new ClubService();
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @FXML
     private void handleHome() {
@@ -166,18 +160,6 @@ public class DisplayHistorique {
         loadScene("/joueur/AjoutHistorique.fxml", addHistoriqueButton);
     }
 
-    private void loadScene(String fxmlPath, Button button) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) button.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Error", "Failed to load the FXML file", "Details: " + e.getMessage());
-        }
-    }
-
     private void openModifyWindow(HistoriqueClub historique, Stage stage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/ModifierHistorique.fxml"));
@@ -188,7 +170,7 @@ public class DisplayHistorique {
             stage.show();
             stage.setOnHidden(event -> loadHistorique());
         } catch (IOException e) {
-            showAlert("Error", "Failed to load ModifyHistorique.fxml", "Details: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Failed to load ModifyHistorique.fxml", "Details: " + e.getMessage());
         }
     }
 
@@ -197,7 +179,6 @@ public class DisplayHistorique {
         idHistoriqueColumn.setCellValueFactory(cellData -> cellData.getValue().idHistoriqueProperty().asObject());
         idJoueurColumn.setCellValueFactory(cellData -> cellData.getValue().idJoueurProperty().asObject());
 
-        // Dynamically fetch nomClub based on idClub
         nomClubColumn.setCellValueFactory(cellData -> {
             int idClub = cellData.getValue().getIdClub();
             String nomClub = clubService.recherche().stream()
@@ -208,7 +189,6 @@ public class DisplayHistorique {
             return new SimpleStringProperty(nomClub);
         });
 
-        // Format dates for display
         saisonDebutColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
                 dateFormat.format(cellData.getValue().getSaisonDebut())
         ));
@@ -264,51 +244,190 @@ public class DisplayHistorique {
             }
         });
 
-        // Real-time search listener
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filterHistorique(newValue));
-
         loadHistorique();
     }
 
     public void loadHistorique() {
+        allHistorique.clear();
+        allHistorique.addAll(historiqueClubService.recherche());
         historiqueList.clear();
-        historiqueList.addAll(historiqueClubService.recherche());
+        historiqueList.addAll(allHistorique);
         tableView.setItems(historiqueList);
-    }
-
-    @FXML
-    private void handleSearch() {
-        filterHistorique(searchField.getText());
     }
 
     private void filterHistorique(String searchText) {
         if (searchText == null || searchText.trim().isEmpty()) {
-            tableView.setItems(historiqueList);
+            historiqueList.setAll(allHistorique);
         } else {
-            ObservableList<HistoriqueClub> filteredList = FXCollections.observableArrayList();
             String lowerCaseFilter = searchText.toLowerCase().trim();
-            for (HistoriqueClub historique : historiqueList) {
+            historiqueList.setAll(allHistorique.stream()
+                    .filter(historique -> {
+                        String nomClub = clubService.recherche().stream()
+                                .filter(club -> club.getIdClub() == historique.getIdClub())
+                                .map(Club::getNomClub)
+                                .findFirst()
+                                .orElse("Unknown Club").toLowerCase();
+                        String saisonFin = historique.getSaisonFin() != null ? dateFormat.format(historique.getSaisonFin()) : "";
+                        return String.valueOf(historique.getIdJoueur()).contains(lowerCaseFilter) ||
+                                nomClub.contains(lowerCaseFilter) ||
+                                dateFormat.format(historique.getSaisonDebut()).contains(lowerCaseFilter) ||
+                                saisonFin.contains(lowerCaseFilter);
+                    })
+                    .collect(java.util.stream.Collectors.toList()));
+        }
+        tableView.setItems(historiqueList);
+    }
+
+    // Export Functionality
+    @FXML
+    private void handleExport() {
+        ObservableList<HistoriqueClub> historiques = tableView.getItems();
+        if (historiques.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucun Historique", "Il n'y a aucun historique à exporter !");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer la liste des historiques");
+        fileChooser.setInitialFileName("Historiques_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Annulé", "L'exportation a été annulée.");
+            return;
+        }
+
+        String fileName = file.getAbsolutePath();
+
+        try {
+            PdfWriter writer = new PdfWriter(fileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            document.setMargins(20, 20, 20, 20);
+
+            PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            PdfFont regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+
+            document.add(new Paragraph("Liste des Historiques de Clubs")
+                    .setFont(boldFont)
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(10));
+
+            float[] columnWidths = {100, 100, 150, 150, 150}; // Adjusted for 5 columns
+            Table pdfTable = new Table(UnitValue.createPointArray(columnWidths)).useAllAvailableWidth();
+
+            String[] headers = {"ID Historique", "ID Joueur", "Nom Club", "Saison Début", "Saison Fin"};
+            for (String header : headers) {
+                pdfTable.addHeaderCell(new Cell()
+                        .add(new Paragraph(header).setFont(boldFont).setFontSize(10).setTextAlignment(TextAlignment.CENTER))
+                        .setPadding(3));
+            }
+
+            for (HistoriqueClub historique : historiques) {
                 String nomClub = clubService.recherche().stream()
                         .filter(club -> club.getIdClub() == historique.getIdClub())
                         .map(Club::getNomClub)
                         .findFirst()
-                        .orElse("Unknown Club").toLowerCase();
-                String saisonFin = historique.getSaisonFin() != null ? dateFormat.format(historique.getSaisonFin()) : "";
-                if (String.valueOf(historique.getIdJoueur()).contains(lowerCaseFilter) ||
-                        nomClub.contains(lowerCaseFilter) ||
-                        dateFormat.format(historique.getSaisonDebut()).contains(lowerCaseFilter) ||
-                        saisonFin.contains(lowerCaseFilter)) {
-                    filteredList.add(historique);
-                }
+                        .orElse("Unknown Club");
+                String saisonFin = historique.getSaisonFin() != null ? dateFormat.format(historique.getSaisonFin()) : "N/A";
+
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(historique.getIdHistorique()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(historique.getIdJoueur()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(nomClub)
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(dateFormat.format(historique.getSaisonDebut()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(saisonFin)
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
             }
-            tableView.setItems(filteredList);
+
+            document.add(pdfTable);
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            document.add(new Paragraph("Gestion des Historiques de Clubs")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph("Nexus Team 2025 ©")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpg");
+            if (inputStream == null) {
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpg");
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            byte[] imageBytes = baos.toByteArray();
+            Image logo = new Image(ImageDataFactory.create(imageBytes)).setWidth(184).setHeight(41);
+            document.add(logo);
+
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Les historiques ont été exportés dans " + fileName + " !");
+
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'exportation des historiques : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    // Sort Functionality
+    @FXML
+    private void handleSort() {
+        String[] sortableColumns = {"ID Historique", "ID Joueur", "Nom Club", "Saison Début", "Saison Fin"};
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Nom Club", sortableColumns);
+        dialog.setTitle("Trier les Historiques");
+        dialog.setHeaderText("Sélectionnez une colonne pour trier en ordre croissant");
+        dialog.setContentText("Colonne:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(this::sortTableByColumn);
+    }
+
+    private void sortTableByColumn(String columnName) {
+        Comparator<HistoriqueClub> comparator;
+        switch (columnName) {
+            case "ID Historique":
+                comparator = Comparator.comparingInt(HistoriqueClub::getIdHistorique);
+                break;
+            case "ID Joueur":
+                comparator = Comparator.comparingInt(HistoriqueClub::getIdJoueur);
+                break;
+            case "Nom Club":
+                comparator = Comparator.comparing(historique ->
+                        clubService.recherche().stream()
+                                .filter(club -> club.getIdClub() == historique.getIdClub())
+                                .map(Club::getNomClub)
+                                .findFirst()
+                                .orElse("Unknown Club"), Comparator.nullsLast(String::compareTo));
+                break;
+            case "Saison Début":
+                comparator = Comparator.comparing(HistoriqueClub::getSaisonDebut);
+                break;
+            case "Saison Fin":
+                comparator = Comparator.comparing(HistoriqueClub::getSaisonFin, Comparator.nullsLast(Date::compareTo));
+                break;
+            default:
+                return;
+        }
+
+        historiqueList.sort(comparator);
+        tableView.refresh();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(header);
+        alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }

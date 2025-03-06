@@ -246,7 +246,7 @@
                                         </AnchorPane>
                                         <AnchorPane prefHeight="40.0" prefWidth="40.0">
                                             <children>
-                                                <Button fx:id="logout1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                <Button fx:id="exportButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleExport" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
                                                     <font>
                                                         <Font name="Montserrat Black" size="17.0" />
                                                     </font>
@@ -258,7 +258,7 @@
                                                         </ImageView>
                                                     </graphic>
                                                 </Button>
-                                                <Button fx:id="logout11" alignment="CENTER" layoutX="47.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE">
+                                                <Button fx:id="sortButton" alignment="CENTER" layoutX="47.0" mnemonicParsing="false" onAction="#handleSort" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE">
                                                     <font>
                                                         <Font name="Montserrat Black" size="4.0" />
                                                     </font>
@@ -341,6 +341,18 @@
                                                         <Font name="Montserrat Medium" size="12.0" />
                                                     </font>
                                                 </Button>
+                                    <Button fx:id="SportsAPIButton" layoutX="29.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleSportsAPI" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Data Football Direct">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/Variant7.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <font>
+                                          <Font name="Montserrat Medium" size="12.0" />
+                                       </font>
+                                    </Button>
                                             </children>
                                             <styleClass>
                                                 <String fx:value="card" />
@@ -354,7 +366,7 @@
                                                         <Image url="@../images/image3.png" />
                                                     </image>
                                                 </ImageView>
-                                                <Button layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Statistiques">
+                                                <Button fx:id="statisticsButton" layoutX="26.0" layoutY="108.0" mnemonicParsing="false" onAction="#handleViewAnalytics" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Statistiques">
                                                     <graphic>
                                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
@@ -384,7 +396,7 @@
                 </BorderPane>
             </children>
             <stylesheets>
-                <URL value="@../style_file_blue.css" />
+                <URL value="@../style_file_green.css" />
                 <!-- Fix or remove this if dashboardDesign.css doesn't exist -->
                 <!-- <URL value="@../style_file_green.css" /> -->
             </stylesheets>

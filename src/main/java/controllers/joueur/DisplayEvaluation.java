@@ -1,5 +1,17 @@
 package controllers.joueur;
 
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.joueur.EvaluationPhysique;
 import models.match.SessionManager;
@@ -15,124 +28,24 @@ import models.utilisateur.Role;
 import models.utilisateur.User;
 import services.joueur.EvaluationPhysiqueService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Optional;
 
 public class DisplayEvaluation {
-    @FXML
-    private Button bt_user;
-    @FXML
-    private Button teams;
-    @FXML
-    private Button dashboard;
-    @FXML
-    private Button espace;
-    @FXML
-    private Button logistique;
-    @FXML
-    private Label nom_user;
-    private void afficherProfil(User user) {
-
-        if (user.getImage() != null && !user.getImage().isEmpty()) {
-            javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
-            String name = user.getPrenom();
-            nom_user.setText(name);
-            // profileImageView.setImage(image);
-
-        }
-    }
-    @FXML
-    void match(ActionEvent event) {
-
-    }
-
-
-    @FXML
-    void pageuser(ActionEvent event) {
-        User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
-                    Stage stage = (Stage) bt_user.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
-            }
-
-        } else {
-            System.out.println("Aucun utilisateur connecté !");
-        }
-
-
-    }
-    @FXML
-    void sponsor(ActionEvent event) {
-
-    }
-
-    @FXML
-    void teams(ActionEvent event) {
-        loadScene("/joueur/MainController.fxml",teams);
-    }
-
-    @FXML
-    void dashboard(ActionEvent event) {
-
-    }
-
-    @FXML
-    void espace(ActionEvent event) {
-        User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
-                    Stage stage = (Stage) espace.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
-            }
-
-        } else {
-            System.out.println("Aucun utilisateur connecté !");
-        }
-
-
-    }
-
-    @FXML
-    void logistique(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fournisseur/DisplayFournisseur.fxml"));
-            Stage stage = (Stage) logistique.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-        }
-
-
-    }
-
-    private void showAlert(Alert.AlertType alertType, String erreur, String content) {
-    }
-
-
+    @FXML private Button bt_user;
+    @FXML private Button teams;
+    @FXML private Button dashboard;
+    @FXML private Button espace;
+    @FXML private Button logistique;
+    @FXML private Label nom_user;
     @FXML private Button joueurButton;
     @FXML private Button homeButton;
     @FXML private Button addEvaluationButton;
@@ -147,11 +60,100 @@ public class DisplayEvaluation {
     @FXML private TableColumn<EvaluationPhysique, String> etatBlessureColumn;
     @FXML private TableColumn<EvaluationPhysique, Void> modifierColumn;
     @FXML private TableColumn<EvaluationPhysique, Void> deleteColumn;
+    @FXML private Button exportButton; // Added for export
+    @FXML private Button sortButton;   // Added for sort
 
     private ObservableList<EvaluationPhysique> evaluationList = FXCollections.observableArrayList();
     private ObservableList<EvaluationPhysique> filteredList = FXCollections.observableArrayList();
     private EvaluationPhysiqueService evaluationService = new EvaluationPhysiqueService();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private void afficherProfil(User user) {
+        if (user.getImage() != null && !user.getImage().isEmpty()) {
+            javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
+            String name = user.getPrenom();
+            nom_user.setText(name);
+        }
+    }
+
+    @FXML private Button playerStatsButton; // Add to FXML too
+
+    @FXML
+    private void handlePlayerStats() {
+        loadScene("/joueur/PlayerStats.fxml", playerStatsButton);
+    }
+
+    @FXML void match(ActionEvent event) {}
+
+    @FXML
+    void pageuser(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                Stage stage = (Stage) bt_user.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
+        }
+    }
+
+    @FXML void sponsor(ActionEvent event) {}
+
+    @FXML
+    void teams(ActionEvent event) {
+        loadScene("/joueur/MainController.fxml", teams);
+    }
+
+    @FXML void dashboard(ActionEvent event) {}
+
+    @FXML
+    void espace(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+                Stage stage = (Stage) espace.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
+        }
+    }
+
+    @FXML
+    void logistique(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fournisseur/DisplayFournisseur.fxml"));
+            Stage stage = (Stage) logistique.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+        }
+    }
+
+    private void loadScene(String fxmlPath, Button button) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) button.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Failed to load the FXML file", e.getMessage());
+        }
+    }
 
     @FXML
     private void handleHome() {
@@ -168,18 +170,6 @@ public class DisplayEvaluation {
         loadScene("/joueur/AjoutEvaluation.fxml", addEvaluationButton);
     }
 
-    private void loadScene(String fxmlPath, Button button) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) button.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Error", "Failed to load the FXML file", e.getMessage());
-        }
-    }
-
     private void openModifyWindow(EvaluationPhysique evaluation, Stage stage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/ModifierEvaluation.fxml"));
@@ -188,24 +178,22 @@ public class DisplayEvaluation {
             controller.setEvaluationToModify(evaluation);
             stage.setScene(new Scene(root));
             stage.show();
-            stage.setOnHidden(event -> loadEvaluations()); // Refresh after modification
+            stage.setOnHidden(event -> loadEvaluations());
         } catch (IOException e) {
-            showAlert("Error", "Failed to load the ModifierEvaluation.fxml", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Failed to load the ModifierEvaluation.fxml", e.getMessage());
         }
     }
 
     @FXML
     private void initialize() {
-        // Set up table columns
         idEvaluationColumn.setCellValueFactory(cellData -> cellData.getValue().idEvaluationProperty().asObject());
         idJoueurColumn.setCellValueFactory(cellData -> cellData.getValue().idJoueurProperty().asObject());
-        dateEvaluationColumn.setCellValueFactory(cellData -> cellData.getValue().dateEvaluationProperty());
+        dateEvaluationColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateEvaluation()));
         niveauEnduranceColumn.setCellValueFactory(cellData -> cellData.getValue().niveauEnduranceProperty().asObject());
         forcePhysiqueColumn.setCellValueFactory(cellData -> cellData.getValue().forcePhysiqueProperty().asObject());
         vitesseColumn.setCellValueFactory(cellData -> cellData.getValue().vitesseProperty().asObject());
         etatBlessureColumn.setCellValueFactory(cellData -> cellData.getValue().etatBlessureProperty());
 
-        // Modifier column
         modifierColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Modifier");
             {
@@ -225,7 +213,6 @@ public class DisplayEvaluation {
             }
         });
 
-        // Delete column
         deleteColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Supprimer");
             {
@@ -245,10 +232,7 @@ public class DisplayEvaluation {
             }
         });
 
-        // Real-time search listener
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filterEvaluations(newValue));
-
-        // Load initial data
         loadEvaluations();
     }
 
@@ -258,11 +242,6 @@ public class DisplayEvaluation {
         filteredList.clear();
         filteredList.addAll(evaluationList);
         tableView.setItems(filteredList);
-    }
-
-    @FXML
-    private void handleSearch() {
-        filterEvaluations(searchField.getText());
     }
 
     private void filterEvaluations(String searchText) {
@@ -282,10 +261,155 @@ public class DisplayEvaluation {
         tableView.setItems(filteredList);
     }
 
-    private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    // Export Functionality
+    @FXML
+    private void handleExport() {
+        ObservableList<EvaluationPhysique> evaluations = tableView.getItems();
+        if (evaluations.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucune Évaluation", "Il n'y a aucune évaluation à exporter !");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer la liste des évaluations");
+        fileChooser.setInitialFileName("Evaluations_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Annulé", "L'exportation a été annulée.");
+            return;
+        }
+
+        String fileName = file.getAbsolutePath();
+
+        try {
+            PdfWriter writer = new PdfWriter(fileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            document.setMargins(20, 20, 20, 20);
+
+            PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            PdfFont regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+
+            document.add(new Paragraph("Liste des Évaluations Physiques")
+                    .setFont(boldFont)
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(10));
+
+            float[] columnWidths = {80, 80, 100, 80, 80, 80, 100}; // Adjusted for 7 columns
+            Table pdfTable = new Table(UnitValue.createPointArray(columnWidths)).useAllAvailableWidth();
+
+            String[] headers = {"ID Évaluation", "ID Joueur", "Date", "Endurance", "Force", "Vitesse", "État Blessure"};
+            for (String header : headers) {
+                pdfTable.addHeaderCell(new Cell()
+                        .add(new Paragraph(header).setFont(boldFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER))
+                        .setPadding(3));
+            }
+
+            for (EvaluationPhysique evaluation : evaluations) {
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(evaluation.getIdEvaluation()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(evaluation.getIdJoueur()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(dateFormat.format(evaluation.getDateEvaluation()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(evaluation.getNiveauEndurance()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(evaluation.getForcePhysique()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(evaluation.getVitesse()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(evaluation.getEtatBlessure())
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+            }
+
+            document.add(pdfTable);
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            document.add(new Paragraph("Gestion des Évaluations Physiques")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph("Nexus Team 2025 ©")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpg");
+            if (inputStream == null) {
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpg");
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            byte[] imageBytes = baos.toByteArray();
+            Image logo = new Image(ImageDataFactory.create(imageBytes)).setWidth(184).setHeight(41);
+            document.add(logo);
+
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Les évaluations ont été exportées dans " + fileName + " !");
+
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'exportation des évaluations : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Sort Functionality
+    @FXML
+    private void handleSort() {
+        String[] sortableColumns = {
+                "ID Évaluation", "ID Joueur", "Date", "Endurance", "Force", "Vitesse", "État Blessure"
+        };
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Date", sortableColumns);
+        dialog.setTitle("Trier les Évaluations");
+        dialog.setHeaderText("Sélectionnez une colonne pour trier en ordre croissant");
+        dialog.setContentText("Colonne:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(this::sortTableByColumn);
+    }
+
+    private void sortTableByColumn(String columnName) {
+        Comparator<EvaluationPhysique> comparator;
+        switch (columnName) {
+            case "ID Évaluation":
+                comparator = Comparator.comparingInt(EvaluationPhysique::getIdEvaluation);
+                break;
+            case "ID Joueur":
+                comparator = Comparator.comparingInt(EvaluationPhysique::getIdJoueur);
+                break;
+            case "Date":
+                comparator = Comparator.comparing(EvaluationPhysique::getDateEvaluation);
+                break;
+            case "Endurance":
+                comparator = Comparator.comparingDouble(EvaluationPhysique::getNiveauEndurance);
+                break;
+            case "Force":
+                comparator = Comparator.comparingDouble(EvaluationPhysique::getForcePhysique);
+                break;
+            case "Vitesse":
+                comparator = Comparator.comparingDouble(EvaluationPhysique::getVitesse);
+                break;
+            case "État Blessure":
+                comparator = Comparator.comparing(EvaluationPhysique::getEtatBlessure, Comparator.nullsLast(String::compareTo));
+                break;
+            default:
+                return;
+        }
+
+        filteredList.sort(comparator);
+        tableView.refresh();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(header);
+        alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }

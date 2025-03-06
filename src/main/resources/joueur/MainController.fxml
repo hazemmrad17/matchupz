@@ -243,7 +243,7 @@
                                                                 <Font name="Comic Sans MS" size="20.0" />
                                                             </font>
                                                         </Button>
-                                                        <Button mnemonicParsing="false" onAction="#loadDisplaySport" prefHeight="44.0" prefWidth="257.0" styleClass="top-entity-btn" text="Sports" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                                        <Button fx:id="sportButton" mnemonicParsing="false" onAction="#loadDisplaySport" prefHeight="44.0" prefWidth="257.0" styleClass="top-entity-btn" text="Sports" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                                             <font>
                                                                 <Font name="Comic Sans MS" size="20.0" />
                                                             </font>

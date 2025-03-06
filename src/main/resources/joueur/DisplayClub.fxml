@@ -244,7 +244,7 @@
                                         </AnchorPane>
                                         <AnchorPane prefHeight="40.0" prefWidth="40.0">
                                             <children>
-                                                <Button fx:id="logout1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                <Button fx:id="exportButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE" onAction="#handleExport">
                                                     <font>
                                                         <Font name="Montserrat Black" size="17.0" />
                                                     </font>
@@ -256,7 +256,7 @@
                                                         </ImageView>
                                                     </graphic>
                                                 </Button>
-                                                <Button fx:id="logout11" alignment="CENTER" layoutX="47.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE">
+                                                <Button fx:id="sortButton" alignment="CENTER" layoutX="47.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textAlignment="CENTER" textFill="WHITE" onAction="#handleSort">
                                                     <font>
                                                         <Font name="Montserrat Black" size="4.0" />
                                                     </font>

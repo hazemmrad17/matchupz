@@ -22,8 +22,6 @@ FXMain extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/MainController.fxml"));
         try {
             Parent root = loader.load();
-
-
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("MatchhUPZ");

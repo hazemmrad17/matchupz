@@ -260,7 +260,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane prefHeight="40.0" prefWidth="40.0">
                                                                <children>
-                                                                  <Button fx:id="logout1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#exportUserToPDF" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
+                                                                  <Button fx:id="logout1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="small-button" textFill="WHITE">
                                                                      <font>
                                                                         <Font name="Montserrat Black" size="17.0" />
                                                                      </font>
@@ -314,7 +314,7 @@
                                                                         <Image url="@../images/image1.png" />
                                                                      </image>
                                                                   </ImageView>
-                                                                  <Button fx:id="addJoueurButton" layoutX="29.0" layoutY="108.0" mnemonicParsing="false" onAction="#handleAddJoueurButton" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Ajouter User">
+                                                                  <Button fx:id="addJoueurButton" layoutX="29.0" layoutY="108.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" styleClass="btn-primary" text="Ajouter User">
                                                                      <graphic>
                                                                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>

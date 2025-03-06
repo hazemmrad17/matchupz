@@ -19,7 +19,8 @@ import java.io.IOException;
 public class MainController {
     @FXML
     private Button bt_user;
-
+    @FXML
+    private Button sportButton;
     @FXML
     private Button dashboard;
     @FXML

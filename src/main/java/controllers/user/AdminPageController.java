@@ -22,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -32,6 +33,8 @@ import models.utilisateur.User;
 
 import services.user.UserService;
 import utils.MyDataSource;
+
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -284,14 +287,6 @@ public class AdminPageController {
 
     @FXML
     public void initialize() {
-        Home.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/home.png"));
-        icon2.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/logistics.png"));
-        icon3.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/espaces.png"));
-        icon4.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/team.png"));
-        logogmatchupz.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/matchupz.png"));
-        icon6.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/vs.png"));
-        icon5.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/sponsor.png"));
-        icon7.setImage(new Image("file:/C:/Users/MSI/Desktop/Avant integration/CRUD/src/main/resources/icons/user.png"));
 
 
         User user = SessionManager.getCurrentUser();
@@ -371,8 +366,6 @@ public class AdminPageController {
         });
 
 
-
-
         suppcol.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Supprimer");
 
@@ -439,49 +432,37 @@ public class AdminPageController {
 
         loadUsers();
 
-
         // Ajout d'un listener pour la recherche dynamique
         searchField.textProperty().addListener((observable, oldValue, newValue) -> searchUtilisateur(newValue));
 
-
-
-
     }
-
 
     private void exportUserToPDF(User user) throws Exception {
-        String fileName = "C:/Users/MSI/Desktop/User_" + user.getId_user() + "_" + user.getNom() + ".pdf";
-        System.out.println("Nom du fichier : " + fileName);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialFileName("User_" + user.getId_user() + "_" + user.getNom() + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            PdfWriter writer = new PdfWriter(file.getAbsolutePath());
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
 
-        PdfWriter writer = new PdfWriter(fileName);
-        PdfDocument pdf = new PdfDocument(writer);
-        Document document = new Document(pdf);
+            document.add(new Paragraph("Informations de l'utilisateur : ").setBold().setFontSize(14));
+            document.add(new Paragraph("\n"));
+            document.add(new Paragraph("ID: " + user.getId_user()));
+            document.add(new Paragraph("Nom: " + user.getNom()));
+            document.add(new Paragraph("Prénom: " + user.getPrenom()));
+            document.add(new Paragraph("Email: " + user.getEmail()));
+            document.add(new Paragraph("Genre: " + user.getGenre()));
+            document.add(new Paragraph("Rôle: " + user.getRole()));
+            document.add(new Paragraph("Date de naissance: " + user.getDate_de_naissance()));
+            document.add(new Paragraph("Téléphone: " + user.getNum_telephone()));
+            document.add(new Paragraph("Image: " + user.getImage()));
 
-        document.add(new Paragraph("Informations de l'utilisateur : ")
-                .setBold()
-                .setFontSize(14));
-        document.add(new Paragraph("\n"));
-        document.add(new Paragraph("ID: " + user.getId_user()));
-        document.add(new Paragraph("Nom: " + user.getNom()));
-        document.add(new Paragraph("Prénom: " + user.getPrenom()));
-        document.add(new Paragraph("Email: " + user.getEmail()));
-        document.add(new Paragraph("Genre: " + user.getGenre()));
-        document.add(new Paragraph("Rôle: " + user.getRole()));
-        document.add(new Paragraph("Date de naissance: " + user.getDate_de_naissance()));
-        document.add(new Paragraph("Téléphone: " + user.getNum_telephone()));
-        document.add(new Paragraph("image: " + user.getImage()));
-
-// Ajout de la photo au lieu de l'URL
-
-
-
-        document.close();
-        System.out.println("PDF généré avec succès : " + fileName);
-
-        showAlert(Alert.AlertType.INFORMATION, "Succès", "Le PDF a été généré avec succès: " + fileName);
+            document.close();
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Le PDF a été généré avec succès: " + file.getAbsolutePath());
+        }
     }
-
-
 
     private void loadUsers() {
         userList.clear();
@@ -535,13 +516,16 @@ public class AdminPageController {
         }
     }
 
-
-    private void showAlert(Alert.AlertType alertType, String erreur, String s) {
-
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
-    private Button sortButton; // Assure-toi que le bouton est bien défini dans le contrôleur
+    private Button sortButton;
 
     @FXML
     void sortUsersByPrenom(ActionEvent event) {

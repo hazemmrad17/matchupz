@@ -1,5 +1,26 @@
 package controllers.joueur;
 
+
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.IPropertyContainer;
+import com.itextpdf.layout.element.*;
+
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,18 +30,34 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.joueur.Joueur;
 import models.match.SessionManager;
 import models.utilisateur.Role;
 import models.utilisateur.User;
 import services.joueur.JoueurService;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
-import java.io.IOException;
+import com.itextpdf.layout.Document; // Correct Document class
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.text.*;
+import javafx.scene.control.Alert;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DisplayJoueur {
@@ -36,6 +73,235 @@ public class DisplayJoueur {
     private Button logistique;
     @FXML
     private Label nom_user;
+    @FXML
+    private Button exportButton;
+    @FXML
+    private Button sortButton; // Add this to match the FXML ID
+    @FXML
+    private Button statisticsButton;
+    @FXML
+    private Button SportsAPIButton;
+
+    @FXML
+    private void handleSort(ActionEvent event) {
+        // Create a list of sortable column names
+        String[] sortableColumns = {
+                "ID Joueur", "ID Sport", "Nom Sport", "Nom", "Prénom",
+                "Date Naissance", "Poste", "Taille", "Poids", "Statut",
+                "Email", "Telephone"
+        };
+
+        // Create a ChoiceDialog for column selection
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Nom", sortableColumns);
+        dialog.setTitle("Trier les Joueurs");
+        dialog.setHeaderText("Sélectionnez une colonne pour trier en ordre croissant");
+        dialog.setContentText("Colonne:");
+
+        // Show dialog and handle the result
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(column -> sortTableByColumn(column));
+    }
+
+    private void sortTableByColumn(String columnName) {
+        Comparator<Joueur> comparator;
+        switch (columnName) {
+            case "ID Joueur":
+                comparator = Comparator.comparingInt(Joueur::getIdJoueur);
+                break;
+            case "ID Sport":
+                comparator = Comparator.comparingInt(Joueur::getIdSport);
+                break;
+            case "Nom Sport":
+                comparator = Comparator.comparing(Joueur::getNomSport, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Nom":
+                comparator = Comparator.comparing(Joueur::getNom, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Prénom":
+                comparator = Comparator.comparing(Joueur::getPrenom, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Date Naissance":
+                comparator = Comparator.comparing(Joueur::getDateNaissance);
+                break;
+            case "Poste":
+                comparator = Comparator.comparing(Joueur::getPoste, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Taille":
+                comparator = Comparator.comparingDouble(Joueur::getTaille);
+                break;
+            case "Poids":
+                comparator = Comparator.comparingDouble(Joueur::getPoids);
+                break;
+            case "Statut":
+                comparator = Comparator.comparing(Joueur::getStatut, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Email":
+                comparator = Comparator.comparing(Joueur::getEmail, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Telephone":
+                comparator = Comparator.comparing(Joueur::getTelephone, Comparator.nullsLast(String::compareTo));
+                break;
+            default:
+                return; // No sorting if column is not recognized
+        }
+
+        // Sort the joueurList in ascending order
+        joueurList.sort(comparator);
+        tableView.refresh(); // Refresh the table to reflect the sorted data
+    }
+
+    @FXML
+    private void handleExport() {
+        ObservableList<Joueur> joueurs = tableView.getItems();
+        if (joueurs.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucun Joueur", "Il n'y a aucun joueur à exporter !");
+            return;
+        }
+
+        // Create a FileChooser to let the user select the save location
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer la liste des joueurs");
+        fileChooser.setInitialFileName("Joueurs_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        // Show save dialog and get the selected file
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Annulé", "L'exportation a été annulée.");
+            return; // User canceled the dialog
+        }
+
+        String fileName = file.getAbsolutePath();
+
+        try {
+            // Initialize PDF writer and document
+            PdfWriter writer = new PdfWriter(fileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            document.setMargins(20, 20, 20, 20); // Left, right, top, bottom margins
+
+            // Define fonts
+            PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            PdfFont regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+
+            // Add title
+            Paragraph title = new Paragraph("Liste des Joueurs")
+                    .setFont(boldFont)
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(10);
+            document.add(title);
+
+            // Create table with 15 columns, scaled to fit A4 width (595 pt - 40 pt margins = 555 pt)
+            float totalWidth = 555f; // Available width after margins
+            float[] columnWidths = new float[15];
+            float baseWidth = totalWidth / 15; // Evenly distribute width (approx 37 pt per column)
+            for (int i = 0; i < columnWidths.length; i++) {
+                columnWidths[i] = baseWidth; // Adjust individual widths if needed
+            }
+            Table pdfTable = new Table(UnitValue.createPointArray(columnWidths))
+                    .useAllAvailableWidth();
+
+            // Add table headers
+            String[] headers = {
+                    "ID Joueur", "ID Sport", "Nom Sport", "Nom", "Prénom", "Date Naissance",
+                    "Poste", "Taille", "Poids", "Statut", "Email", "Telephone", "Photo",
+                    "Modifier", "Supprimer"
+            };
+            for (String header : headers) {
+                Cell headerCell = new Cell()
+                        .add(new Paragraph(header)
+                                .setFont(boldFont)
+                                .setFontSize(10) // Reduced font size
+                                .setTextAlignment(TextAlignment.CENTER))
+                        .setPadding(3); // Reduced padding
+                pdfTable.addHeaderCell(headerCell);
+            }
+
+            // Date formatter for Date Naissance
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            // Add table data with wrapping enabled
+            for (Joueur joueur : joueurs) {
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(joueur.getIdJoueur()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(joueur.getIdSport()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getNomSport() != null ? joueur.getNomSport() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getNom() != null ? joueur.getNom() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getPrenom() != null ? joueur.getPrenom() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getDateNaissance() != null ? dateFormat.format(joueur.getDateNaissance()) : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getPoste() != null ? joueur.getPoste() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(joueur.getTaille()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(joueur.getPoids()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getStatut() != null ? joueur.getStatut() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getEmail() != null ? joueur.getEmail() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getTelephone() != null ? joueur.getTelephone() : "")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(joueur.getProfilePictureUrl() != null ? joueur.getProfilePictureUrl() : "N/A")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph("Modifier")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph("Supprimer")
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+            }
+
+            document.add(pdfTable);
+            document.add(new Paragraph(" ").setMarginBottom(10)); // Spacer
+
+            // Add footer
+            Paragraph footer1 = new Paragraph("Gestion des Joueurs")
+                    .setFont(regularFont)
+                    .setFontSize(12)
+                    .setTextAlignment(TextAlignment.RIGHT);
+            document.add(footer1);
+
+            Paragraph footer2 = new Paragraph("Nexus Team 2025 ©")
+                    .setFont(regularFont)
+                    .setFontSize(12)
+                    .setTextAlignment(TextAlignment.RIGHT);
+            document.add(footer2);
+
+            document.add(new Paragraph(" ").setMarginBottom(10)); // Spacer
+
+            // Add logo
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpg");
+            if (inputStream == null) {
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpg");
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            byte[] imageBytes = baos.toByteArray();
+            Image logo = new Image(ImageDataFactory.create(imageBytes))
+                    .setWidth(184)
+                    .setHeight(41);
+            document.add(logo);
+
+            // Close document
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Les joueurs ont été exportés dans " + fileName + " !");
+
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'exportation des joueurs : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void afficherProfil(User user) {
 
         if (user.getImage() != null && !user.getImage().isEmpty()) {
@@ -167,6 +433,11 @@ public class DisplayJoueur {
     @FXML
     private void handleHome() {
         loadScene("/Home.fxml", homeButton);
+    }
+
+    @FXML
+    private void handleSportsAPI() {
+        loadScene("/joueur/SportsAPI.fxml", SportsAPIButton);
     }
 
     @FXML
@@ -327,5 +598,12 @@ public class DisplayJoueur {
                 onConfirm.run();
             }
         });
+    }
+
+    @FXML
+    private void handleViewAnalytics(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/joueur/AnalyticsJoueur.fxml"));
+        Stage stage = (Stage) tableView.getScene().getWindow();
+        stage.setScene(new Scene(root));
     }
 }

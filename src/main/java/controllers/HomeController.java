@@ -1,64 +1,96 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controllers;
 
+import javafx.beans.property.SimpleStringProperty;
+import models.joueur.Joueur;
+import services.joueur.JoueurService;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
-import java.io.IOException;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- *
- * @author oXCToo
- */
 public class HomeController implements Initializable {
-    
-    @FXML
-    private Label label;
-    
-    @FXML
-    private VBox pnl_scroll;
 
     @FXML
-    private Button joueurButton;
-    
+    private TableView<Joueur> tableView;
+
+    @FXML
+    private TableColumn<Joueur, Integer> idJoueurColumn;
+    @FXML
+    private TableColumn<Joueur, String> nomColumn;
+    @FXML
+    private TableColumn<Joueur, String> prenomColumn;
+    @FXML
+    private TableColumn<Joueur, String> dateNaissanceColumn;
+    @FXML
+    private TableColumn<Joueur, String> posteColumn;
+    @FXML
+    private TableColumn<Joueur, Float> tailleColumn;
+    @FXML
+    private TableColumn<Joueur, Float> poidsColumn;
+    @FXML
+    private TableColumn<Joueur, String> statutColumn;
+    @FXML
+    private TableColumn<Joueur, String> emailColumn;
+    @FXML
+    private TableColumn<Joueur, String> telephoneColumn;
+    @FXML
+    private TableColumn<Joueur, Integer> idSportColumn;
+    @FXML
+    private TableColumn<Joueur, String> nomSportColumn;
+    @FXML
+    private TableColumn<Joueur, String> profilePictureColumn;
+
+    private ObservableList<Joueur> playerData = FXCollections.observableArrayList();
+    private JoueurService joueurService;
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        joueurService = new JoueurService();
+        loadPlayerData();
+        setupTableView();
     }
 
-    @FXML
-    private void handleJoueur() {
+    private void loadPlayerData() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/MainController.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) joueurButton.getScene().getWindow();
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
+            List<Joueur> joueurs = joueurService.recherche();
+            playerData.setAll(joueurs);
+        } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Failed to load the FXML file");
-            alert.setContentText("Details: " + e.getMessage());
-            alert.showAndWait();
+            // Fallback to mock data if service fails
+            playerData.setAll(
+                    new Joueur(1, "Football", "John", "Doe", new java.util.Date(), "Forward", 1.8f, 75f, "Active", "john@example.com", "123456789", "/images/player1.png"),
+                    new Joueur(2, "Basketball", "Jane", "Smith", new java.util.Date(), "Guard", 1.75f, 70f, "Active", "jane@example.com", "987654321", null)
+            );
         }
     }
-    
+
+    private void setupTableView() {
+        idJoueurColumn.setCellValueFactory(cellData -> cellData.getValue().idJoueurProperty().asObject());
+        nomColumn.setCellValueFactory(cellData -> cellData.getValue().nomProperty());
+        prenomColumn.setCellValueFactory(cellData -> cellData.getValue().prenomProperty());
+        dateNaissanceColumn.setCellValueFactory(cellData -> {
+            Date date = cellData.getValue().getDateNaissance();
+            return new SimpleStringProperty(date != null ? new SimpleDateFormat("yyyy-MM-dd").format(date) : "");
+        });
+        posteColumn.setCellValueFactory(cellData -> cellData.getValue().posteProperty());
+        tailleColumn.setCellValueFactory(cellData -> cellData.getValue().tailleProperty().asObject());
+        poidsColumn.setCellValueFactory(cellData -> cellData.getValue().poidsProperty().asObject());
+        statutColumn.setCellValueFactory(cellData -> cellData.getValue().statutProperty());
+        emailColumn.setCellValueFactory(cellData -> cellData.getValue().emailProperty());
+        telephoneColumn.setCellValueFactory(cellData -> cellData.getValue().telephoneProperty());
+        idSportColumn.setCellValueFactory(cellData -> cellData.getValue().idSportProperty().asObject());
+        nomSportColumn.setCellValueFactory(cellData -> cellData.getValue().nomSportProperty());
+        profilePictureColumn.setCellValueFactory(cellData -> cellData.getValue().profilePictureUrlProperty());
+
+        tableView.setItems(playerData);
+    }
+
+
 }

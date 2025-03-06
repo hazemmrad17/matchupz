@@ -1,6 +1,16 @@
 package controllers.joueur;
 
-import controllers.joueur.ModifySport;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.joueur.Sport;
 import models.match.SessionManager;
@@ -18,125 +29,108 @@ import models.utilisateur.Role;
 import models.utilisateur.User;
 import services.joueur.SportService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class DisplaySport {
-    @FXML
-    private Button bt_user;
-    @FXML
-    private Button teams;
-    @FXML
-    private Button dashboard;
-    @FXML
-    private Button espace;
-    @FXML
-    private Button logistique;
-    @FXML
-    private Label nom_user;
+    @FXML private Button bt_user;
+    @FXML private Button teams;
+    @FXML private Button dashboard;
+    @FXML private Button espace;
+    @FXML private Button logistique;
+    @FXML private Label nom_user;
+    @FXML private AnchorPane main_form;
+    @FXML private Button button_theme_switch;
+    @FXML private Button sportButton;
+    @FXML private Button joueurButton;
+    @FXML private Button homeButton;
+    @FXML private Button addSportButton;
+    @FXML private TextField searchField;
+    @FXML private TableView<Sport> tableView;
+    @FXML private TableColumn<Sport, Integer> idSportColumn;
+    @FXML private TableColumn<Sport, String> nomSportColumn;
+    @FXML private TableColumn<Sport, String> descriptionColumn;
+    @FXML private TableColumn<Sport, Void> modifierColumn;
+    @FXML private TableColumn<Sport, Void> deleteColumn;
+    @FXML private Button exportButton; // Added for export
+    @FXML private Button sortButton;   // Added for sort
 
-    private boolean isGreenTheme = false; // Track current theme
-
-    @FXML
-    private AnchorPane main_form; // Add fx:id="main_form" to AnchorPane in FXML
-
-    @FXML
-    private Button button_theme_switch;
+    private boolean isGreenTheme = false;
+    private ObservableList<Sport> sportList = FXCollections.observableArrayList();
+    private ObservableList<Sport> allSports = FXCollections.observableArrayList(); // For filtering
+    private SportService sportService = new SportService();
 
     @FXML
     private void switchTheme() {
-        main_form.getStylesheets().clear(); // Remove current stylesheet
-
+        main_form.getStylesheets().clear();
         if (isGreenTheme) {
-            // Switch to blue
             main_form.getStylesheets().add(getClass().getResource("../style_file_blue.css").toExternalForm());
             isGreenTheme = false;
         } else {
-            // Switch to green
             main_form.getStylesheets().add(getClass().getResource("../style_file_green.css").toExternalForm());
             isGreenTheme = true;
         }
     }
 
     private void afficherProfil(User user) {
-
         if (user.getImage() != null && !user.getImage().isEmpty()) {
             javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
             String name = user.getPrenom();
             nom_user.setText(name);
-            // profileImageView.setImage(image);
-
         }
     }
-    @FXML
-    void match(ActionEvent event) {
 
-    }
-
+    @FXML void match(ActionEvent event) {}
 
     @FXML
     void pageuser(ActionEvent event) {
         User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
-                    Stage stage = (Stage) bt_user.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                Stage stage = (Stage) bt_user.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
             }
-
         } else {
-            System.out.println("Aucun utilisateur connecté !");
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
         }
-
-
     }
-    @FXML
-    void sponsor(ActionEvent event) {
 
-    }
+    @FXML void sponsor(ActionEvent event) {}
 
     @FXML
     void teams(ActionEvent event) {
-        loadScene("/joueur/MainController.fxml",teams);
+        loadScene("/joueur/MainController.fxml", teams);
     }
 
-    @FXML
-    void dashboard(ActionEvent event) {
-
-    }
+    @FXML void dashboard(ActionEvent event) {}
 
     @FXML
     void espace(ActionEvent event) {
         User user = SessionManager.getCurrentUser();
-        if (user != null) {
-
-            String role = user.getRole().getValue();
-            if (user.getRole() == Role.ADMIN)
-            {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
-                    Stage stage = (Stage) espace.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
-                }
+        if (user != null && user.getRole() == Role.ADMIN) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+                Stage stage = (Stage) espace.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
             }
-
         } else {
-            System.out.println("Aucun utilisateur connecté !");
+            System.out.println("Aucun utilisateur connecté ou pas ADMIN !");
         }
-
-
     }
 
     @FXML
@@ -150,11 +144,6 @@ public class DisplaySport {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
         }
-
-
-    }
-
-    private void showAlert(Alert.AlertType alertType, String erreur, String content) {
     }
 
     private void loadScene(String fxmlPath, Button button) {
@@ -165,64 +154,23 @@ public class DisplaySport {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            showAlert(Alert.AlertType.valueOf("Erreur"), "Échec du chargement", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Échec du chargement", e.getMessage());
         }
     }
 
-    @FXML private Button joueurButton;
-    @FXML private Button homeButton;
-    @FXML private Button addSportButton;
-    @FXML private TextField searchField; // Existing search field
-    @FXML private TableView<Sport> tableView;
-    @FXML private TableColumn<Sport, Integer> idSportColumn;
-    @FXML private TableColumn<Sport, String> nomSportColumn;
-    @FXML private TableColumn<Sport, String> descriptionColumn;
-    @FXML private TableColumn<Sport, Void> modifierColumn;
-    @FXML private TableColumn<Sport, Void> deleteColumn;
-
-    private ObservableList<Sport> sportList = FXCollections.observableArrayList();
-    private SportService sportService = new SportService();
-
     @FXML
     private void handleHome() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/MainController.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) homeButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            showError("Failed to load the MainController page", e);
-        }
+        loadScene("/joueur/MainController.fxml", homeButton);
     }
 
     @FXML
     private void HandleJoueur() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/MainController.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) joueurButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            showError("Failed to load the MainController page", e);
-        }
+        loadScene("/joueur/MainController.fxml", joueurButton);
     }
 
     @FXML
     private void handleAddSportButton() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/AjoutSport.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) addSportButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            showError("Failed to load the Add Sport page", e);
-        }
+        loadScene("/joueur/AjoutSport.fxml", addSportButton);
     }
 
     private void openModifyWindow(Sport sport, Stage stage) {
@@ -231,11 +179,9 @@ public class DisplaySport {
             Parent root = loader.load();
             ModifySport controller = loader.getController();
             controller.setSportToModify(sport);
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
-
-            stage.setOnHidden(event -> loadSports()); // Simplified reload
+            stage.setOnHidden(event -> loadSports());
         } catch (IOException e) {
             showError("Failed to load the Modify Sport page", e);
         }
@@ -243,31 +189,23 @@ public class DisplaySport {
 
     @FXML
     public void initialize() {
-        // Initialize columns with appropriate data
         idSportColumn.setCellValueFactory(cellData -> cellData.getValue().idSportProperty().asObject());
         nomSportColumn.setCellValueFactory(cellData -> cellData.getValue().nomSportProperty());
         descriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
-        main_form.getStylesheets().add(getClass().getResource("../style_file_blue.css").toExternalForm());
-        // Modifier column with confirmation dialog
-        modifierColumn.setCellFactory(param -> new TableCell<Sport, Void>() {
+
+        modifierColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Modifier");
             {
                 btn.setId("btn-modify");
                 btn.setOnAction(event -> {
                     Sport selectedSport = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation");
-                    alert.setHeaderText("Are you sure you want to modify this sport?");
-                    alert.setContentText("Sport: " + selectedSport.getNomSport());
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            Stage stage = (Stage) btn.getScene().getWindow();
-                            openModifyWindow(selectedSport, stage);
-                        }
-                    });
+                    showConfirmation("Confirmation", "Are you sure you want to modify this sport?",
+                            "Sport: " + selectedSport.getNomSport(), () -> {
+                                Stage stage = (Stage) btn.getScene().getWindow();
+                                openModifyWindow(selectedSport, stage);
+                            });
                 });
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -275,26 +213,19 @@ public class DisplaySport {
             }
         });
 
-        // Delete column with confirmation dialog
-        deleteColumn.setCellFactory(param -> new TableCell<Sport, Void>() {
+        deleteColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Supprimer");
             {
                 btn.setId("btn-delete");
                 btn.setOnAction(event -> {
                     Sport selectedSport = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation");
-                    alert.setHeaderText("Are you sure you want to delete this sport?");
-                    alert.setContentText("Sport: " + selectedSport.getNomSport());
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            sportService.supprimer(selectedSport);
-                            loadSports();
-                        }
-                    });
+                    showConfirmation("Confirmation", "Are you sure you want to delete this sport?",
+                            "Sport: " + selectedSport.getNomSport(), () -> {
+                                sportService.supprimer(selectedSport);
+                                loadSports();
+                            });
                 });
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -302,46 +233,178 @@ public class DisplaySport {
             }
         });
 
-        // Real-time filtering as user types
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filterSports(newValue));
-
         loadSports();
     }
 
     public void loadSports() {
+        allSports.clear();
+        allSports.addAll(sportService.recherche());
         sportList.clear();
-        sportList.addAll(sportService.recherche());
+        sportList.addAll(allSports);
         tableView.setItems(sportList);
-    }
-
-    @FXML
-    private void handleSearch() {
-        filterSports(searchField.getText());
     }
 
     private void filterSports(String searchText) {
         if (searchText == null || searchText.trim().isEmpty()) {
-            tableView.setItems(sportList);
+            sportList.setAll(allSports);
         } else {
-            ObservableList<Sport> filteredList = FXCollections.observableArrayList();
             String lowerCaseFilter = searchText.toLowerCase().trim();
-            for (Sport sport : sportList) {
-                if (String.valueOf(sport.getIdSport()).contains(lowerCaseFilter) ||
-                        sport.getNomSport().toLowerCase().contains(lowerCaseFilter) ||
-                        sport.getDescription().toLowerCase().contains(lowerCaseFilter)) {
-                    filteredList.add(sport);
-                }
-            }
-            tableView.setItems(filteredList);
+            sportList.setAll(allSports.stream()
+                    .filter(sport ->
+                            String.valueOf(sport.getIdSport()).contains(lowerCaseFilter) ||
+                                    sport.getNomSport().toLowerCase().contains(lowerCaseFilter) ||
+                                    sport.getDescription().toLowerCase().contains(lowerCaseFilter))
+                    .collect(java.util.stream.Collectors.toList()));
         }
+        tableView.setItems(sportList);
+    }
+
+    // Export Functionality
+    @FXML
+    private void handleExport() {
+        ObservableList<Sport> sports = tableView.getItems();
+        if (sports.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucun Sport", "Il n'y a aucun sport à exporter !");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer la liste des sports");
+        fileChooser.setInitialFileName("Sports_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file == null) {
+            showAlert(Alert.AlertType.INFORMATION, "Annulé", "L'exportation a été annulée.");
+            return;
+        }
+
+        String fileName = file.getAbsolutePath();
+
+        try {
+            PdfWriter writer = new PdfWriter(fileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            document.setMargins(20, 20, 20, 20);
+
+            PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            PdfFont regularFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+
+            document.add(new Paragraph("Liste des Sports")
+                    .setFont(boldFont)
+                    .setFontSize(16)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(10));
+
+            float[] columnWidths = {100, 300, 300}; // Adjust based on column widths
+            Table pdfTable = new Table(UnitValue.createPointArray(columnWidths)).useAllAvailableWidth();
+
+            String[] headers = {"ID Sport", "Nom Sport", "Description"};
+            for (String header : headers) {
+                pdfTable.addHeaderCell(new Cell()
+                        .add(new Paragraph(header).setFont(boldFont).setFontSize(10).setTextAlignment(TextAlignment.CENTER))
+                        .setPadding(3));
+            }
+
+            for (Sport sport : sports) {
+                pdfTable.addCell(new Cell().add(new Paragraph(String.valueOf(sport.getIdSport()))
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(sport.getNomSport())
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+                pdfTable.addCell(new Cell().add(new Paragraph(sport.getDescription())
+                        .setFont(regularFont).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+            }
+
+            document.add(pdfTable);
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            document.add(new Paragraph("Gestion des Sports")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph("Nexus Team 2025 ©")
+                    .setFont(regularFont).setFontSize(12).setTextAlignment(TextAlignment.RIGHT));
+            document.add(new Paragraph(" ").setMarginBottom(10));
+
+            InputStream inputStream = getClass().getResourceAsStream("/images/logo_horizantalDARK.jpg");
+            if (inputStream == null) {
+                throw new IOException("Image resource not found: /images/logo_horizantalDARK.jpg");
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            byte[] imageBytes = baos.toByteArray();
+            Image logo = new Image(ImageDataFactory.create(imageBytes)).setWidth(184).setHeight(41);
+            document.add(logo);
+
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Les sports ont été exportés dans " + fileName + " !");
+
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de l'exportation des sports : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Sort Functionality
+    @FXML
+    private void handleSort() {
+        String[] sortableColumns = {"ID Sport", "Nom Sport", "Description"};
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Nom Sport", sortableColumns);
+        dialog.setTitle("Trier les Sports");
+        dialog.setHeaderText("Sélectionnez une colonne pour trier en ordre croissant");
+        dialog.setContentText("Colonne:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(this::sortTableByColumn);
+    }
+
+    private void sortTableByColumn(String columnName) {
+        Comparator<Sport> comparator;
+        switch (columnName) {
+            case "ID Sport":
+                comparator = Comparator.comparingInt(Sport::getIdSport);
+                break;
+            case "Nom Sport":
+                comparator = Comparator.comparing(Sport::getNomSport, Comparator.nullsLast(String::compareTo));
+                break;
+            case "Description":
+                comparator = Comparator.comparing(Sport::getDescription, Comparator.nullsLast(String::compareTo));
+                break;
+            default:
+                return;
+        }
+
+        sportList.sort(comparator);
+        tableView.refresh();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showConfirmation(String title, String header, String content, Runnable onConfirm) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                onConfirm.run();
+            }
+        });
     }
 
     private void showError(String header, IOException e) {
         e.printStackTrace();
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText("Details: " + e.getMessage());
-        alert.showAndWait();
+        showAlert(Alert.AlertType.ERROR, header, "Details: " + e.getMessage());
     }
 }

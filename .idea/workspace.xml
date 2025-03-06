@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="be4e4a6c-103a-4bfe-b87b-0ed9dc172897" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="Class" />
+        <option value="FxmlFile" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hazem-mrad-dev/matchupz.git&quot;,
+    &quot;accountId&quot;: &quot;7216bd04-da93-40dd-8af3-d501d280ae42&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2tfJFD1JGST78Kpwtoo973GWgQq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.JavaFX.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;&lt;unknown&gt;&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Hazem Mrad/Desktop/football_analysis-master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Hazem Mrad\Desktop\Integration_ui_hirearchie\src\main\resources\joueur" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Hazem Mrad\Desktop\Integration_ui_hirearchie\src\main\resources\joueur" />
+      <recent name="C:\Users\Hazem Mrad\Desktop\Integration_ui_hirearchie\src\main\resources\EspaceSportif" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="JavaFX" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="jbr-17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="tests.FXMain" />
+      <module name="Integration_ui_hirearchie" />
+      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\Hazem Mrad\Downloads\javafx-sdk-20.0.2\lib&quot; --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.media" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="be4e4a6c-103a-4bfe-b87b-0ed9dc172897" name="Changes" comment="" />
+      <created>1740737092494</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740737092494</updated>
+      <workItem from="1740737093644" duration="68000" />
+      <workItem from="1740737281208" duration="46544000" />
+      <workItem from="1740787998924" duration="3271000" />
+      <workItem from="1740820429645" duration="843000" />
+      <workItem from="1740821295765" duration="2440000" />
+      <workItem from="1740859199442" duration="4179000" />
+      <workItem from="1740908267059" duration="588000" />
+      <workItem from="1740926440866" duration="9090000" />
+      <workItem from="1740955037573" duration="665000" />
+      <workItem from="1741074706017" duration="6186000" />
+      <workItem from="1741086308519" duration="869000" />
+      <workItem from="1741130911381" duration="4926000" />
+      <workItem from="1741137637510" duration="2448000" />
+      <workItem from="1741160852397" duration="2807000" />
+      <workItem from="1741189691478" duration="1815000" />
+      <workItem from="1741214725069" duration="1637000" />
+      <workItem from="1741217393859" duration="11311000" />
+      <workItem from="1741248033204" duration="5091000" />
+      <workItem from="1741256946757" duration="1942000" />
+      <workItem from="1741258919988" duration="372000" />
+      <workItem from="1741259380537" duration="6101000" />
+      <workItem from="1741268589019" duration="537000" />
+      <workItem from="1741269700023" duration="3561000" />
+      <workItem from="1741292102752" duration="2600000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

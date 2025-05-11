@@ -6,11 +6,11 @@
 
 ## 1. Description du Projet
 
-**Gestion MatchUpz** est un système web complet destiné à la gestion logistique et fonctionnelle d'une plateforme sportive. Conçu pour simplifier les interactions entre divers acteurs (administrateurs, sponsors, fournisseurs, utilisateurs), il offre une architecture robuste et modulaire.
+**Gestion MatchUpz** est la version installable de la plateforme MatchUpz, conçue pour offrir une expérience rapide, fluide et autonome aux gestionnaires d’événements sportifs. Elle permet une gestion locale et efficace des équipes, des matchs, des infrastructures sportives et des partenaires, même en l'absence de connexion internet.
 
 ### Objectif
 
-Permettre une gestion fluide et centralisée des opérations liées aux infrastructures sportives, aux réservations et à la gestion des partenaires (sponsors, fournisseurs).
+Fournir un outil complet, ergonomique et réactif pour organiser et superviser des événements sportifs directement depuis un poste de travail. Cette version est idéale pour une utilisation sur site, en complément de la version web.
 
 ### Problématique Résolue
 

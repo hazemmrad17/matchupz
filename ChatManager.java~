@@ -1,0 +1,4 @@
+package models.logistics;
+
+public class ChatManager {
+}

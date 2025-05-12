@@ -1,0 +1,207 @@
+package services.logistics;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import models.logistics.Materiel;
+import models.logistics.TypeMateriel;
+import models.logistics.EtatMateriel;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import services.IService;
+import utils.MyDataSource;
+
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MaterielService implements IService<Materiel> {
+    private Connection connection = MyDataSource.getInstance().getConn();
+    private final OkHttpClient client = new OkHttpClient();
+    private final ObjectMapper mapper = new ObjectMapper();
+    private static final String EXCHANGE_RATE_API_BASE_URL = "https://v6.exchangerate-api.com/v6/";
+    private static final String API_KEY = "3aabd819d4379431ca2355bd";
+
+    @Override
+    public void ajouter(Materiel materiel) {
+        String sql = "INSERT INTO materiel (id_fournisseur, nom, type, quantite, etat, prix_unitaire, barcode, image_data) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, materiel.getId_fournisseur());
+            pstmt.setString(2, materiel.getNom());
+            pstmt.setString(3, materiel.getType().name());
+            pstmt.setInt(4, materiel.getQuantite());
+            pstmt.setString(5, materiel.getEtat().name());
+            pstmt.setFloat(6, materiel.getPrix_unitaire());
+            pstmt.setString(7, materiel.getBarcode());
+            String imagePath = materiel.getImagePath();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                pstmt.setString(8, imagePath);
+            } else {
+                pstmt.setNull(8, Types.VARCHAR);
+            }
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to add material: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void modifier(Materiel materiel) {
+        String sql = "UPDATE materiel SET id_fournisseur = ?, nom = ?, type = ?, quantite = ?, etat = ?, prix_unitaire = ?, barcode = ?, image_data = ? WHERE id_materiel = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, materiel.getId_fournisseur());
+            pstmt.setString(2, materiel.getNom());
+            pstmt.setString(3, materiel.getType().name());
+            pstmt.setInt(4, materiel.getQuantite());
+            pstmt.setString(5, materiel.getEtat().name());
+            pstmt.setFloat(6, materiel.getPrix_unitaire());
+            pstmt.setString(7, materiel.getBarcode());
+            String imagePath = materiel.getImagePath();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                pstmt.setString(8, imagePath);
+            } else {
+                pstmt.setNull(8, Types.VARCHAR);
+            }
+            pstmt.setInt(9, materiel.getId_materiel());
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("✅ Matériel modifié avec succès : " + materiel.getNom());
+            } else {
+                System.out.println("⚠️ Aucun matériel modifié (id_materiel introuvable) : " + materiel.getId_materiel());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Échec de la mise à jour du matériel dans la base de données", e);
+        }
+    }
+
+    @Override
+    public void supprimer(Materiel materiel) {
+        String req = "DELETE FROM materiel WHERE id_materiel=?";
+        try (PreparedStatement ps = connection.prepareStatement(req)) {
+            ps.setInt(1, materiel.getId_materiel());
+            ps.executeUpdate();
+            System.out.println("✅ Matériel supprimé avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Materiel> recherche() {
+        String req = "SELECT * FROM materiel";
+        List<Materiel> materiels = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(req);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String typeString = rs.getString("type");
+                TypeMateriel type;
+                try {
+                    type = TypeMateriel.valueOf(typeString);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Invalid TypeMateriel value: '" + typeString + "' for material ID: " + rs.getInt("id_materiel") + ". Skipping record.");
+                    continue; // Skip invalid record
+                }
+                Materiel materiel = new Materiel();
+                materiel.setId_materiel(rs.getInt("id_materiel"));
+                materiel.setId_fournisseur(rs.getInt("id_fournisseur"));
+                materiel.setNom(rs.getString("nom"));
+                materiel.setType(type);
+                materiel.setQuantite(rs.getInt("quantite"));
+                materiel.setEtat(EtatMateriel.valueOf(rs.getString("etat")));
+                materiel.setPrix_unitaire(rs.getFloat("prix_unitaire"));
+                materiel.setBarcode(rs.getString("barcode"));
+                materiel.setImagePath(rs.getString("image_data"));
+                materiels.add(materiel);
+            }
+            System.out.println("🔎 Liste des matériels : " + materiels);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return materiels;
+    }
+
+    public boolean exists(String nom, String type) {
+        String query = "SELECT COUNT(*) FROM materiel WHERE nom = ? AND type = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, nom);
+            stmt.setString(2, type);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Materiel findByBarcode(String barcode) {
+        String query = "SELECT * FROM materiel WHERE barcode = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, barcode);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Materiel m = new Materiel();
+                m.setId_materiel(rs.getInt("id_materiel"));
+                m.setId_fournisseur(rs.getInt("id_fournisseur"));
+                m.setNom(rs.getString("nom"));
+                String typeString = rs.getString("type");
+                TypeMateriel type;
+                try {
+                    type = TypeMateriel.valueOf(typeString);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Invalid TypeMateriel value in findByBarcode: '" + typeString + "' for barcode: " + barcode + ". Skipping record.");
+                    return null; // Skip invalid record
+                }
+                m.setType(type);
+                m.setQuantite(rs.getInt("quantite"));
+                m.setEtat(EtatMateriel.valueOf(rs.getString("etat")));
+                m.setPrix_unitaire(rs.getFloat("prix_unitaire"));
+                m.setBarcode(rs.getString("barcode"));
+                m.setImagePath(rs.getString("image_data"));
+                return m;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public float getExchangeRate(String fromCurrency, String toCurrency) throws IOException {
+        String url = EXCHANGE_RATE_API_BASE_URL + API_KEY + "/latest/" + fromCurrency;
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Failed to fetch exchange rates: " + response);
+            }
+            String jsonResponse = response.body().string();
+            System.out.println("API Response: " + jsonResponse);
+            JsonNode rootNode = mapper.readTree(jsonResponse);
+            JsonNode ratesNode = rootNode.path("conversion_rates");
+            if (ratesNode.isMissingNode() || ratesNode.path(toCurrency).isMissingNode()) {
+                throw new IOException("Exchange rate for " + toCurrency + " not found in response.");
+            }
+            double rate = ratesNode.path(toCurrency).asDouble();
+            if (rate == 0.0) {
+                throw new IOException("Invalid exchange rate (0.0) returned for " + toCurrency);
+            }
+            return (float) rate;
+        }
+    }
+
+    public float convertPrice(float price, String fromCurrency, String toCurrency) throws IOException {
+        if (fromCurrency.equals(toCurrency)) {
+            return price;
+        }
+        float rate = getExchangeRate(fromCurrency, toCurrency);
+        float convertedPrice = price * rate;
+        System.out.println("Converting " + price + " from " + fromCurrency + " to " + toCurrency + ": " + convertedPrice);
+        return convertedPrice;
+    }
+}

@@ -30,7 +30,7 @@ Guide détaillé pour rédiger un bon README sur GitHub pour notre projet Matchu
 
 Retrouvez ci-dessous la liste des entités principales du projet, chacune pointant vers son fichier source :
 
-### Gestion des Utilisateurs et Authentification
+### Gestion des Utilisateurs 
 - [User](User.java) - [Service](UserService.java)
 - [Role](Role.java)
 - [SessionManager](SessionManager.java)
@@ -42,27 +42,25 @@ Retrouvez ci-dessous la liste des entités principales du projet, chacune pointa
 - [PerformanceJoueur](PerformanceJoueur.java) - [Service](PerformanceJoueurService.java)
 - [EvaluationPhysique](EvaluationPhysique.java) - [Service](EvaluationPhysiqueService.java)
 
-### Gestion des Installations
+### Gestion des Espaces Sportifs
 - [EspaceSportif](EspaceSportif.java) - [Service](EspaceSportifService.java)
 - [Materiel](Materiel.java) - [Service](MaterielService.java)
 - [Reservation](Reservation.java) - [Service](ReservationService.java)
 
-### Gestion des Matches et Sports
+### Gestion des Matches 
 - [Match](Match.java) - [Service](MatchService.java)
 - [Sport](Sport.java) - [Service](SportService.java)
 - [StatistiquesPostMatch](StatistiquesPostMatch.java) - [Service](StatistiquesPostMatchService.java)
+- [Schedule](Schedule.java) - [Service](ScheduleService.java)
 
-### Gestion Administrative
+### Gestion Sponsoring
 - [Abonnement](Abonnement.java) - [Service](AbonnementService.java)
 - [Contrat](Contrat.java) - [Service](ContratService.java)
 - [Sponsor](Sponsor.java) - [Service](SponsorService.java)
-- [Fournisseur](Fournisseur.java) - [Service](FournisseurService.java)
 - [Transaction](Transaction.java) - [Service](TransactionService.java)
 
-### Planification
-- [Schedule](Schedule.java) - [Service](ScheduleService.java)
-
----
+### Gestion Logistique
+ - [Fournisseur](Fournisseur.java) - [Service](FournisseurService.java)
 
 ## 3. Table des Matières
 

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="800.0" stylesheets="@../style_file_blue.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.user.SingUpController">
+   <left>
+      <!-- Left Side: Promotional Area with Image -->
+      <AnchorPane prefHeight="600.0" prefWidth="400.0" styleClass="card">
+         <children>
+            <!-- Promotional Image -->
+            <!-- Promotional Text -->
+            <VBox alignment="CENTER" layoutX="51.0" layoutY="524.0" prefHeight="150.0" prefWidth="300.0" spacing="10">
+               <children>
+                  <Label styleClass="form-title" text="Welcome to MatchUPZ" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat ExtraBold" size="27.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="label-text" text="Create your account today" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat Medium" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <Text fill="WHITE" layoutX="64.0" layoutY="686.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MatchUPZ © Copyright Reserved 2025" textAlignment="CENTER" wrappingWidth="274.13671875">
+               <font>
+                  <Font name="Montserrat Medium" size="12.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="600.0" prefWidth="374.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane layoutX="15.0" layoutY="23.0" prefHeight="590.0" prefWidth="366.0" styleClass="shadow white-bg">
+               <children>
+                  <ImageView fitHeight="44.0" fitWidth="261.0" layoutX="70.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/logo.png" />
+                     </image>
+                  </ImageView>
+                  <Text layoutX="25.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Créer un nouveau compte" textAlignment="CENTER" wrappingWidth="306.9366455078125">
+                     <font>
+                        <Font name="Poppins Medium" size="22.0" />
+                     </font>
+                  </Text>
+                  <!-- Form Fields -->
+                  <TextField fx:id="tf_nom" layoutX="28.0" layoutY="101.0" prefHeight="40.0" prefWidth="300.0" promptText="Nom" />
+                  <TextField fx:id="tf_prenom" layoutX="28.0" layoutY="154.0" prefHeight="40.0" prefWidth="300.0" promptText="Prenom" />
+                  <TextField fx:id="tf_email" layoutX="28.0" layoutY="207.0" prefHeight="40.0" prefWidth="300.0" promptText="Email" />
+                  <PasswordField fx:id="tf_mot_de_passe" layoutX="28.0" layoutY="260.0" prefHeight="40.0" prefWidth="300.0" promptText="Mot de passe" />
+                  <TextField fx:id="tf_tel" layoutX="28.0" layoutY="313.0" prefHeight="40.0" prefWidth="300.0" promptText="Telephone" />
+                  <DatePicker fx:id="date_date_naiss" layoutX="28.0" layoutY="366.0" prefHeight="40.0" prefWidth="300.0" />
+                  <RadioButton fx:id="rb_femme" layoutX="104.0" layoutY="417.0" mnemonicParsing="false" text="Femme" />
+                  <RadioButton fx:id="rb_homme" layoutX="187.0" layoutY="417.0" mnemonicParsing="false" text="Homme" />
+                  <ComboBox fx:id="combo_role" layoutX="28.0" layoutY="449.0" prefHeight="40.0" prefWidth="300.0" />
+                  <TextField fx:id="tf_image" layoutX="28.0" layoutY="502.0" prefHeight="40.0" prefWidth="300.0" promptText="Image" />
+                  <Text layoutX="28.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Genre:" wrappingWidth="43.9476318359375" />
+                  <!-- Buttons -->
+                  <Button fx:id="button_sinscrire" layoutX="62.0" layoutY="552.0" mnemonicParsing="false" onAction="#sinscrire" prefHeight="40.0" prefWidth="250.0" styleClass="btn-primary" text="S'inscrire" />
+                  <Button fx:id="button_se_connecter" layoutX="63.0" layoutY="604.0" mnemonicParsing="false" onAction="#seconnecter" prefHeight="40.0" prefWidth="250.0" styleClass="btn-tertiary" text="Se connecter" />
+               </children>
+               <styleClass>
+                  <String fx:value="shadow" />
+                  <String fx:value="white-bg" />
+               </styleClass>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

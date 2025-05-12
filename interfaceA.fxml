@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="783.0" prefWidth="900.0" stylesheets="@../style_file_blue.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.user.InterfaceAController">
+   <left>
+      <!-- Left Side: Promotional Area with GIF/Image -->
+      <AnchorPane prefHeight="800.0" prefWidth="450.0" styleClass="card">
+         <children>
+            <!-- Animated GIF or Large Image -->
+            <ImageView fx:id="image" fitHeight="722.0" fitWidth="452.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+               </image>
+            </ImageView>
+            <!-- Promotional Text -->
+            <VBox alignment="CENTER" layoutX="13.0" layoutY="508.0" prefHeight="150.0" prefWidth="430.0" spacing="10">
+               <children>
+                  <Label styleClass="form-title" text="Boostez votre expérience" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat ExtraBold" size="27.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="75.0" prefWidth="202.0" styleClass="form-title" text="  sportive" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat ExtraBold" size="27.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="22.0" prefWidth="328.0" styleClass="label-text" text="Simplifiez les tâches de gestion avec MatchUPZ" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Montserrat Medium" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="800.0" prefWidth="460.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane layoutX="21.0" layoutY="37.0" prefHeight="613.0" prefWidth="404.0" styleClass="shadow white-bg">
+               <children>
+                  <AnchorPane layoutX="4.0" layoutY="102.0" prefHeight="623.0" prefWidth="390.0">
+                     <children>
+                        <TextField fx:id="tf_email" layoutX="17.0" layoutY="74.0" prefHeight="40.0" prefWidth="350.0" promptText="Entrer votre email" />
+                        <Text layoutX="30.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login first to your account" textAlignment="CENTER" wrappingWidth="324.13671875">
+                           <font>
+                              <Font name="Poppins Medium" size="22.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="21.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
+                           <font>
+                              <Font name="Montserrat Medium" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="21.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe">
+                           <font>
+                              <Font name="Montserrat Medium" size="12.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="button_login" layoutX="40.0" layoutY="429.0" mnemonicParsing="false" onAction="#seconnecter" prefHeight="35.0" prefWidth="300.0" styleClass="btn-primary" text="Se Connecter" />
+                        <Button fx:id="button_signup" layoutX="233.0" layoutY="533.0" mnemonicParsing="false" onAction="#sinscrire" prefHeight="40.0" prefWidth="144.0" styleClass="btn-primary" text="S'inscrire" />
+                        <Text layoutX="58.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vous n'avez pas de compte ?" />
+                        <Button fx:id="button_facial_recognition" layoutX="41.0" layoutY="476.0" mnemonicParsing="false" onAction="#facialRecognition" prefHeight="35.0" prefWidth="298.0" styleClass="btn-tertiary" text="Reconnaisssance faciale" />
+                        <PasswordField fx:id="tf_mot_de_passe" layoutX="16.0" layoutY="143.0" prefHeight="37.0" prefWidth="352.0" promptText="Entrer votre mot de passe" />
+                        <WebView fx:id="captchaWebView" layoutX="16.0" layoutY="210.0" prefHeight="198.0" prefWidth="352.0" />
+                        <Button fx:id="button_mdp_oublié" layoutX="245.0" layoutY="187.0" mnemonicParsing="false" onAction="#mdp_oublié" prefHeight="27.0" prefWidth="134.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Mot de passe oublié ?" textFill="#eab700" underline="true">
+                           <font>
+                              <Font name="Arial Rounded MT Bold" size="11.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <styleClass>
+                        <String fx:value="shadow" />
+                        <String fx:value="white-bg" />
+                     </styleClass>
+                  </AnchorPane>
+                  <Text layoutX="32.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Renforçons vos activités sportives dès aujourd'hui avec Matchupz" textAlignment="CENTER" wrappingWidth="341.73675537109375">
+                     <font>
+                        <Font name="Montserrat Medium" size="10.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="101.0" fitWidth="385.0" layoutX="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <Text layoutX="61.0" layoutY="749.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MatchUPZ © Tous droits réservés 2025" textAlignment="CENTER" wrappingWidth="324.13671875">
+               <font>
+                  <Font name="Montserrat Medium" size="12.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

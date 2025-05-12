@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+        <?import java.lang.String?>
+        <?import javafx.collections.FXCollections?>
+        <?import javafx.scene.canvas.Canvas?>
+        <?import javafx.scene.chart.BarChart?>
+        <?import javafx.scene.chart.CategoryAxis?>
+        <?import javafx.scene.chart.NumberAxis?>
+        <?import javafx.scene.control.Accordion?>
+        <?import javafx.scene.control.Button?>
+        <?import javafx.scene.control.ComboBox?>
+        <?import javafx.scene.control.Label?>
+        <?import javafx.scene.control.TableColumn?>
+        <?import javafx.scene.control.TableView?>
+        <?import javafx.scene.control.TitledPane?>
+        <?import javafx.scene.image.Image?>
+        <?import javafx.scene.image.ImageView?>
+        <?import javafx.scene.layout.AnchorPane?>
+        <?import javafx.scene.layout.BorderPane?>
+        <?import javafx.scene.layout.HBox?>
+        <?import javafx.scene.layout.StackPane?>
+        <?import javafx.scene.layout.VBox?>
+        <?import javafx.scene.shape.Line?>
+        <?import javafx.scene.text.Font?>
+
+        <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.joueur.PlayerStatsController">
+        <children>
+        <AnchorPane fx:id="main_form" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../style_file_blue.css">
+        <children>
+        <BorderPane layoutX="79.0" layoutY="100.0" prefHeight="700.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <left>
+        <AnchorPane prefHeight="600.0" prefWidth="240.0" styleClass="nav-form" BorderPane.alignment="CENTER">
+        <children>
+        <AnchorPane layoutX="20.0" layoutY="14.0" prefHeight="155.0" prefWidth="200.0">
+        <children>
+        <ImageView fitHeight="41.0" fitWidth="184.0" layoutX="8.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../images/logo_horizantal.png" />
+        </image>
+        </ImageView>
+        <Label alignment="CENTER" layoutY="57.0" prefHeight="38.0" prefWidth="200.0" text="Welcome," textAlignment="CENTER" textFill="WHITE">
+        <font>
+        <Font name="Comic Sans MS" size="29.0" />
+        </font>
+        </Label>
+        <Label alignment="CENTER" layoutY="99.0" prefHeight="38.0" prefWidth="200.0" text="User" textAlignment="CENTER" textFill="WHITE">
+        <font>
+        <Font name="Comic Sans MS Bold" size="35.0" />
+        </font>
+        </Label>
+        <Line endX="80.99998474121094" endY="0.1999969482421875" layoutX="121.0" layoutY="155.0" startX="-100.0" stroke="WHITE" />
+        </children>
+        </AnchorPane>
+        <Accordion layoutX="11.0" layoutY="170.0">
+        <panes>
+        <TitledPane animated="false" text="Home" textFill="WHITE">
+        <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="200.0">
+        <children>
+        <Button fx:id="dashboard" alignment="CENTER" layoutX="2.0" layoutY="-1.0" mnemonicParsing="false" onAction="#dashboard" prefHeight="40.0" prefWidth="195.0" styleClass="accordion-button" text="Home">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/safe-home.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        </children>
+        </AnchorPane>
+        </content>
+        </TitledPane>
+        <TitledPane animated="false" text="Responsable Sportive" textFill="WHITE">
+        <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="200.0">
+        <children>
+        <Button fx:id="teams" alignment="CENTER" layoutX="2.0" mnemonicParsing="false" onAction="#teams" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Teams">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/people.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        <Button fx:id="match" alignment="CENTER" layoutX="2.0" layoutY="50.0" mnemonicParsing="false" onAction="#match" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Match">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/calendar-tick.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        </children>
+        </AnchorPane>
+        </content>
+        </TitledPane>
+        <TitledPane animated="false" text="Responsable Logisitque" textFill="WHITE">
+        <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="200.0">
+        <children>
+        <Button fx:id="logistique" alignment="CENTER" layoutX="2.0" mnemonicParsing="false" onAction="#logistique" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Logistique">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/flag-2.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        <Button fx:id="espace" alignment="CENTER" layoutX="2.0" layoutY="45.0" mnemonicParsing="false" onAction="#espace" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Espace Sportif">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/buildings.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        </children>
+        </AnchorPane>
+        </content>
+        </TitledPane>
+        <TitledPane animated="false" text="Responsable Financier" textFill="WHITE">
+        <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="190.0">
+        <children>
+        <Button fx:id="sponsor" alignment="CENTER" layoutX="2.0" layoutY="-1.0" mnemonicParsing="false" onAction="#sponsor" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Sponsor">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/money-recive.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        </children>
+        </AnchorPane>
+        </content>
+        </TitledPane>
+        <TitledPane animated="false" text="Utilisateurs" textFill="WHITE">
+        <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="200.0">
+        <children>
+        <Button fx:id="bt_user" alignment="CENTER" layoutX="2.0" layoutY="-1.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#pageuser" prefHeight="40.0" prefWidth="190.0" styleClass="accordion-button" text="Utilisateur">
+        <graphic>
+        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/user.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        <font>
+        <Font name="Montserrat Medium" size="12.0" />
+        </font>
+        </Button>
+        </children>
+        </AnchorPane>
+        </content>
+        </TitledPane>
+        </panes>
+        </Accordion>
+        <AnchorPane layoutX="15.0" layoutY="531.0" prefHeight="54.0" prefWidth="216.0">
+        <children>
+        <Button fx:id="logout" alignment="CENTER" layoutY="2.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="154.0" styleClass="logout" text="LOGOUT" textAlignment="CENTER" textFill="WHITE">
+        <styleClass>
+        <String fx:value="logout" />
+        <String fx:value="shadow" />
+        </styleClass>
+        <font>
+        <Font size="14.0" />
+        </font>
+        <graphic>
+        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/login.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        </Button>
+        <Button fx:id="logout2" alignment="CENTER" layoutX="165.0" layoutY="2.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="logout" textAlignment="CENTER" textFill="WHITE">
+        <styleClass>
+        <String fx:value="logout" />
+        <String fx:value="shadow" />
+        </styleClass>
+        <font>
+        <Font name="Montserrat Black" size="11.0" />
+        </font>
+        <graphic>
+        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+        <Image url="@../icons/chart.png" />
+        </image>
+        </ImageView>
+        </graphic>
+        </Button>
+        </children>
+        </AnchorPane>
+        </children>
+        </AnchorPane>
+        </left>
+        <center>
+        <AnchorPane prefHeight="700.0" prefWidth="989.0" BorderPane.alignment="CENTER">
+        <children>
+        <VBox alignment="TOP_CENTER" layoutX="16.0" layoutY="30.0" prefHeight="670.0" prefWidth="970.0" spacing="20" style="-fx-padding: 20;">
+        <children>
+        <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Player Analytics Dashboard">
+        <font>
+        <Font name="Montserrat ExtraBold" size="28.0" />
+        </font>
+        </Label>
+        <ComboBox fx:id="playerSelector" onAction="#onPlayerSelect" prefWidth="250.0" promptText="Select Player" style="-fx-background-color: #0f3460; -fx-text-fill: white;" />
+        <ComboBox fx:id="seasonSelector" onAction="#onSeasonSelect" prefWidth="150.0" promptText="Select Season" style="-fx-background-color: #0f3460; -fx-text-fill: white;">
+        <items>
+        <FXCollections fx:factory="observableArrayList">
+        <String fx:value="2023" />
+        <String fx:value="2022" />
+        <String fx:value="2021" />
+        </FXCollections>
+        </items>
+        </ComboBox>
+        </HBox>
+        <TableView fx:id="playerStatsTable" prefHeight="250.0" prefWidth="930.0" style="-fx-background-color: #0f3460; -fx-text-fill: white;">
+        <columns>
+        <TableColumn fx:id="playerNameColumn" prefWidth="120.0" text="Player" />
+        <TableColumn fx:id="ageColumn" prefWidth="60.0" text="Age" />
+        <TableColumn fx:id="nationalityColumn" prefWidth="100.0" text="Nationality" />
+        <TableColumn fx:id="heightColumn" prefWidth="80.0" text="Height" />
+        <TableColumn fx:id="weightColumn" prefWidth="80.0" text="Weight" />
+        <TableColumn fx:id="positionColumn" prefWidth="100.0" text="Position" />
+        <TableColumn fx:id="appearancesColumn" prefWidth="80.0" text="Apps" />
+        <TableColumn fx:id="goalsColumn" prefWidth="80.0" text="Goals" />
+        <TableColumn fx:id="assistsColumn" prefWidth="80.0" text="Assists" />
+        <TableColumn fx:id="shotsColumn" prefWidth="80.0" text="Shots" />
+        <TableColumn fx:id="passesColumn" prefWidth="80.0" text="Passes" />
+        <TableColumn fx:id="dribblesColumn" prefWidth="80.0" text="Dribbles" />
+        <TableColumn fx:id="minutesColumn" prefWidth="80.0" text="Minutes" />
+        <TableColumn fx:id="injuredColumn" prefWidth="80.0" text="Injured" />
+        </columns>
+        </TableView>
+        <HBox alignment="CENTER" spacing="20">
+        <VBox prefWidth="400.0" spacing="10">
+        <Label text="Positional Heatmap" textFill="WHITE">
+        <font>
+        <Font name="Montserrat Bold" size="16.0" />
+        </font>
+        </Label>
+        <Canvas fx:id="heatmapCanvas" height="200" width="400" />
+        </VBox>
+        <VBox prefWidth="500.0" spacing="10">
+        <Label text="Performance Metrics" textFill="WHITE">
+        <font>
+        <Font name="Montserrat Bold" size="16.0" />
+        </font>
+        </Label>
+        <BarChart fx:id="performanceChart" prefHeight="200" prefWidth="500" style="-fx-background-color: #16213e; -fx-text-fill: white;">
+        <xAxis>
+        <CategoryAxis />
+        </xAxis>
+        <yAxis>
+        <NumberAxis />
+        </yAxis>
+        </BarChart>
+        </VBox>
+        </HBox>
+        <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" prefHeight="40.0" prefWidth="200.0" styleClass="btn-secondary" text="Précedent" />
+        <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="40.0" prefWidth="200.0" styleClass="btn-primary" text="Rafraichir Data" />
+        </HBox>
+        </children>
+        </VBox>
+        </children>
+        </AnchorPane>
+        </center>
+        </BorderPane>
+        </children>
+        </AnchorPane>
+        </children>
+        </StackPane>
+
+
+ 

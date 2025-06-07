@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stripe Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #card-element {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div id="payment-form">
+    <label for="card-element">Card Details</label>
+    <div id="card-element"></div>
+    <button id="submit">Submit Payment</button>
+    <div id="error-message" style="color: red;"></div>
+    <input type="hidden" id="contractTitle" value="">
+    <input type="hidden" id="amount" value="">
+</div>
+
+<script>
+    const stripe = Stripe('pk_test_51Ib2kWSEw6FAIm6XCdgACg4POrw5qG0wocT1K59WHb47SM4Djd1WNiOh8SXlrsbgGdpiE99iG0sfi2YVikcO0sfE00Sf3YPqGJ'); // Use your publishable key
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit');
+    const errorMessage = document.getElementById('error-message');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        submitButton.disabled = true;
+
+        try {
+            const {token, error} = await stripe.createToken(cardElement);
+            if (error) {
+                errorMessage.textContent = error.message;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Send token to JavaFX
+            window.JavaFX.sendToken(token.id, document.getElementById('contractTitle').value, document.getElementById('amount').value);
+        } catch (err) {
+            errorMessage.textContent = err.message;
+            submitButton.disabled = false;
+        }
+    });
+
+    function setContractDetails(title, amount) {
+        document.getElementById('contractTitle').value = title;
+        document.getElementById('amount').value = amount;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,617 @@
+package controllers.user;
+
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import controllers.MatchSchedule.ScheduleController;
+import javafx.application.HostServices;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import models.utilisateur.Role;
+import models.match.SessionManager;
+import models.utilisateur.User;
+import services.user.EmailService;
+import services.user.UserService;
+
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.opencv.core.*;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.videoio.VideoCapture;
+
+public class InterfaceAController {
+    @FXML
+    private ImageView image;
+
+    @FXML
+    private Button button_gmail;
+
+    @FXML
+    private Button button_login;
+    @FXML
+    private TextField tf_email;
+    @FXML
+    private Button button_signup;
+    @FXML
+    private TextField tf_mot_de_passe;
+
+    @FXML
+    private Button button_mdp_oublié;
+    @FXML
+    private WebView captchaWebView; // Added for reCAPTCHA
+
+    private static final String CLIENT_SECRETS_PATH = "/credentials.json"; // Chemin vers credentials.json
+    private static final File DATA_STORE_DIR = new File("tokens"); // Stockage des jetons
+    private static final String REDIRECT_URI = "http://localhost:8080/callback";
+    private static final List<String> SCOPES = Collections.singletonList("email profile");
+    private final UserService userService = new UserService();
+
+    private boolean scanning = false;
+    private boolean captchaVerified = false; 
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    // Initialisation d'OpenCV
+    static {
+        System.load("C:\\Users\\MSI\\Downloads\\opencv\\build\\java\\x64\\opencv_java4110.dll");  
+    }
+
+    private int faceDetectionCount = 0; // Compteur de détections consécutives
+    private final int DETECTION_THRESHOLD = 5; // Seuil pour déclencher la comparaison
+
+    private BufferedImage matToBufferedImage(Mat mat) {
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".jpg", mat, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
+        try {
+            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(byteArray));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @FXML
+    private ImageView webcamView;
+    @FXML
+    private javafx.scene.control.Label statusLabel;
+
+    @FXML
+    private void initialize() {
+        image.setImage(new Image("file:/C:/Users/MSI/Desktop/image.png"));
+        setupCaptcha(); // Initialize reCAPTCHA in WebView
+    }
+
+    private void setupCaptcha() {
+        WebEngine webEngine = captchaWebView.getEngine();
+        webEngine.setJavaScriptEnabled(true);
+        webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+        webEngine.setOnError(event -> System.out.println("WebView error: " + event.getMessage()));
+
+        try {
+            System.out.println("Loading reCAPTCHA from http://127.0.0.1:8081/captcha.html");
+            webEngine.load("http://127.0.0.1:8081/captcha.html");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger le CAPTCHA : " + e.getMessage()));
+        }
+
+        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
+                System.out.println("reCAPTCHA page loaded");
+                webEngine.setOnAlert(e -> {
+                    String token = e.getData().toString();
+                    System.out.println("Received reCAPTCHA token: " + token);
+                    validateCaptcha(token);
+                });
+            } else if (newState == javafx.concurrent.Worker.State.FAILED) {
+                System.out.println("Failed to load reCAPTCHA page");
+                Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur", "Échec du chargement de la page reCAPTCHA."));
+            }
+        });
+    }
+
+    private void validateCaptcha(String token) {
+        try {
+
+            String secretKey = "6LeGWuoqAAAAAPrvedZKLrqoJAXnADiTF9JlFOc6";
+            String url = "https://www.google.com/recaptcha/api/siteverify";
+            System.out.println("Sending reCAPTCHA validation request to: " + url);
+
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();                                          // tokenn valide wela la
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            con.setDoOutput(true);
+
+
+            String postData = "secret=" + secretKey + "&response=" + token;
+            byte[] postDataBytes = postData.getBytes("UTF-8");
+            con.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
+
+
+            try (OutputStream os = con.getOutputStream()) {
+                os.write(postDataBytes);
+                os.flush();
+            }
+
+            int responseCode = con.getResponseCode();
+            System.out.println("Response code: " + responseCode);
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                String response = new Scanner(con.getInputStream(), "UTF-8").useDelimiter("\\A").next();
+                System.out.println("reCAPTCHA response: " + response);
+                boolean success = response.contains("\"success\": true");
+                if (success) {
+                    captchaVerified = true;
+                    Platform.runLater(() -> showAlert(Alert.AlertType.INFORMATION, "Succès", "CAPTCHA vérifié avec succès."));
+                } else {
+                    captchaVerified = false;
+                    Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la vérification CAPTCHA. Response: " + response));
+                }
+            } else {
+                captchaVerified = false;
+                Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur réseau lors de la vérification CAPTCHA. Response code: " + responseCode));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            captchaVerified = false;
+            Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la vérification CAPTCHA : " + e.getMessage()));
+        }
+    }
+    private HostServices hostServices;
+
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
+    @FXML
+    private void seconnecter(ActionEvent event) {
+        String email = tf_email.getText();
+        String password = tf_mot_de_passe.getText();
+        User user1 = userService.verifierUtilisateur(email, password);
+        System.out.println("Résultat de la vérification : " + user1);
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez remplir tous les champs !");
+            return;
+        }
+
+        // Check if CAPTCHA is verified before proceeding
+        if (!captchaVerified) {
+            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez vérifier que vous n'êtes pas un robot via CAPTCHA.");
+            return;
+        }
+
+        User user = userService.verifierUtilisateur(email, password);
+
+        if (user != null) {
+                                                                                                                          SessionManager.setCurrentUser(user);
+
+            if (user.getRole() == Role.RESPONSABLE_LOGISTIQUE) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fournisseur/DisplayFournisseur.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.ADMIN) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.RESPONSABLE_SPONSORING) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/sponsoring/AfficherSponsor.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.RESPONSABLE_SPORTIF) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/MatchSchedule/AffichageMatch.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.RESPONSABLE_ESPACE_SPORTIF) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/EspaceSportif/AffichageEspace.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.RESPONSABLE_COACH) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/joueur/MainController.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page tableView.");
+                }
+            } else if (user.getRole() == Role.UTILISATEUR) {
+                showAlert(Alert.AlertType.INFORMATION, "Connexion réussie", "Bienvenue " + user.getNom() + " !");
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/log-in.fxml"));
+                    Stage stage = (Stage) button_login.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page de connexion.");
+                }
+            }
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Utilisateur non trouvé. Vérifiez vos identifiants !");
+        }
+    }
+
+    @FXML
+    private void facialRecognition(ActionEvent event) {
+        if (scanning) {
+            scanning = false;
+            showAlert(Alert.AlertType.INFORMATION, "Scan Arrêté", "La reconnaissance faciale a été arrêtée.");
+            return;
+        }
+
+        scanning = true;
+        VideoCapture camera = new VideoCapture(0);
+        if (!camera.isOpened()) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucune caméra détectée.");
+            scanning = false;
+            return;
+        }
+
+
+        Stage scanStage = new Stage();
+        scanStage.initModality(Modality.APPLICATION_MODAL);
+        scanStage.setTitle("Reconnaissance Faciale");
+
+
+        if (webcamView == null) webcamView = new ImageView();
+        webcamView.setFitWidth(640);
+        webcamView.setFitHeight(480);
+
+        Rectangle focusRect = new Rectangle(220, 140, 200, 200);
+        focusRect.setFill(null);
+        focusRect.setStroke(Color.GREEN);
+        focusRect.setStrokeWidth(2);
+
+        if (statusLabel == null) statusLabel = new javafx.scene.control.Label("Positionnez votre visage dans le cadre...");
+        statusLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        javafx.scene.control.Button stopButton = new javafx.scene.control.Button("Arrêter");
+        stopButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
+        stopButton.setOnAction(e -> {
+            scanning = false;
+            scanStage.close();
+        });
+
+        Pane overlayPane = new Pane(webcamView, focusRect);
+        overlayPane.setPrefSize(640, 480);
+        VBox mainVBox = new VBox(10, overlayPane, statusLabel, stopButton);
+        mainVBox.setStyle("-fx-background-color: #333333; -fx-alignment: center; -fx-padding: 10;");
+        Scene scanScene = new Scene(mainVBox, 640, 550);
+        scanStage.setScene(scanScene);
+
+        // Charger le classificateur Haar Cascade directement depuis le fichier existant
+        String cascadeFileName = "C:/Users/MSI/Desktop/matchupz-dev0/data/haarcascades/haarcascade_frontalface_default.xml";
+        File cascadeFile = new File(cascadeFileName);
+        if (!cascadeFile.exists()) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le fichier Haar Cascade n'existe pas : " + cascadeFileName);
+            scanning = false;
+            return;
+        }
+
+        CascadeClassifier faceDetector = new CascadeClassifier(cascadeFile.getAbsolutePath());
+        if (faceDetector.empty()) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger le détecteur de visages.");
+            scanning = false;
+            return;
+        }
+
+        scanStage.show();
+
+        executor.submit(() -> {
+            Mat frame = new Mat();
+            while (scanning) {
+                if (camera.read(frame)) {
+                    Mat grayFrame = new Mat();
+                    Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_BGR2GRAY);
+                    MatOfRect faces = new MatOfRect();
+                    faceDetector.detectMultiScale(grayFrame, faces);
+
+                    BufferedImage capturedImage = matToBufferedImage(frame);
+                    if (capturedImage == null) {
+                        Platform.runLater(() -> {
+                            statusLabel.setText("Erreur de conversion de l'image");
+                            statusLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14px;");
+                        });
+                        continue;
+                    }
+                    Image fxImage = SwingFXUtils.toFXImage(capturedImage, null);
+                    Platform.runLater(() -> webcamView.setImage(fxImage));
+
+                    if (!faces.empty()) {
+                        Rect face = faces.toArray()[0];
+                        Imgproc.rectangle(frame, face.tl(), face.br(), new Scalar(0, 255, 0), 2);
+
+                        faceDetectionCount++;
+                        Platform.runLater(() -> statusLabel.setText("Visage détecté, analyse en cours... (" + faceDetectionCount + "/" + DETECTION_THRESHOLD + ")"));
+
+                        if (faceDetectionCount >= DETECTION_THRESHOLD) {
+                            String email = tf_email.getText().trim();
+                            if (!email.isEmpty()) {
+                                User user = userService.verifierUtilisateurParEmail(email);
+                                if (user != null && user.getImage() != null) {
+                                    String imagePath = user.getImage().replace("file:", "").trim();
+                                    File imageFile = new File(imagePath);
+                                    if (!imageFile.exists()) {
+                                        Platform.runLater(() -> {
+                                            statusLabel.setText("Image introuvable : " + imagePath);
+                                            statusLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14px;");
+                                            showAlert(Alert.AlertType.ERROR, "Erreur", "L'image stockée n'existe pas : " + imagePath);
+                                        });
+                                        scanning = false;
+                                        break;
+                                    }
+
+                                    Mat storedImage = Imgcodecs.imread(imagePath);
+                                    if (storedImage.empty()) {
+                                        Platform.runLater(() -> {
+                                            statusLabel.setText("Erreur de chargement de l'image : " + imagePath);
+                                            statusLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14px;");
+                                        });
+                                        scanning = false;
+                                        break;
+                                    }
+
+                                    double similarity = compareFaces(storedImage, frame);
+                                    System.out.println("Score de similarité : " + similarity);
+
+                                    if (similarity > 0.7) {
+                                        Platform.runLater(() -> {
+                                            statusLabel.setText("Visage reconnu ! Connexion en cours...");
+                                            statusLabel.setStyle("-fx-text-fill: green; -fx-font-size: 14px;");
+                                            showAlert(Alert.AlertType.INFORMATION, "Succès", "Visage reconnu ! Bienvenue " + user.getNom());
+                                            redirectUser(user, event);
+                                            scanStage.close();
+                                        });
+                                        scanning = false;
+                                        break;
+                                    } else {
+                                        Platform.runLater(() -> {
+                                            statusLabel.setText("Visage non reconnu (similarité : " + String.format("%.2f", similarity) + ")");
+                                            statusLabel.setStyle("-fx-text-fill: orange; -fx-font-size: 14px;");
+                                        });
+                                    }
+                                }
+                            }
+                            faceDetectionCount = 0;
+                        }
+                    } else {
+                        faceDetectionCount = 0;
+                        Platform.runLater(() -> statusLabel.setText("Positionnez votre visage dans le cadre..."));
+                    }
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            camera.release();
+            if (!scanning) {
+                Platform.runLater(scanStage::close);
+            }
+        });
+    }
+
+
+    private double compareFaces(Mat storedImage, Mat capturedImage) {
+        Mat storedGray = new Mat();
+        Mat capturedGray = new Mat();
+        Imgproc.cvtColor(storedImage, storedGray, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.cvtColor(capturedImage, capturedGray, Imgproc.COLOR_BGR2GRAY);
+
+        Mat histStored = new Mat();
+        Mat histCaptured = new Mat();
+        Imgproc.calcHist(List.of(storedGray), new MatOfInt(0), new Mat(), histStored, new MatOfInt(256), new MatOfFloat(0, 256));
+        Imgproc.calcHist(List.of(capturedGray), new MatOfInt(0), new Mat(), histCaptured, new MatOfInt(256), new MatOfFloat(0, 256));
+
+        return Imgproc.compareHist(histStored, histCaptured, Imgproc.HISTCMP_CORREL);
+    }
+
+    private void redirectUser(User user, ActionEvent event) {
+        SessionManager.setCurrentUser(user);
+        String fxmlPath;
+        switch (user.getRole()) {
+            case RESPONSABLE_LOGISTIQUE:
+                fxmlPath = "/fournisseur/DisplayFournisseur.fxml";
+                break;
+            case ADMIN:
+                fxmlPath = "/user/adminpage.fxml";
+                break;
+            case RESPONSABLE_SPONSORING:
+                fxmlPath = "/AfficherSponsor.fxml";
+                break;
+            case RESPONSABLE_SPORTIF:
+                fxmlPath = "/MatchSchedule/AffichageMatch.fxml";
+                break;
+            case RESPONSABLE_ESPACE_SPORTIF:
+                fxmlPath = "/AffichageEspace.fxml";
+                break;
+            case RESPONSABLE_COACH:
+                fxmlPath = "/joueur/MainController.fxml";
+                break;
+            case UTILISATEUR:
+                fxmlPath = "/user/log-in.fxml";
+                break;
+            default:
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Rôle non pris en charge.");
+                return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page.");
+        }
+    }
+
+    @FXML
+    void gmail(ActionEvent event) {
+    }
+
+    private void redirectAfterGoogleLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml")); // Redirigez où vous voulez
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page après connexion Google.");
+        }
+    }
+
+    @FXML
+    private void mdp_oublié(ActionEvent event) {
+        String email = tf_email.getText();
+
+        if (email.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Erreur", "Veuillez entrer votre adresse email.");
+            return;
+        }
+
+        boolean emailExists = userService.checkIfEmailExists(email);
+        if (emailExists) {
+            String resetCode = userService.generateResetCode(email);
+            boolean emailSent = sendPasswordResetCode(email, resetCode);
+
+            if (emailSent) {
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Un code de réinitialisation a été envoyé à votre adresse email.");
+                redirectToCodePage(event);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'envoi de l'email.");
+            }
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Erreur", "Aucun utilisateur trouvé avec cet email.");
+        }
+    }
+
+    private boolean sendPasswordResetCode(String email, String resetCode) {
+        String subject = "Code de réinitialisation de mot de passe";
+        String message = "Voici votre code de réinitialisation : \n" + resetCode;
+
+        try {
+            EmailService.sendEmail(email, subject, message);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void redirectToCodePage(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/code.fxml"));
+            Parent root = loader.load();
+            Code codeController = loader.getController();
+            codeController.setUserEmail(tf_email.getText().trim());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Code de Réinitialisation");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page du code.");
+        }
+    }
+
+    @FXML
+    private void sinscrire(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/sign-up.fxml"));
+            Stage stage = (Stage) button_signup.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
+    private record GoogleAuthorizationCodeInstalledApp<GoogleAuthorizationCodeFlow>(GoogleAuthorizationCodeFlow flow, LocalServerReceiver build) {
+    }
+}

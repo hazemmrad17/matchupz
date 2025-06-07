@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="g-recaptcha" data-sitekey="6LeGWuoqAAAAAASK8Vt9iXx6ZR5LjOTfMmfR_dnP" data-callback="onCaptchaVerified"></div>
+    <script>
+        function onCaptchaVerified(token) {
+            // Send token to JavaFX controller via JavaScript-to-Java bridge
+            window.Java.onCaptchaSuccess(token);
+        }
+
+        // Ensure Java object is available for communication
+        window.Java = {
+            onCaptchaSuccess: function(token) {
+                var event = document.createEvent('CustomEvent');
+                event.initCustomEvent('captchaVerified', true, true, token);
+                document.dispatchEvent(event);
+            }
+        };
+
+        // Listen for the captchaVerified event and send the token via alert
+        document.addEventListener('captchaVerified', function(e) {
+            window.alert(e.detail); // Use alert to send token to Java via WebEngine.setOnAlert
+        }, false);
+    </script>
+</body>
+</html>

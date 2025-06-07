@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="350.0" prefWidth="450.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #d3d3d3; -fx-border-width: 1;" spacing="5.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MatchSchedule.NewsWindowController">
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+    <children>
+        <!-- Header -->
+        <Label text="Match News" style="-fx-background-color: #2c3e50; -fx-text-fill: white; -fx-alignment: center;" prefWidth="Infinity">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+        </Label>
+
+        <!-- Title -->
+        <Label fx:id="titleLabel" text="News Title" wrapText="true" prefWidth="400.0" maxWidth="400.0" minHeight="40.0" prefHeight="40.0" style="-fx-text-fill: #333; -fx-alignment: center;">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+            <padding>
+                <Insets bottom="5.0" top="10.0" />
+            </padding>
+        </Label>
+
+        <!-- Source -->
+        <Label fx:id="sourceLabel" text="Source" style="-fx-text-fill: #666; -fx-font-style: italic;">
+            <padding>
+                <Insets bottom="10.0" />
+            </padding>
+        </Label>
+
+        <!-- Description -->
+        <TextArea fx:id="descriptionArea" editable="false" prefHeight="150.0" prefWidth="400.0" wrapText="true" promptText="Description" style="-fx-background-color: #fff; -fx-border-color: #d3d3d3; -fx-border-radius: 5; -fx-background-radius: 5; -fx-text-fill: #333;">
+            <font>
+                <Font size="12.0" />
+            </font>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </TextArea>
+
+        <!-- Button -->
+        <HBox alignment="CENTER" spacing="10.0">
+            <children>
+                <Button fx:id="urlButton" text="Open Full Article" onAction="#openArticleUrl" styleClass="btn-primary" prefHeight="35.0" prefWidth="150.0" />
+            </children>
+            <padding>
+                <Insets top="10.0" />
+            </padding>
+        </HBox>
+    </children>
+</VBox>

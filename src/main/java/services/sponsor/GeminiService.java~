@@ -1,0 +1,86 @@
+package services.sponsor;
+
+import com.google.cloud.aiplatform.v1.PredictRequest;
+import com.google.cloud.aiplatform.v1.PredictResponse;
+import com.google.cloud.aiplatform.v1.PredictionServiceClient;
+import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
+import com.google.protobuf.Value;
+import com.google.protobuf.Struct;
+
+import java.io.IOException;
+import java.util.Collections;
+
+public class GeminiService {
+    private static final String PROJECT_ID = "897302571596"; // Your Google Cloud project ID
+    private static final String LOCATION = "europe-west1"; // Updated for Tunisia (Belgium, near North Africa)
+    private static final String ENDPOINT = "europe-west1-aiplatform.googleapis.com:443"; // Updated endpoint
+    private static final String API_KEY = System.getenv("AIzaSyCwUTwkGthkjki7Cvih-LXZDrv9De8bv4M"); // Commented out (not used for Vertex AI)
+    private final PredictionServiceClient predictionServiceClient;
+
+    public GeminiService() throws IOException {
+        // Use Application Default Credentials (ADC) for authentication
+        System.out.println("Initializing GeminiService with Endpoint: " + ENDPOINT + ", Project: " + PROJECT_ID + ", Location: " + LOCATION);
+        PredictionServiceSettings settings = PredictionServiceSettings.newBuilder()
+                .setEndpoint(ENDPOINT)
+                .build();
+        predictionServiceClient = PredictionServiceClient.create(settings);
+        System.out.println("GeminiService initialized successfully: " + (predictionServiceClient != null));
+    }
+
+    public String getGeminiResponse(String prompt) {
+        System.out.println("Calling getGeminiResponse with prompt: " + prompt);
+        try {
+            // Construct the instance as a Value object with the prompt
+            Value instance = Value.newBuilder()
+                    .setStringValue(prompt)
+                    .build();
+            System.out.println("Instance constructed: " + instance.getStringValue());
+
+            // Construct parameters as a Value object
+            Value parameters = Value.newBuilder()
+                    .setStructValue(Struct.newBuilder()
+                            .putFields("temperature", Value.newBuilder().setNumberValue(0.7).build()) // Controls randomness
+                            .putFields("maxOutputTokens", Value.newBuilder().setNumberValue(150).build()) // Max response length
+                            .build())
+                    .build();
+            System.out.println("Parameters constructed: temperature=0.7, maxOutputTokens=150");
+
+            // Replace with your model endpoint (e.g., for Gemini Pro)
+            String modelName = String.format("projects/%s/locations/%s/publishers/google/models/gemini-pro", PROJECT_ID, LOCATION);
+            System.out.println("Model name: " + modelName);
+
+            // Create PredictRequest with instances and parameters as Value objects
+            PredictRequest predictRequest = PredictRequest.newBuilder()
+                    .setEndpoint(modelName)
+                    .addInstances(instance) // Add the instance as a Value object
+                    .setParameters(parameters) // Set parameters as a Value object
+                    .build();
+            System.out.println("PredictRequest constructed successfully");
+
+            // Make the API call
+            PredictResponse response = predictionServiceClient.predict(predictRequest);
+            System.out.println("API call to Gemini completed, response received: " + (response != null));
+
+            // Extract the response text (simplified; adjust based on actual response structure)
+            String responseText = response.getPredictions(0).getStructValue()
+                    .getFieldsOrDefault("candidates", Value.newBuilder().build())
+                    .getListValue()
+                    .getValues(0)
+                    .getStructValue()
+                    .getFieldsOrDefault("content", Value.newBuilder().build())
+                    .getStringValue();
+
+            System.out.println("Extracted response text: " + responseText);
+            return responseText.trim();
+        } catch (Exception e) {
+            System.err.println("Exception in getGeminiResponse: " + e.getMessage());
+            e.printStackTrace();
+            return "Error: Unable to process the request. Please try again later. Details: " + e.getMessage();
+        } finally {
+            if (predictionServiceClient != null) {
+                System.out.println("Closing PredictionServiceClient");
+                predictionServiceClient.close();
+            }
+        }
+    }
+}

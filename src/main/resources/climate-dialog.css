@@ -1,0 +1,78 @@
+/* climate-dialog.css */
+/* Define the custom font 'Montserrat Medium' with a fallback to Arial and sans-serif */
+@font-face {
+    font-family: "Montserrat Medium";
+     /* Path relative to src/main/resources/ - Ensure this file exists and rebuild the project */
+    /* If the font file cannot be resolved, the application will fall back to Arial and sans-serif */
+}
+
+/* Style for the dialog pane to ensure a transparent background and no border */
+.dialog-pane {
+    -fx-background-color: transparent; /* Transparent background to let the content VBox define the style */
+    -fx-border-color: transparent;
+}
+
+/* Style for the header panel to remove background and padding */
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Style for the content area with padding and centered alignment */
+.dialog-pane .content {
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+/* Style for the button bar with padding and white background */
+.dialog-pane .button-bar {
+    -fx-padding: 10px 20px;
+    -fx-background-color: #FFFFFF;
+}
+
+/* Style for buttons (e.g., 'Ouvrir la carte') with blue background and white text */
+.dialog-pane .button {
+    -fx-background-color: #0078D7; /* Match "Ouvrir la carte" button color */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 5;
+}
+
+/* Hover effect for buttons to darken the background */
+.dialog-pane .button:hover {
+    -fx-background-color: #005BB5; /* Darker shade for hover */
+}
+
+/* Default style for all labels, using the custom font with fallbacks */
+.dialog-pane .label {
+    -fx-font-family: "Montserrat Medium", Arial, sans-serif; /* Keep fallback to Arial */
+    -fx-alignment: center;
+}
+
+/* Specific style for the temperature label */
+#tempLabel {
+    -fx-font-size: 64px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003087; /* Dark blue for temperature */
+}
+
+/* Specific style for the condition label */
+#conditionLabel {
+    -fx-font-size: 18px;
+    -fx-text-fill: #666666; /* Light gray for condition */
+}
+
+/* Specific style for the location label, updated to a new medium blue color */
+#locationLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0066cc; /* New medium blue color for location */
+}
+
+/* Specific style for labels within the details row (humidity and clouds) */
+#detailsRow .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666; /* Light gray for humidity and cloud details */
+}

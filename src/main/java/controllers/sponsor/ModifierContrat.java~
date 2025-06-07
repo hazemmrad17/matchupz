@@ -1,0 +1,461 @@
+package controllers.sponsor;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
+import models.sponsor.Contrat;
+import models.sponsor.Sponsor;
+import models.match.SessionManager;
+import models.utilisateur.Role;
+import models.utilisateur.User;
+import services.sponsor.ContratService;
+import services.sponsor.SponsorService;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import static javafx.embed.swing.SwingFXUtils.fromFXImage;
+import static javafx.embed.swing.SwingFXUtils.toFXImage;
+
+public class ModifierContrat {
+
+    @FXML
+    private Button bt_user;
+    @FXML
+    private Canvas signature;
+    @FXML
+    private Button dashboard;
+    @FXML
+    private Button espace;
+    @FXML
+    private Button logistique;
+    @FXML
+    private Label nom_user;
+    @FXML
+    private Button btnAjouterContrat;
+    @FXML
+    private Button btnAnnulerContrat;
+    @FXML
+    private DatePicker dp_date_debut;
+    @FXML
+    private DatePicker dp_date_fin;
+    @FXML
+    private Button homeButton;
+    @FXML
+    private AnchorPane home_form;
+    @FXML
+    private Button logout;
+    @FXML
+    private AnchorPane main_form;
+    @FXML
+    private TextField tx_contrat_montant;
+    @FXML
+    private ComboBox<Sponsor> tx_contrat_sponsor;
+    @FXML
+    private TextField tx_contrat_titre;
+    @FXML
+    private TextArea tx_contrat_article; // Added for article input
+
+    private Contrat contratToModify;
+    private final ContratService contratService = new ContratService();
+    private final SponsorService sponsorService = new SponsorService();
+    private ObservableList<Contrat> contratList = FXCollections.observableArrayList();
+    private ObservableList<Sponsor> sponsorList = FXCollections.observableArrayList();
+    private GraphicsContext gc;
+
+    // Define the date formatter once for reuse
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public void setContratToModify(Contrat contrat) {
+        this.contratToModify = contrat;
+        if (contrat != null) {
+            tx_contrat_titre.setText(contrat.getTitre());
+            tx_contrat_montant.setText(String.valueOf(contrat.getMontant()));
+            dp_date_debut.setValue(LocalDate.parse(contrat.getDateDebut(), DATE_FORMATTER));
+            dp_date_fin.setValue(LocalDate.parse(contrat.getDateFin(), DATE_FORMATTER));
+            tx_contrat_article.setText(contrat.getArticle() != null ? contrat.getArticle() : ""); // Load article
+            loadSignature(contrat.getSignaturePath());
+        }
+    }
+
+    @FXML
+    void handleAnnulerButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sponsoring/AfficherContrat.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) btnAnnulerContrat.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page des contrats.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void handleHome(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Home.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) homeButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'accueil.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void modifier(ActionEvent event) {
+        if (tx_contrat_titre.getText().trim().isEmpty() ||
+                tx_contrat_montant.getText().trim().isEmpty() ||
+                dp_date_debut.getValue() == null ||
+                dp_date_fin.getValue() == null ||
+                tx_contrat_article.getText().trim().isEmpty()) { // Added article validation
+            showAlert(Alert.AlertType.ERROR,
+                    "Erreur",
+                    "Veuillez remplir tous les champs avant de modifier un contrat.");
+            return;
+        }
+
+        try {
+            String newTitre = tx_contrat_titre.getText().trim();
+            float montant = Float.parseFloat(tx_contrat_montant.getText().trim());
+            LocalDate dateDebut = dp_date_debut.getValue();
+            LocalDate dateFin = dp_date_fin.getValue();
+            String article = tx_contrat_article.getText().trim(); // Get article
+
+            if (!newTitre.matches("[a-zA-Z0-9\\s]+")) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Le titre doit contenir uniquement des lettres, des chiffres.");
+                return;
+            }
+
+            if (!dateFin.isAfter(dateDebut)) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "La date de fin doit être postérieure à la date de début.");
+                return;
+            }
+
+            if (montant <= 0) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Le montant doit être supérieur à 0.");
+                return;
+            }
+
+            String originalTitre = contratToModify.getTitre();
+            if (!newTitre.equals(originalTitre) && contratService.isContratTitreExists(newTitre)) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Un contrat avec ce titre existe déjà.");
+                return;
+            }
+
+            // Save the modified signature
+            String signaturePath = saveSignatureToFile(newTitre);
+            if (signaturePath == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la sauvegarde de la signature. Veuillez réessayer.");
+                return;
+            }
+
+            // Update the Contrat object
+            String dateDebutStr = dateDebut.format(DATE_FORMATTER);
+            String dateFinStr = dateFin.format(DATE_FORMATTER);
+            contratToModify.setTitre(newTitre);
+            contratToModify.setMontant(montant);
+            contratToModify.setDateDebut(dateDebutStr);
+            contratToModify.setDateFin(dateFinStr);
+            contratToModify.setArticle(article); // Set article
+            contratToModify.setSignaturePath(signaturePath);
+
+            // Log the update for debugging
+            System.out.println("Preparing to update contract: " + contratToModify.getTitre());
+            System.out.println("Article value: " + contratToModify.getArticle());
+
+            // Modify the contract in the database
+            contratService.modifier(contratToModify);
+
+            showAlert(Alert.AlertType.INFORMATION,
+                    "Succès",
+                    "Les informations du contrat ont été modifiées avec succès.");
+            handleAnnulerButton(event);
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR,
+                    "Erreur",
+                    "Le montant doit être un nombre valide.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR,
+                    "Erreur",
+                    "Une erreur est survenue : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void match(ActionEvent event) {
+        // Implementation unchanged
+    }
+
+    @FXML
+    void pageuser(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null) {
+            String role = user.getRole().getValue();
+            if (user.getRole() == Role.ADMIN) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/adminpage.fxml"));
+                    Stage stage = (Stage) bt_user.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+                }
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté !");
+        }
+    }
+
+    @FXML
+    void sponsor(ActionEvent event) {
+        // Implementation unchanged
+    }
+
+    @FXML
+    void teams(ActionEvent event) {
+        // Implementation unchanged
+    }
+
+    @FXML
+    void dashboard(ActionEvent event) {
+        // Implementation unchanged
+    }
+
+    @FXML
+    void espace(ActionEvent event) {
+        User user = SessionManager.getCurrentUser();
+        if (user != null) {
+            String role = user.getRole().getValue();
+            if (user.getRole() == Role.ADMIN) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEspace.fxml"));
+                    Stage stage = (Stage) espace.getScene().getWindow();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+                }
+            }
+        } else {
+            System.out.println("Aucun utilisateur connecté !");
+        }
+    }
+
+    @FXML
+    void logistique(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fournisseur/DisplayFournisseur.fxml"));
+            Stage stage = (Stage) logistique.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la page d'inscription.");
+        }
+    }
+
+    private void afficherProfil(User user) {
+        if (user.getImage() != null && !user.getImage().isEmpty()) {
+            javafx.scene.image.Image image = new javafx.scene.image.Image(user.getImage());
+            String name = user.getPrenom();
+            nom_user.setText(name);
+        }
+    }
+
+    @FXML
+    public void initialize() {
+        // Initialize the canvas
+        gc = signature.getGraphicsContext2D();
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, 0, signature.getWidth(), signature.getHeight());
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+
+        // Add drawing event handlers
+        signature.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            gc.beginPath();
+            gc.moveTo(e.getX(), e.getY());
+            gc.stroke();
+        });
+
+        signature.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            gc.lineTo(e.getX(), e.getY());
+            gc.stroke();
+        });
+
+        signature.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+            // Drawing completed
+        });
+
+        // Set up the DatePicker converters
+        dp_date_debut.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? DATE_FORMATTER.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return string != null && !string.isEmpty() ? LocalDate.parse(string, DATE_FORMATTER) : null;
+            }
+        });
+
+        dp_date_fin.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? DATE_FORMATTER.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return string != null && !string.isEmpty() ? LocalDate.parse(string, DATE_FORMATTER) : null;
+            }
+        });
+
+        // Load sponsors into ComboBox
+        if (tx_contrat_sponsor != null) {
+            loadSponsors();
+            if (sponsorList.isEmpty()) {
+                System.out.println("Warning: No sponsors loaded into ComboBox.");
+            }
+            tx_contrat_sponsor.setItems(sponsorList);
+            tx_contrat_sponsor.setPromptText("Sponsor bloqué");
+
+            tx_contrat_sponsor.setCellFactory(param -> new ListCell<Sponsor>() {
+                @Override
+                protected void updateItem(Sponsor item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getNom());
+                }
+            });
+
+            tx_contrat_sponsor.setConverter(new StringConverter<Sponsor>() {
+                @Override
+                public String toString(Sponsor sponsor) {
+                    return sponsor == null ? "" : sponsor.getNom();
+                }
+
+                @Override
+                public Sponsor fromString(String string) {
+                    return sponsorList.stream()
+                            .filter(s -> s.getNom().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            if (contratToModify != null) {
+                Sponsor selectedSponsor = sponsorList.stream()
+                        .filter(s -> s.getId_sponsor() == contratToModify.getId_sponsor())
+                        .findFirst()
+                        .orElse(null);
+                if (selectedSponsor != null) {
+                    tx_contrat_sponsor.setValue(selectedSponsor);
+                } else {
+                    System.out.println("No matching sponsor found for ID: " + contratToModify.getId_sponsor());
+                }
+            }
+
+            tx_contrat_sponsor.setDisable(true);
+        }
+    }
+
+    private void loadSignature(String signaturePath) {
+        if (signaturePath != null && !signaturePath.isEmpty()) {
+            try {
+                File file = new File(signaturePath);
+                if (file.exists()) {
+                    BufferedImage bufferedImage = ImageIO.read(file);
+                    Image fxImage = toFXImage(bufferedImage, null);
+                    gc.drawImage(fxImage, 0, 0, signature.getWidth(), signature.getHeight());
+                } else {
+                    System.out.println("Signature file not found: " + signaturePath);
+                }
+            } catch (IOException e) {
+                System.out.println("Error loading signature: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String saveSignatureToFile(String titre) {
+        String filePath = null;
+        try {
+            String existingPath = contratToModify.getSignaturePath();
+            if (existingPath != null && !existingPath.isEmpty() && new File(existingPath).exists()) {
+                filePath = existingPath;
+            } else {
+                filePath = "signatures/signature_" + titre.replaceAll("\\s+", "_") + "_" + System.currentTimeMillis() + ".png";
+                File directory = new File("signatures");
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+            }
+
+            javafx.scene.image.WritableImage snapshot = signature.snapshot(null, null);
+            BufferedImage bufferedImage = fromFXImage(snapshot, null);
+            File outputFile = new File(filePath);
+            ImageIO.write(bufferedImage, "png", outputFile);
+            System.out.println("Signature saved successfully at: " + filePath);
+
+            gc.setFill(Color.WHITE);
+            gc.fillRect(0, 0, signature.getWidth(), signature.getHeight());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la sauvegarde de la signature : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return filePath;
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void loadContrats() {
+        contratList.clear();
+        contratList.addAll(contratService.recherche());
+    }
+
+    private void loadSponsors() {
+        sponsorList.clear();
+        try {
+            List<Sponsor> sponsors = sponsorService.recherche();
+            sponsorList.addAll(sponsors);
+            if (sponsors.isEmpty()) {
+                System.out.println("No sponsors found in the database.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading sponsors: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

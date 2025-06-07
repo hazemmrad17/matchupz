@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.sponsor.GeminiController"
+      prefHeight="400.0" prefWidth="600.0" spacing="10" style="-fx-background-color: #F7F7F7;">
+
+    <!-- Chat Area -->
+    <ScrollPane fitToWidth="true" prefHeight="300.0" VBox.vgrow="ALWAYS">
+        <VBox fx:id="chatArea" spacing="10" style="-fx-padding: 10; -fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0; -fx-border-radius: 5;">
+            <!-- Chat messages will be added dynamically here -->
+        </VBox>
+    </ScrollPane>
+
+    <!-- Input Area -->
+    <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+        <TextField fx:id="inputField" promptText="Type your message here..." HBox.hgrow="ALWAYS"
+                   style="-fx-pref-height: 40; -fx-font-size: 14; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 5 15 5 15;" />
+        <Button fx:id="sendButton" text="Send"
+                style="-fx-pref-width: 80; -fx-pref-height: 40; -fx-font-size: 14; -fx-background-color: #0078D4; -fx-text-fill: white; -fx-background-radius: 20;" />
+    </HBox>
+
+</VBox>

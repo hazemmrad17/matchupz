@@ -1,0 +1,777 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 09 21, 22, 4:12:17 PM
+    Author     : WINDOWS 10
+    Subscribe our Channel --> https://www.youtube.com/channel/UCPgcmw0LXToDn49akUEJBkQ
+ * Thanks for the support guys! <3
+*/
+.modern-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+.modern-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 8);
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}
+
+.shadow {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+.top-form {
+    -fx-background-color: #fff;
+    -fx-border-color: #000;
+    -fx-border-width: .4px .4px .2px .4px;
+}
+
+.semi-top-form {
+    -fx-background-color: #efefef;
+    -fx-border-color: #000;
+    -fx-border-width: .2px .4px .8px .4px;
+}
+
+.close {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+.close:hover {
+    -fx-background-color: #ff3547;
+}
+
+.minimize {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+.minimize:hover {
+    -fx-background-color: #ddd;
+}
+
+.nav-bar {
+    width: 70px; /* Ajuste la largeur pour une petite barre */
+    -fx-background-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient */
+    -fx-pref-height: 600px; /* Replaced 100vh with fixed height matching FXML */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.nav-form {
+    -fx-height: 600px; /* Fixed height matching your FXML’s prefHeight */
+    width: 70px;
+    padding: 10px 0;
+    -fx-background-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient from deep to light */
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-text-fill: #fff;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.logout {
+    -fx-background-color: #22577A; /* Deep blue */
+    -fx-background-radius: 10px;
+    -fx-font-family: "Montserrat Black"; /* Montserrat Black for bold appearance */
+    -fx-font-size: 18px;
+    -fx-text-fill: #FFFFFF; /* Explicitly white text */
+    -fx-cursor: hand;
+}
+.logout:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A; /* Deep blue text on hover */
+}
+
+.shadow {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 6, 0, 0, 0);
+}
+
+.grey-bg {
+    -fx-background-color: #efefef;
+    -fx-background-radius: 8px;
+}
+
+.card {
+    -fx-background-color: linear-gradient(to right, #22577A, #CAE0E5); /* Blue gradient for cards */
+    -fx-background-radius: 5px;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-padding: 0px;
+}
+.table-view .table-column {
+    -fx-alignment: CENTER;
+}
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient for headers */
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 8px 8px 0px 0px;
+}
+.table-view .column-header, .filter {
+    -fx-background-color: transparent;
+    -fx-size: 40px;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #fff;
+    -fx-font-family: "Arial";
+}
+
+/* Base Scrollbar */
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+    -fx-pref-height: 8px;
+}
+
+/* Scroll Thumb (changed from green to blue) */
+.scroll-bar .thumb {
+    -fx-background-color: #22577A; /* Deep blue thumb */
+    -fx-background-radius: 5px;
+}
+
+/* Scroll Thumb Hover */
+.scroll-bar .thumb:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+}
+
+/* Scroll Track */
+.scroll-bar .track {
+    -fx-background-color: #333;
+    -fx-background-radius: 5px;
+}
+
+/* Horizontal Scrollbar */
+.scroll-bar:horizontal {
+    -fx-min-height: 8px;
+    -fx-max-height: 8px;
+}
+
+/* Vertical Scrollbar */
+.scroll-bar:vertical {
+    -fx-min-width: 8px;
+    -fx-max-width: 8px;
+}
+
+/* Remove scrollbar buttons */
+.table-view .scroll-bar .decrement-button,
+.table-view .scroll-bar .increment-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #CAE0E5; /* Light blue */
+}
+
+.textfield {
+    -fx-background-color: linear-gradient(to bottom, #efefef, #eee);
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-border-width: .8px;
+    -fx-font-family: "Tahoma";
+    -fx-border-radius: 4px;
+}
+.textfield:focused {
+    -fx-border-width: 1.8px;
+    -fx-background-color: #fff;
+}
+
+.small-button {
+    -fx-background-color: #22577A;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+.small-button:hover {
+    -fx-background-color: #CAE0E5;
+}
+
+.search {
+    -fx-background-color: transparent;
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-border-radius: 5px;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+    -fx-border-width: 1px;
+    -fx-padding: 0px 0px 0px 28px;
+}
+.search:focused {
+    -fx-border-width: 2px;
+}
+
+.import-btn {
+    -fx-background-color: #ddd;
+    -fx-text-fill: red;
+    -fx-cursor: hand;
+}
+
+.add-btn {
+    -fx-background-color: #22577A; /* Deep blue */
+    -fx-background-radius: 8px;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-cursor: hand;
+}
+.add-btn:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+}
+
+.update-btn {
+    -fx-background-color: #22577A; /* Deep blue */
+    -fx-background-radius: 8px;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-cursor: hand;
+}
+.update-btn:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+}
+
+.delete-btn {
+    -fx-background-color: #86253f; /* Keeping original red */
+    -fx-background-radius: 8px;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-cursor: hand;
+}
+.delete-btn:hover {
+    -fx-background-color: #ae1d46;
+}
+
+.clear-btn {
+    -fx-background-color: #753566; /* Keeping original purple */
+    -fx-background-radius: 8px;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-cursor: hand;
+}
+.clear-btn:hover {
+    -fx-background-color: #9d3485;
+}
+
+.label-info {
+    -fx-background-color: transparent;
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-border-radius: 4px;
+    -fx-padding: 0px 0px 0px 8px;
+}
+
+.accordion {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8px;
+    -fx-font-family: "Montserrat Black";
+    -fx-font-size: 14px;
+}
+
+.accordion .title {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Montserrat Black";
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-transition: -fx-background-color 0.2s ease-in-out, -fx-text-fill 0.2s ease-in-out;
+}
+
+.accordion .title:hover {
+    -fx-background-color: #22577A;
+    -fx-text-fill: #CAE0E5;
+    -fx-border-color: transparent;
+}
+
+.accordion .title:pressed {
+    -fx-background-color: #CAE0E5;
+    -fx-text-fill: #22577A;
+    -fx-border-color: transparent;
+}
+
+.accordion .content {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+}
+
+.accordion-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+    -fx-font-family: "Montserrat Black";
+    -fx-font-size: 12px;
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+}
+
+.accordion-button:hover {
+    -fx-background-color: #22577A;
+    -fx-border-color: transparent;
+}
+
+.accordion-button:pressed {
+    -fx-background-color: #CAE0E5;
+    -fx-text-fill: #22577A;
+    -fx-border-color: transparent;
+}
+
+.btn-primary {
+    -fx-font-family: 'Montserrat SemiBold';
+    -fx-font-size: 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-background-color: #22577A; /* Deep blue */
+    -fx-border-color: #22577A;
+    -fx-padding: 5px 20px;
+}
+
+.btn-secondary {
+    -fx-font-family: 'Montserrat SemiBold';
+    -fx-font-size: 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-background-color: #E74C3C; /* Deep blue */
+    -fx-border-color: #C0392B;
+    -fx-padding: 5px 20px;
+}
+
+.btn-secondary:hover {
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px; /* Ensure rounded corners on hover */
+    -fx-background-color: #C0392B;
+    -fx-border-color: #A93226;
+}
+
+.btn-tertiary {
+    -fx-font-family: 'Montserrat SemiBold';
+    -fx-font-size: 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-background-color: #e7b13c; /* Deep blue */
+    -fx-border-color: #e7b13c;
+    -fx-padding: 5px 20px;
+}
+
+.btn-tertiary:hover {
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px; /* Ensure rounded corners on hover */
+    -fx-background-color: #986d14;
+    -fx-border-color: #e7b13c;
+}
+
+#btn-secondary {
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px; /* Ensure background matches border */
+    -fx-font-family: 'Montserrat SemiBold';
+    -fx-font-size: 15px;
+    -fx-text-fill: white;
+    -fx-background-color: #E74C3C; /* Red color */
+    -fx-border-color: #C0392B;
+    -fx-padding: 5px 20px;
+}
+
+#btn-secondary:hover {
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px; /* Ensure rounded corners on hover */
+    -fx-background-color: #C0392B;
+    -fx-border-color: #A93226;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+    -fx-border-color: #22577A;
+    -fx-border-radius: 5px;
+}
+
+#btn-secondary:focused, .btn-primary:focused {
+    -fx-border-color: #F1C40F;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+}
+
+.white-bg {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0, 4);
+}
+
+.shadow {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0, 4);
+    -fx-padding: 10;
+}
+
+.form-title {
+    -fx-font-family: "Montserrat SemiBold";
+    -fx-font-size: 36px;
+    -fx-fill: #333333;
+}
+
+.label-text {
+    -fx-font-family: "Montserrat Medium";
+    -fx-font-size: 15px;
+    -fx-fill: #555555;
+}
+
+.text-input {
+    -fx-font-family: "Montserrat Regular";
+    -fx-font-size: 14px;
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5 10;
+}
+
+/* Updated ComboBox Styles */
+.combo-box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 13px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+.combo-box:hover {
+    -fx-border-color: #CAE0E5; /* Light blue border on hover */
+    -fx-background-color: #F5F7FA; /* Slight background change */
+}
+
+.combo-box:focused {
+    -fx-border-color: #22577A; /* Deep blue border when focused */
+    -fx-border-width: 2px;
+    -fx-background-color: #FFFFFF;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #22577A; /* Deep blue arrow background */
+    -fx-shape: "M 0 0 L 6 6 L 12 0 Z"; /* Downward triangle */
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent; /* Transparent background for the button */
+    -fx-padding: 5px;
+}
+
+.combo-box .arrow-button:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+}
+
+.combo-box .list-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #333333;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 13px;
+    -fx-padding: 5px;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A; /* Deep blue text */
+}
+
+.combo-box .list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #22577A; /* Deep blue border */
+    -fx-border-width: 1px;
+    -fx-pref-width: 150px; /* Match ComboBox width */
+}
+
+/* Updated DatePicker (Calendar) Styles */
+.date-picker {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5); /* Blue gradient border */
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 13px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.date-picker:hover {
+    -fx-border-color: #CAE0E5; /* Light blue border on hover */
+    -fx-background-color: #F5F7FA; /* Slight background change */
+}
+
+.date-picker:focused {
+    -fx-border-color: #22577A; /* Deep blue border when focused */
+    -fx-border-width: 2px;
+    -fx-background-color: #FFFFFF;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #22577A; /* Deep blue arrow background */
+    -fx-background-radius: 0 5px 5px 0; /* Rounded right side */
+}
+
+.date-picker .arrow {
+    -fx-background-color: #FFFFFF; /* White arrow */
+    -fx-shape: "M 0 0 L 6 6 L 12 0 Z"; /* Downward triangle */
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 13px;
+    -fx-text-fill: #333333;
+}
+
+.date-picker-popup {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #22577A; /* Deep blue border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4); /* Shadow effect */
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #FFFFFF;
+}
+
+.date-picker-popup .day-name-cell {
+    -fx-background-color: #22577A; /* Deep blue for day names */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 12px;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #333333;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 12px;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+}
+
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #22577A; /* Deep blue when selected */
+    -fx-text-fill: #FFFFFF;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #22577A; /* Deep blue header */
+}
+
+.date-picker-popup .spinner {
+    -fx-background-color: transparent;
+}
+
+.date-picker-popup .spinner .button {
+    -fx-background-color: #22577A; /* Deep blue buttons */
+    -fx-text-fill: #FFFFFF;
+}
+
+.date-picker-popup .spinner .button:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+}
+
+/* File Selector Button Styles (assuming styleClass="file-chooser-btn") */
+.file-chooser-btn {
+    -fx-background-color: #22577A; /* Deep blue */
+    -fx-background-radius: 5px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: 'Montserrat SemiBold';
+    -fx-font-size: 12px;
+    -fx-padding: 5px 15px;
+    -fx-cursor: hand;
+    -fx-border-color: #22577A;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.file-chooser-btn:hover {
+    -fx-background-color: #CAE0E5; /* Light blue on hover */
+    -fx-text-fill: #22577A;
+    -fx-border-color: #CAE0E5;
+}
+
+.file-chooser-btn:pressed {
+    -fx-background-color: #1A4563; /* Darker blue when pressed */
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Existing styles below remain unchanged */
+.spinner {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 14px;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #22577A;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+    -fx-padding: 3px;
+    -fx-cursor: hand;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #CAE0E5;
+    -fx-text-fill: #22577A;
+}
+
+.spinner .text-field {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-text-fill: #333;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+}
+
+.spinner:focused {
+    -fx-border-color: #22577A;
+}
+
+.tab-pane {
+    -fx-background-color: #efefef;
+    -fx-padding: 10;
+}
+
+.tab {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-font-size: 15px;
+    -fx-padding: 10 20;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0;
+}
+
+.tab:hover {
+    -fx-background-color: #EFEFEF;
+    -fx-cursor: hand;
+}
+
+.tab:selected {
+    -fx-border-color: linear-gradient(to bottom right, #22577A, #CAE0E5);
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.tab .content {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 0;
+    -fx-padding: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}
+
+.tab .tab-header-area .tab .tab-selected {
+    -fx-background-color: transparent;
+}
+
+#btn-modify {
+    -fx-border-radius: 5px;
+    -fx-font-family: 'Montserrat Light';
+    -fx-font-size: 7px;
+    -fx-text-fill: white;
+    -fx-background-color: #F1C40F;
+    -fx-border-color: #F39C12;
+    -fx-background-radius: 0;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 20px;
+}
+
+#btn-delete {
+    -fx-border-radius: 5px;
+    -fx-font-family: 'Montserrat Light';
+    -fx-font-size: 7px;
+    -fx-text-fill: white;
+    -fx-background-color: #E74C3C;
+    -fx-border-color: #C0392B;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 20px;
+}
+
+.top-entity-btn {
+    -fx-background-color: #22577A;
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Montserrat Medium';
+    -fx-font-size: 12px;
+    -fx-padding: 8px 10px;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.top-entity-btn:hover {
+    -fx-background-color: #CAE0E5;
+    -fx-border-color: #22577A;
+    -fx-text-fill: #22577A;
+}
+
+.top-entity-btn:pressed {
+    -fx-background-color: #22577A;
+    -fx-border-color: #CAE0E5;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.entity-user-btn {
+    -fx-background-color: #22577A;
+}
+
+.entity-admin-btn {
+    -fx-background-color: #86253f;
+}
+
+.entity-guest-btn {
+    -fx-background-color: #9d3485;
+}
+
+/* Highlight row for contracts nearing end date */
+.highlight-row {
+    -fx-background-color: #FFCCCC; /* Light red background */
+}
+
+/* Ensure text remains readable */
+.highlight-row .table-cell {
+    -fx-text-fill: #000000; /* Black text for contrast */
+}
+
+/* Optional: Hover effect for highlighted rows */
+.highlight-row:hover {
+    -fx-background-color: #FF9999; /* Slightly darker red on hover */
+}
